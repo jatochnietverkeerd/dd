@@ -2,10 +2,14 @@ import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "wouter";
+import { useFadeInOnScroll } from "@/hooks/useScrollAnimation";
 import VehicleCard from "./VehicleCard";
 import type { Vehicle } from "@shared/schema";
 
 export default function VehicleShowcase() {
+  const { elementRef: titleRef, fadeInClass: titleFadeClass } = useFadeInOnScroll(0.2);
+  const { elementRef: buttonRef, fadeInClass: buttonFadeClass } = useFadeInOnScroll(0.2);
+  
   const { data: featuredVehicles, isLoading } = useQuery<Vehicle[]>({
     queryKey: ['/api/vehicles/featured'],
   });
@@ -46,22 +50,33 @@ export default function VehicleShowcase() {
   return (
     <section id="aanbod" className="py-20 bg-dark-primary">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
+        <div 
+          ref={titleRef}
+          className={`text-center mb-16 transition-all duration-700 ${titleFadeClass}`}
+        >
           <h2 className="text-4xl font-light mb-4">Ons <span className="text-luxury-gold font-bold">Aanbod</span></h2>
           <p className="text-gray-400 max-w-2xl mx-auto">Ontdek onze zorgvuldig geselecteerde collectie van premium occasions. Elk voertuig vertelt zijn eigen verhaal van luxe en prestaties.</p>
         </div>
         
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {featuredVehicles?.map((vehicle) => (
-            <VehicleCard key={vehicle.id} vehicle={vehicle} />
+          {featuredVehicles?.map((vehicle, index) => (
+            <div 
+              key={vehicle.id} 
+              className={`stagger-delay-${Math.min(index * 100 + 100, 400)}`}
+            >
+              <VehicleCard vehicle={vehicle} />
+            </div>
           ))}
         </div>
         
-        <div className="text-center mt-12">
+        <div 
+          ref={buttonRef}
+          className={`text-center mt-12 transition-all duration-700 delay-600 ${buttonFadeClass}`}
+        >
           <Link href="/aanbod">
             <Button 
               variant="outline"
-              className="border-luxury-gold text-luxury-gold px-8 py-3 rounded-full font-semibold hover:bg-luxury-gold hover:text-dark-primary transition-colors duration-300"
+              className="luxury-button border-luxury-gold text-luxury-gold px-8 py-3 rounded-full font-semibold hover:bg-luxury-gold hover:text-dark-primary"
             >
               Bekijk Alle Voertuigen ({allVehicles?.length || 0})
             </Button>

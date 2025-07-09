@@ -2,6 +2,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Gauge, Fuel } from "lucide-react";
 import { Link } from "wouter";
+import { useFadeInOnScroll } from "@/hooks/useScrollAnimation";
+import LazyImage from "@/components/LazyImage";
 import type { Vehicle } from "@shared/schema";
 
 interface VehicleCardProps {
@@ -9,6 +11,8 @@ interface VehicleCardProps {
 }
 
 export default function VehicleCard({ vehicle }: VehicleCardProps) {
+  const { elementRef, fadeInClass } = useFadeInOnScroll(0.2);
+
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('nl-NL', {
       style: 'currency',
@@ -23,12 +27,15 @@ export default function VehicleCard({ vehicle }: VehicleCardProps) {
   };
 
   return (
-    <Card className="bg-dark-secondary border-dark-quaternary rounded-lg overflow-hidden group hover:transform hover:scale-105 transition-all duration-300">
+    <Card 
+      ref={elementRef}
+      className={`bg-dark-secondary border-dark-quaternary rounded-lg overflow-hidden group scale-on-hover transition-all duration-500 ${fadeInClass}`}
+    >
       <div className="relative overflow-hidden">
-        <img 
-          src={vehicle.imageUrl || "https://images.unsplash.com/photo-1555215695-3004980ad54e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600"} 
-          alt={`${vehicle.brand} ${vehicle.model}`} 
-          className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-300"
+        <LazyImage
+          src={vehicle.imageUrl || "https://images.unsplash.com/photo-1555215695-3004980ad54e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600"}
+          alt={`${vehicle.brand} ${vehicle.model}`}
+          className="w-full h-48 object-cover image-zoom"
         />
       </div>
       <CardContent className="p-6">
@@ -49,7 +56,7 @@ export default function VehicleCard({ vehicle }: VehicleCardProps) {
           </span>
         </div>
         <Link href={`/vehicle/${vehicle.id}`}>
-          <Button className="w-full bg-luxury-gold text-dark-primary hover:bg-white transition-colors duration-300 rounded-full font-semibold">
+          <Button className="luxury-button w-full bg-luxury-gold text-dark-primary hover:bg-white rounded-full font-semibold">
             Meer Details
           </Button>
         </Link>

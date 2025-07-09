@@ -6,10 +6,15 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
+import { useFadeInOnScroll } from "@/hooks/useScrollAnimation";
 import { apiRequest } from "@/lib/queryClient";
 import type { InsertContact } from "@shared/schema";
 
 export default function Contact() {
+  const { elementRef: titleRef, fadeInClass: titleFadeClass } = useFadeInOnScroll(0.2);
+  const { elementRef: contactInfoRef, fadeInClass: contactInfoFadeClass } = useFadeInOnScroll(0.2);
+  const { elementRef: formRef, fadeInClass: formFadeClass } = useFadeInOnScroll(0.2);
+  
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -64,13 +69,19 @@ export default function Contact() {
   return (
     <section id="contact" className="py-20 bg-dark-primary">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
+        <div 
+          ref={titleRef}
+          className={`text-center mb-16 transition-all duration-700 ${titleFadeClass}`}
+        >
           <h2 className="text-4xl font-light mb-4">Neem <span className="text-luxury-gold font-bold">Contact</span> Op</h2>
           <p className="text-gray-400 max-w-2xl mx-auto">Heeft u vragen of wilt u meer informatie over een van onze voertuigen? Neem vandaag nog contact met ons op.</p>
         </div>
         
         <div className="grid lg:grid-cols-2 gap-12">
-          <div className="space-y-8">
+          <div 
+            ref={contactInfoRef}
+            className={`space-y-8 transition-all duration-700 delay-200 ${contactInfoFadeClass}`}
+          >
             <div className="flex items-start space-x-4">
               <div className="w-12 h-12 bg-luxury-gold rounded-full flex items-center justify-center flex-shrink-0">
                 <MapPin className="text-dark-primary" size={20} />
@@ -120,7 +131,10 @@ export default function Contact() {
             </div>
           </div>
           
-          <Card className="bg-dark-secondary border-dark-quaternary">
+          <Card 
+            ref={formRef}
+            className={`bg-dark-secondary border-dark-quaternary transition-all duration-700 delay-400 ${formFadeClass}`}
+          >
             <CardContent className="p-8">
               <h3 className="text-2xl font-semibold mb-6">Stuur een bericht</h3>
               <form onSubmit={handleSubmit} className="space-y-6">
@@ -171,7 +185,7 @@ export default function Contact() {
                 <Button 
                   type="submit"
                   disabled={contactMutation.isPending}
-                  className="w-full bg-luxury-gold text-dark-primary hover:bg-white transition-colors duration-300 font-semibold"
+                  className="luxury-button w-full bg-luxury-gold text-dark-primary hover:bg-white font-semibold"
                 >
                   {contactMutation.isPending ? "Bezig met verzenden..." : "Verstuur Bericht"}
                 </Button>

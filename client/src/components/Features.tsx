@@ -1,4 +1,23 @@
 import { Shield, Handshake, Star } from "lucide-react";
+import { useFadeInOnScroll } from "@/hooks/useScrollAnimation";
+
+function FeatureCard({ feature, index }: { feature: any; index: number }) {
+  const { elementRef, fadeInClass } = useFadeInOnScroll(0.2);
+  
+  return (
+    <div 
+      ref={elementRef}
+      className={`text-center group transition-all duration-700 scale-on-hover ${fadeInClass}`}
+      style={{ transitionDelay: `${index * 100}ms` }}
+    >
+      <div className="w-16 h-16 bg-luxury-gold rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+        <feature.icon className="text-dark-primary" size={24} />
+      </div>
+      <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
+      <p className="text-gray-400">{feature.description}</p>
+    </div>
+  );
+}
 
 export default function Features() {
   const features = [
@@ -24,13 +43,7 @@ export default function Features() {
       <div className="container mx-auto px-4">
         <div className="grid md:grid-cols-3 gap-8">
           {features.map((feature, index) => (
-            <div key={index} className="text-center group">
-              <div className="w-16 h-16 bg-luxury-gold rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                <feature.icon className="text-dark-primary" size={24} />
-              </div>
-              <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-              <p className="text-gray-400">{feature.description}</p>
-            </div>
+            <FeatureCard key={index} feature={feature} index={index} />
           ))}
         </div>
       </div>

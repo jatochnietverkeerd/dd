@@ -33,6 +33,15 @@ Preferred communication style: Simple, everyday language.
 - **Package Manager**: npm with lock file
 - **Build Process**: Vite for frontend, esbuild for backend bundling
 
+### Luxury Micro-Interactions
+- **Scroll Animations**: Fade-in animations triggered by intersection observer
+- **Hover Effects**: Smooth scale transformations and golden glow effects
+- **Lazy Loading**: Performance-optimized image loading with fade-in transitions
+- **Smooth Scrolling**: Custom scrollbar styling and smooth navigation
+- **Button Animations**: Luxury shimmer effects and elevation on hover
+- **Staggered Animations**: Delayed animations for grid items and lists
+- **Navigation**: Underline animations on menu items
+
 ## Key Components
 
 ### Database Schema
@@ -62,15 +71,16 @@ Preferred communication style: Simple, everyday language.
 - **AdminDashboard**: Admin interface for vehicle and contact management
 
 ### UI Components
-- **VehicleCard**: Individual vehicle display with pricing and specs
-- **VehicleShowcase**: Grid layout for vehicle listings on homepage
-- **Contact**: Contact form with validation
-- **Hero**: Landing page hero section
-- **Features**: Service highlights section
-- **About**: Company information section
-- **Header**: Navigation with routing to different pages
+- **VehicleCard**: Individual vehicle display with pricing and specs, includes lazy loading and hover animations
+- **VehicleShowcase**: Grid layout for vehicle listings on homepage with staggered fade-in animations
+- **Contact**: Contact form with validation and smooth fade-in animations
+- **Hero**: Landing page hero section with animated text and lazy-loaded background
+- **Features**: Service highlights section with scroll-triggered animations
+- **About**: Company information section with fade-in animations and hover effects
+- **Header**: Navigation with routing, includes underline animations on hover
 - **Footer**: Site footer with links and contact information
 - **ReservationForm**: Secure vehicle reservation form with Stripe payment integration
+- **LazyImage**: Performance-optimized image loading with fade-in effects
 
 ### Storage Layer
 - **MemStorage**: In-memory storage implementation for development

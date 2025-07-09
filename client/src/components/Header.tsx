@@ -32,8 +32,8 @@ export default function Header() {
       <nav className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-luxury-gold rounded-full flex items-center justify-center">
+          <Link href="/" className="flex items-center space-x-2 scale-on-hover">
+            <div className="w-8 h-8 bg-luxury-gold rounded-full flex items-center justify-center transition-transform duration-300">
               <Car className="text-dark-primary text-sm" size={16} />
             </div>
             <span className="text-xl font-bold text-white">
@@ -43,30 +43,34 @@ export default function Header() {
           
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <Link href="/" className="text-white hover:text-luxury-gold transition-colors duration-300">
-              Home
+            <Link href="/" className="text-white hover:text-luxury-gold transition-all duration-300 relative group">
+              <span className="relative z-10">Home</span>
+              <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-luxury-gold transition-all duration-300 group-hover:w-full"></div>
             </Link>
-            <Link href="/aanbod" className="text-white hover:text-luxury-gold transition-colors duration-300">
-              Aanbod
+            <Link href="/aanbod" className="text-white hover:text-luxury-gold transition-all duration-300 relative group">
+              <span className="relative z-10">Aanbod</span>
+              <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-luxury-gold transition-all duration-300 group-hover:w-full"></div>
             </Link>
             <Link 
               href="/over-ons" 
-              className="text-white hover:text-luxury-gold transition-colors duration-300"
+              className="text-white hover:text-luxury-gold transition-all duration-300 relative group"
             >
-              Over Ons
+              <span className="relative z-10">Over Ons</span>
+              <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-luxury-gold transition-all duration-300 group-hover:w-full"></div>
             </Link>
             <button
               onClick={() => scrollToSection('contact')}
-              className="text-white hover:text-luxury-gold transition-colors duration-300"
+              className="text-white hover:text-luxury-gold transition-all duration-300 relative group"
             >
-              Contact
+              <span className="relative z-10">Contact</span>
+              <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-luxury-gold transition-all duration-300 group-hover:w-full"></div>
             </button>
           </div>
           
           {/* Mobile Menu Button */}
           <button
             onClick={toggleMobileMenu}
-            className="md:hidden text-white hover:text-luxury-gold transition-colors duration-300"
+            className="md:hidden text-white hover:text-luxury-gold transition-all duration-300 scale-on-hover"
           >
             {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
