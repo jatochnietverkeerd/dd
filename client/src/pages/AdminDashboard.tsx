@@ -236,6 +236,12 @@ export default function AdminDashboard() {
       transmission: formData.get("transmission") as string,
       color: formData.get("color") as string,
       description: formData.get("description") as string,
+      imageUrl: formData.get("imageUrl") as string,
+      images: [
+        formData.get("image1") as string,
+        formData.get("image2") as string,
+        formData.get("image3") as string
+      ].filter(Boolean),
       featured: formData.get("featured") === "true",
     };
 
@@ -1113,6 +1119,59 @@ export default function AdminDashboard() {
                   className="bg-gray-800 border-gray-700"
                   rows={3}
                 />
+              </div>
+              
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Afbeeldingen</h3>
+                <div>
+                  <Label htmlFor="imageUrl">Hoofdafbeelding URL</Label>
+                  <Input
+                    id="imageUrl"
+                    name="imageUrl"
+                    defaultValue={editingVehicle.imageUrl}
+                    className="bg-gray-800 border-gray-700"
+                    placeholder="https://images.unsplash.com/photo-..."
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="image1">Afbeelding 1 URL</Label>
+                  <Input
+                    id="image1"
+                    name="image1"
+                    defaultValue={editingVehicle.images?.[0] || ''}
+                    className="bg-gray-800 border-gray-700"
+                    placeholder="https://images.unsplash.com/photo-..."
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="image2">Afbeelding 2 URL</Label>
+                  <Input
+                    id="image2"
+                    name="image2"
+                    defaultValue={editingVehicle.images?.[1] || ''}
+                    className="bg-gray-800 border-gray-700"
+                    placeholder="https://images.unsplash.com/photo-..."
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="image3">Afbeelding 3 URL</Label>
+                  <Input
+                    id="image3"
+                    name="image3"
+                    defaultValue={editingVehicle.images?.[2] || ''}
+                    className="bg-gray-800 border-gray-700"
+                    placeholder="https://images.unsplash.com/photo-..."
+                  />
+                </div>
+                <div className="p-4 bg-gray-800 rounded border border-gray-700">
+                  <h4 className="font-semibold mb-2">Hoe je goede afbeeldingen vindt:</h4>
+                  <ul className="text-sm text-gray-300 space-y-1">
+                    <li>1. Ga naar <a href="https://unsplash.com" target="_blank" className="text-yellow-400 hover:underline">Unsplash.com</a></li>
+                    <li>2. Zoek naar "Volkswagen Polo GTI white" of "VW Golf GTI red"</li>
+                    <li>3. Klik op een afbeelding en kopieer de URL</li>
+                    <li>4. Voeg ?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600 toe aan het einde</li>
+                  </ul>
+                </div>
               </div>
               <div className="flex items-center space-x-2">
                 <input
