@@ -118,7 +118,8 @@ export default function ImageUploader({
               ? { ...img, url, isUploaded: true }
               : img
           );
-          updateParent(updated);
+          // Schedule updateParent to run after this render
+          setTimeout(() => updateParent(updated), 0);
           return updated;
         });
       } catch (error) {
@@ -146,7 +147,7 @@ export default function ImageUploader({
   const removeImage = (id: string) => {
     setImages(prev => {
       const newImages = prev.filter(img => img.id !== id);
-      updateParent(newImages);
+      setTimeout(() => updateParent(newImages), 0);
       return newImages;
     });
   };
@@ -170,7 +171,7 @@ export default function ImageUploader({
 
     setImages(newImages);
     setDraggedIndex(index);
-    updateParent(newImages);
+    setTimeout(() => updateParent(newImages), 0);
   };
 
   return (
