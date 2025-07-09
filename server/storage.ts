@@ -4,6 +4,7 @@ import { generateSlug, generateMetaTitle, generateMetaDescription } from "@share
 export interface IStorage {
   // Vehicle operations
   getVehicles(): Promise<Vehicle[]>;
+  getVehiclesByStatus(status?: string): Promise<Vehicle[]>;
   getFeaturedVehicles(): Promise<Vehicle[]>;
   getVehicleById(id: number): Promise<Vehicle | undefined>;
   getVehicleBySlug(slug: string): Promise<Vehicle | undefined>;
@@ -82,6 +83,8 @@ export class MemStorage implements IStorage {
         ],
         featured: true,
         available: true,
+        status: "beschikbaar",
+        availableDate: new Date("2024-01-15"),
         power: "252 PK / 185 kW",
         chassisNumber: "WBAJA91090B123456",
         napCheck: "NAP-check uitgevoerd - Geen schade gemeld",
@@ -118,6 +121,8 @@ export class MemStorage implements IStorage {
         ],
         featured: true,
         available: true,
+        status: "gereserveerd",
+        availableDate: new Date("2024-02-01"),
         power: "258 PK / 190 kW",
         chassisNumber: "WDD2053421A123456",
         napCheck: "NAP-check uitgevoerd - Geen schade gemeld",
@@ -153,6 +158,8 @@ export class MemStorage implements IStorage {
         ],
         featured: true,
         available: true,
+        status: "beschikbaar",
+        availableDate: new Date("2024-03-10"),
         power: "340 PK / 250 kW",
         chassisNumber: "WAUZZZ4G5LN123456",
         napCheck: "NAP-check uitgevoerd - Geen schade gemeld",
@@ -179,7 +186,9 @@ export class MemStorage implements IStorage {
           "https://images.unsplash.com/photo-1580273916550-e323be2ae537?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600"
         ],
         featured: false,
-        available: true,
+        available: false,
+        status: "verkocht",
+        availableDate: new Date("2024-01-20"),
         power: "450 PK / 331 kW",
         chassisNumber: "WP0ZZZ99ZLS123456",
         napCheck: "NAP-check uitgevoerd - Geen schade gemeld",
@@ -207,6 +216,8 @@ export class MemStorage implements IStorage {
         ],
         featured: false,
         available: true,
+        status: "beschikbaar",
+        availableDate: new Date("2024-02-28"),
         power: "1020 PK / 750 kW",
         chassisNumber: "5YJ3E1EA4NF123456",
         napCheck: "NAP-check uitgevoerd - Geen schade gemeld",
@@ -234,6 +245,8 @@ export class MemStorage implements IStorage {
         ],
         featured: false,
         available: true,
+        status: "gearchiveerd",
+        availableDate: new Date("2024-01-05"),
         power: "340 PK / 250 kW",
         chassisNumber: "WBAJA31090B123456",
         napCheck: "NAP-check uitgevoerd - Geen schade gemeld",
@@ -262,6 +275,13 @@ export class MemStorage implements IStorage {
 
   async getVehicles(): Promise<Vehicle[]> {
     return Array.from(this.vehicles.values()).filter(v => v.available);
+  }
+
+  async getVehiclesByStatus(status?: string): Promise<Vehicle[]> {
+    if (!status) {
+      return Array.from(this.vehicles.values());
+    }
+    return Array.from(this.vehicles.values()).filter(v => v.status === status);
   }
 
   async getFeaturedVehicles(): Promise<Vehicle[]> {

@@ -36,7 +36,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Vehicle routes
   app.get("/api/vehicles", async (req, res) => {
     try {
-      const vehicles = await storage.getVehicles();
+      const status = req.query.status as string;
+      const vehicles = status ? await storage.getVehiclesByStatus(status) : await storage.getVehicles();
       res.json(vehicles);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch vehicles" });
@@ -230,7 +231,8 @@ Sitemap: ${baseUrl}/sitemap.xml`;
   // Protected admin routes
   app.get("/api/admin/vehicles", authenticateAdmin, async (req, res) => {
     try {
-      const vehicles = await storage.getVehicles();
+      const status = req.query.status as string;
+      const vehicles = await storage.getVehiclesByStatus(status);
       res.json(vehicles);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch vehicles" });
@@ -257,6 +259,45 @@ Sitemap: ${baseUrl}/sitemap.xml`;
         return res.status(400).json({ message: "Invalid vehicle data", errors: error.errors });
       }
       res.status(500).json({ message: "Failed to update vehicle" });
+    }
+  });
+
+  app.put("/api/admin/vehicles/:id/status", authenticateAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid vehicle ID" });
+      }
+
+      const { status } = req.body;
+      const validStatuses = ['beschikbaar', 'gereserveerd', 'verkocht', 'gearchiveerd'];
+      
+      if (!status || !validStatuses.includes(status)) {
+        return res.status(400).json({ 
+          message: "Invalid status", 
+          validStatuses 
+        });
+      }
+
+      const updateData: any = { status };
+      
+      // If status is set to "beschikbaar", update the availableDate
+      if (status === 'beschikbaar') {
+        updateData.availableDate = new Date();
+        updateData.available = true;
+      } else {
+        updateData.available = false;
+      }
+
+      const vehicle = await storage.updateVehicle(id, updateData);
+      
+      if (!vehicle) {
+        return res.status(404).json({ message: "Vehicle not found" });
+      }
+
+      res.json(vehicle);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to update vehicle status" });
     }
   });
 

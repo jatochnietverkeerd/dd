@@ -22,6 +22,7 @@ export default function AdminDashboard() {
   const [token, setToken] = useState<string | null>(null);
   const [editingVehicle, setEditingVehicle] = useState<Vehicle | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [statusFilter, setStatusFilter] = useState<string>("all");
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -41,8 +42,11 @@ export default function AdminDashboard() {
   const authHeaders = token ? { Authorization: `Bearer ${token}` } : {};
 
   const { data: vehicles, isLoading: vehiclesLoading } = useQuery({
-    queryKey: ["/api/admin/vehicles"],
-    queryFn: () => apiRequest("/api/admin/vehicles", { headers: authHeaders }),
+    queryKey: ["/api/admin/vehicles", statusFilter],
+    queryFn: () => {
+      const params = statusFilter !== "all" ? `?status=${statusFilter}` : "";
+      return apiRequest(`/api/admin/vehicles${params}`, { headers: authHeaders });
+    },
     enabled: !!token,
   });
 
@@ -101,6 +105,30 @@ export default function AdminDashboard() {
     },
   });
 
+  const updateVehicleStatusMutation = useMutation({
+    mutationFn: async ({ vehicleId, status }: { vehicleId: number; status: string }) => {
+      return await apiRequest(`/api/admin/vehicles/${vehicleId}/status`, {
+        method: "PUT",
+        headers: authHeaders,
+        body: { status },
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/vehicles"] });
+      toast({
+        title: "Status bijgewerkt",
+        description: "De voertuigstatus is succesvol bijgewerkt.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Fout",
+        description: "Er is een fout opgetreden bij het bijwerken van de status.",
+        variant: "destructive",
+      });
+    },
+  });
+
   const updateVehicleMutation = useMutation({
     mutationFn: async (data: { id: number; updates: Partial<Vehicle> }) => {
       return await apiRequest(`/api/admin/vehicles/${data.id}`, {
@@ -130,6 +158,42 @@ export default function AdminDashboard() {
   const handleEditVehicle = (vehicle: Vehicle) => {
     setEditingVehicle(vehicle);
     setIsEditDialogOpen(true);
+  };
+
+  const getStatusBadge = (status: string) => {
+    const statusConfig = {
+      beschikbaar: { label: "Beschikbaar", variant: "default" as const, color: "bg-green-500" },
+      gereserveerd: { label: "Gereserveerd", variant: "secondary" as const, color: "bg-yellow-500" },
+      verkocht: { label: "Verkocht", variant: "destructive" as const, color: "bg-red-500" },
+      gearchiveerd: { label: "Gearchiveerd", variant: "outline" as const, color: "bg-gray-500" },
+    };
+    
+    const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.beschikbaar;
+    return (
+      <Badge variant={config.variant} className="flex items-center gap-1">
+        <div className={`w-2 h-2 rounded-full ${config.color}`}></div>
+        {config.label}
+      </Badge>
+    );
+  };
+
+  const formatDate = (dateString: string | Date) => {
+    if (!dateString) return "Onbekend";
+    const date = new Date(dateString);
+    return date.toLocaleDateString('nl-NL', { 
+      year: 'numeric', 
+      month: 'short', 
+      day: 'numeric' 
+    });
+  };
+
+  const getDaysAvailable = (availableDate: string | Date) => {
+    if (!availableDate) return "Onbekend";
+    const date = new Date(availableDate);
+    const today = new Date();
+    const diffTime = today.getTime() - date.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays > 0 ? `${diffDays} dagen` : "Vandaag";
   };
 
   const handleUpdateVehicle = (e: React.FormEvent) => {
@@ -206,10 +270,27 @@ export default function AdminDashboard() {
           <TabsContent value="vehicles" className="space-y-4">
             <div className="flex justify-between items-center">
               <h2 className="text-xl font-semibold">Voertuigen Beheren</h2>
-              <Button className="bg-yellow-500 hover:bg-yellow-600 text-black">
-                <Plus className="w-4 h-4 mr-2" />
-                Voertuig Toevoegen
-              </Button>
+              <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-2">
+                  <Label htmlFor="status-filter" className="text-sm text-gray-400">Filter op status:</Label>
+                  <Select value={statusFilter} onValueChange={setStatusFilter}>
+                    <SelectTrigger id="status-filter" className="w-40 bg-gray-800 border-gray-700">
+                      <SelectValue placeholder="Alle statussen" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-gray-800 border-gray-700">
+                      <SelectItem value="all">Alle statussen</SelectItem>
+                      <SelectItem value="beschikbaar">Beschikbaar</SelectItem>
+                      <SelectItem value="gereserveerd">Gereserveerd</SelectItem>
+                      <SelectItem value="verkocht">Verkocht</SelectItem>
+                      <SelectItem value="gearchiveerd">Gearchiveerd</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <Button className="bg-yellow-500 hover:bg-yellow-600 text-black">
+                  <Plus className="w-4 h-4 mr-2" />
+                  Voertuig Toevoegen
+                </Button>
+              </div>
             </div>
 
             {vehiclesLoading ? (
@@ -232,6 +313,7 @@ export default function AdminDashboard() {
                           {vehicle.featured && (
                             <Badge className="bg-yellow-500 text-black">Uitgelicht</Badge>
                           )}
+                          {getStatusBadge(vehicle.status || 'beschikbaar')}
                           <div className="flex space-x-2">
                             <Button
                               variant="outline"
@@ -262,7 +344,7 @@ export default function AdminDashboard() {
                       </div>
                     </CardHeader>
                     <CardContent className="pt-0">
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm mb-4">
                         <div>
                           <p className="text-gray-400">Prijs</p>
                           <p className="font-semibold text-yellow-500">€{vehicle.price?.toLocaleString()}</p>
@@ -278,6 +360,39 @@ export default function AdminDashboard() {
                         <div>
                           <p className="text-gray-400">Transmissie</p>
                           <p className="font-semibold">{vehicle.transmission}</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-700">
+                        <div className="flex items-center space-x-4">
+                          <div>
+                            <p className="text-gray-400 text-sm">Status:</p>
+                            <Select 
+                              value={vehicle.status || 'beschikbaar'} 
+                              onValueChange={(status) => 
+                                updateVehicleStatusMutation.mutate({ vehicleId: vehicle.id, status })
+                              }
+                            >
+                              <SelectTrigger className="w-32 h-8 bg-gray-800 border-gray-700 text-xs">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent className="bg-gray-800 border-gray-700">
+                                <SelectItem value="beschikbaar">Beschikbaar</SelectItem>
+                                <SelectItem value="gereserveerd">Gereserveerd</SelectItem>
+                                <SelectItem value="verkocht">Verkocht</SelectItem>
+                                <SelectItem value="gearchiveerd">Gearchiveerd</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          
+                          {vehicle.status === 'beschikbaar' && vehicle.availableDate && (
+                            <div>
+                              <p className="text-gray-400 text-sm">Beschikbaar sinds:</p>
+                              <p className="text-xs text-gray-300">
+                                {formatDate(vehicle.availableDate)} ({getDaysAvailable(vehicle.availableDate)})
+                              </p>
+                            </div>
+                          )}
                         </div>
                       </div>
                     </CardContent>

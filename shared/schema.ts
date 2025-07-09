@@ -17,6 +17,8 @@ export const vehicles = pgTable("vehicles", {
   images: text("images").array(),
   featured: boolean("featured").default(false),
   available: boolean("available").default(true),
+  status: text("status").default("beschikbaar").notNull(), // beschikbaar, gereserveerd, verkocht, gearchiveerd
+  availableDate: timestamp("available_date").defaultNow(),
   power: text("power"),
   chassisNumber: text("chassis_number"),
   napCheck: text("nap_check"),
