@@ -111,7 +111,7 @@ export class MemStorage implements IStorage {
         description: "Iconische Volkswagen Golf GTI in perfecte staat. De perfecte combinatie van sportiviteit en dagelijks gebruiksgemak.",
         imageUrl: "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
         images: [
-          "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
+          "/uploads/image-1752066306146-154641205.png",
           "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
           "https://images.unsplash.com/photo-1580273916550-e323be2ae537?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600"
         ],
@@ -516,8 +516,28 @@ export class MemStorage implements IStorage {
     if (!existingVehicle) {
       return undefined;
     }
-    const updatedVehicle: Vehicle = { ...existingVehicle, ...vehicleUpdate };
+    
+    // Regenerate SEO fields if relevant data changed
+    let seoFields = {};
+    if (vehicleUpdate.brand || vehicleUpdate.model || vehicleUpdate.year || vehicleUpdate.price || vehicleUpdate.mileage || vehicleUpdate.fuel || vehicleUpdate.transmission) {
+      const brand = vehicleUpdate.brand || existingVehicle.brand;
+      const model = vehicleUpdate.model || existingVehicle.model;
+      const year = vehicleUpdate.year || existingVehicle.year;
+      const price = vehicleUpdate.price || existingVehicle.price;
+      const mileage = vehicleUpdate.mileage || existingVehicle.mileage;
+      const fuel = vehicleUpdate.fuel || existingVehicle.fuel;
+      const transmission = vehicleUpdate.transmission || existingVehicle.transmission;
+      
+      seoFields = {
+        slug: generateSlug(brand, model, year),
+        metaTitle: generateMetaTitle(brand, model, year, price),
+        metaDescription: generateMetaDescription(brand, model, year, mileage, fuel, transmission)
+      };
+    }
+    
+    const updatedVehicle: Vehicle = { ...existingVehicle, ...vehicleUpdate, ...seoFields };
     this.vehicles.set(id, updatedVehicle);
+    console.log('Updated vehicle with ID:', id, 'New images:', updatedVehicle.images);
     return updatedVehicle;
   }
 
