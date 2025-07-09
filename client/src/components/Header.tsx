@@ -43,18 +43,12 @@ export default function Header() {
           
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <button
-              onClick={() => scrollToSection('home')}
-              className="text-white hover:text-luxury-gold transition-colors duration-300"
-            >
+            <Link href="/" className="text-white hover:text-luxury-gold transition-colors duration-300">
               Home
-            </button>
-            <button
-              onClick={() => scrollToSection('aanbod')}
-              className="text-white hover:text-luxury-gold transition-colors duration-300"
-            >
+            </Link>
+            <Link href="/aanbod" className="text-white hover:text-luxury-gold transition-colors duration-300">
               Aanbod
-            </button>
+            </Link>
             <button
               onClick={() => scrollToSection('over-ons')}
               className="text-white hover:text-luxury-gold transition-colors duration-300"
@@ -84,18 +78,20 @@ export default function Header() {
         isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
       }`}>
         <div className="flex flex-col items-center justify-center h-full space-y-8">
-          <button
-            onClick={() => scrollToSection('home')}
+          <Link 
+            href="/" 
+            onClick={closeMobileMenu}
             className="text-2xl text-white hover:text-luxury-gold transition-colors duration-300"
           >
             Home
-          </button>
-          <button
-            onClick={() => scrollToSection('aanbod')}
+          </Link>
+          <Link 
+            href="/aanbod" 
+            onClick={closeMobileMenu}
             className="text-2xl text-white hover:text-luxury-gold transition-colors duration-300"
           >
             Aanbod
-          </button>
+          </Link>
           <button
             onClick={() => scrollToSection('over-ons')}
             className="text-2xl text-white hover:text-luxury-gold transition-colors duration-300"

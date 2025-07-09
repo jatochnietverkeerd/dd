@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Link } from "wouter";
 import VehicleCard from "./VehicleCard";
 import type { Vehicle } from "@shared/schema";
 
@@ -57,12 +58,14 @@ export default function VehicleShowcase() {
         </div>
         
         <div className="text-center mt-12">
-          <Button 
-            variant="outline"
-            className="border-luxury-gold text-luxury-gold px-8 py-3 rounded-full font-semibold hover:bg-luxury-gold hover:text-dark-primary transition-colors duration-300"
-          >
-            Bekijk Alle Voertuigen ({allVehicles?.length || 0})
-          </Button>
+          <Link href="/aanbod">
+            <Button 
+              variant="outline"
+              className="border-luxury-gold text-luxury-gold px-8 py-3 rounded-full font-semibold hover:bg-luxury-gold hover:text-dark-primary transition-colors duration-300"
+            >
+              Bekijk Alle Voertuigen ({allVehicles?.length || 0})
+            </Button>
+          </Link>
         </div>
       </div>
     </section>

@@ -47,13 +47,19 @@ Preferred communication style: Simple, everyday language.
 - `POST /api/vehicles` - Create new vehicle listing
 - `POST /api/contacts` - Submit contact form
 
+### Pages
+- **Home**: Landing page with hero, features, vehicle showcase, about, and contact sections
+- **Aanbod**: Dedicated vehicle inventory page with filtering and sorting capabilities
+
 ### UI Components
 - **VehicleCard**: Individual vehicle display with pricing and specs
-- **VehicleShowcase**: Grid layout for vehicle listings
+- **VehicleShowcase**: Grid layout for vehicle listings on homepage
 - **Contact**: Contact form with validation
 - **Hero**: Landing page hero section
 - **Features**: Service highlights section
 - **About**: Company information section
+- **Header**: Navigation with routing to different pages
+- **Footer**: Site footer with links and contact information
 
 ### Storage Layer
 - **MemStorage**: In-memory storage implementation for development

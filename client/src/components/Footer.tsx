@@ -1,4 +1,5 @@
 import { Car, Facebook, Instagram, Linkedin, MapPin, Phone, Mail } from "lucide-react";
+import { Link } from "wouter";
 
 export default function Footer() {
   const scrollToSection = (sectionId: string) => {
@@ -46,20 +47,20 @@ export default function Footer() {
             <h4 className="text-lg font-semibold mb-4">Navigatie</h4>
             <ul className="space-y-2">
               <li>
-                <button
-                  onClick={() => scrollToSection('home')}
+                <Link 
+                  href="/"
                   className="text-gray-400 hover:text-luxury-gold transition-colors duration-300"
                 >
                   Home
-                </button>
+                </Link>
               </li>
               <li>
-                <button
-                  onClick={() => scrollToSection('aanbod')}
+                <Link 
+                  href="/aanbod"
                   className="text-gray-400 hover:text-luxury-gold transition-colors duration-300"
                 >
                   Aanbod
-                </button>
+                </Link>
               </li>
               <li>
                 <button
