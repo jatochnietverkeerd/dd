@@ -185,11 +185,11 @@ export class MemStorage implements IStorage {
         transmission: "Automaat",
         color: "Pure White",
         description: "Gloednieuwe Volkswagen Polo GTI - compacte sportiviteit op zijn best.",
-        imageUrl: "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
+        imageUrl: "/attached_assets/Screenshot 2025-07-09 at 20.06.09_1752063258316.png",
         images: [
+          "/attached_assets/Screenshot 2025-07-09 at 20.06.09_1752063258316.png",
           "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
-          "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
-          "https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600"
+          "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600"
         ],
         featured: true,
         available: true,
