@@ -1,4 +1,4 @@
-import { vehicles, contacts, users, type Vehicle, type InsertVehicle, type Contact, type InsertContact, type User, type InsertUser } from "@shared/schema";
+import { vehicles, contacts, users, adminSessions, type Vehicle, type InsertVehicle, type Contact, type InsertContact, type User, type InsertUser, type AdminSession, type InsertAdminSession } from "@shared/schema";
 
 export interface IStorage {
   // Vehicle operations
@@ -6,6 +6,8 @@ export interface IStorage {
   getFeaturedVehicles(): Promise<Vehicle[]>;
   getVehicleById(id: number): Promise<Vehicle | undefined>;
   createVehicle(vehicle: InsertVehicle): Promise<Vehicle>;
+  updateVehicle(id: number, vehicle: Partial<InsertVehicle>): Promise<Vehicle | undefined>;
+  deleteVehicle(id: number): Promise<boolean>;
   
   // Contact operations
   createContact(contact: InsertContact): Promise<Contact>;
@@ -15,26 +17,37 @@ export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
+  
+  // Admin session operations
+  createAdminSession(session: InsertAdminSession): Promise<AdminSession>;
+  getAdminSession(token: string): Promise<AdminSession | undefined>;
+  deleteAdminSession(token: string): Promise<boolean>;
+  cleanExpiredSessions(): Promise<void>;
 }
 
 export class MemStorage implements IStorage {
   private vehicles: Map<number, Vehicle>;
   private contacts: Map<number, Contact>;
   private users: Map<number, User>;
+  private adminSessions: Map<string, AdminSession>;
   private currentVehicleId: number;
   private currentContactId: number;
   private currentUserId: number;
+  private currentSessionId: number;
 
   constructor() {
     this.vehicles = new Map();
     this.contacts = new Map();
     this.users = new Map();
+    this.adminSessions = new Map();
     this.currentVehicleId = 1;
     this.currentContactId = 1;
     this.currentUserId = 1;
+    this.currentSessionId = 1;
     
-    // Initialize with sample premium vehicles
+    // Initialize with sample premium vehicles and admin user
     this.initializeSampleVehicles();
+    this.initializeAdminUser();
   }
 
   private initializeSampleVehicles() {
@@ -226,6 +239,15 @@ export class MemStorage implements IStorage {
     });
   }
 
+  private initializeAdminUser() {
+    // Create default admin user (username: admin, password: admin123)
+    this.createUser({
+      username: "admin",
+      password: "admin123", // In real app, this should be hashed
+      role: "admin"
+    });
+  }
+
   async getVehicles(): Promise<Vehicle[]> {
     return Array.from(this.vehicles.values()).filter(v => v.available);
   }
@@ -243,6 +265,20 @@ export class MemStorage implements IStorage {
     const vehicle: Vehicle = { ...insertVehicle, id };
     this.vehicles.set(id, vehicle);
     return vehicle;
+  }
+
+  async updateVehicle(id: number, vehicleUpdate: Partial<InsertVehicle>): Promise<Vehicle | undefined> {
+    const existingVehicle = this.vehicles.get(id);
+    if (!existingVehicle) {
+      return undefined;
+    }
+    const updatedVehicle: Vehicle = { ...existingVehicle, ...vehicleUpdate };
+    this.vehicles.set(id, updatedVehicle);
+    return updatedVehicle;
+  }
+
+  async deleteVehicle(id: number): Promise<boolean> {
+    return this.vehicles.delete(id);
   }
 
   async createContact(insertContact: InsertContact): Promise<Contact> {
@@ -271,6 +307,42 @@ export class MemStorage implements IStorage {
     const user: User = { ...insertUser, id };
     this.users.set(id, user);
     return user;
+  }
+
+  // Admin session operations
+  async createAdminSession(sessionData: InsertAdminSession): Promise<AdminSession> {
+    const id = this.currentSessionId++;
+    const session: AdminSession = { 
+      ...sessionData, 
+      id,
+      createdAt: new Date()
+    };
+    this.adminSessions.set(sessionData.sessionToken, session);
+    return session;
+  }
+
+  async getAdminSession(token: string): Promise<AdminSession | undefined> {
+    const session = this.adminSessions.get(token);
+    if (session && session.expiresAt > new Date()) {
+      return session;
+    }
+    if (session) {
+      this.adminSessions.delete(token);
+    }
+    return undefined;
+  }
+
+  async deleteAdminSession(token: string): Promise<boolean> {
+    return this.adminSessions.delete(token);
+  }
+
+  async cleanExpiredSessions(): Promise<void> {
+    const now = new Date();
+    for (const [token, session] of this.adminSessions.entries()) {
+      if (session.expiresAt <= now) {
+        this.adminSessions.delete(token);
+      }
+    }
   }
 }
 
