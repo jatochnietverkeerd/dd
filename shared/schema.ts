@@ -26,6 +26,9 @@ export const vehicles = pgTable("vehicles", {
   story: text("story"),
   videoUrl: text("video_url"),
   view360Url: text("view_360_url"),
+  slug: text("slug").notNull().unique(),
+  metaTitle: text("meta_title"),
+  metaDescription: text("meta_description"),
 });
 
 export const contacts = pgTable("contacts", {

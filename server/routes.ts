@@ -70,6 +70,81 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // SEO-friendly vehicle route by slug
+  app.get("/api/vehicles/slug/:slug", async (req, res) => {
+    try {
+      const slug = req.params.slug;
+      const vehicle = await storage.getVehicleBySlug(slug);
+      if (!vehicle) {
+        return res.status(404).json({ message: "Vehicle not found" });
+      }
+      res.json(vehicle);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch vehicle" });
+    }
+  });
+
+  // Dynamic sitemap.xml generation for SEO
+  app.get("/sitemap.xml", async (req, res) => {
+    try {
+      const vehicles = await storage.getVehicles();
+      const baseUrl = req.protocol + "://" + req.get("host");
+      
+      let sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>${baseUrl}/</loc>
+    <lastmod>${new Date().toISOString()}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/aanbod</loc>
+    <lastmod>${new Date().toISOString()}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/over-ons</loc>
+    <lastmod>${new Date().toISOString()}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>`;
+
+      vehicles.forEach(vehicle => {
+        sitemap += `
+  <url>
+    <loc>${baseUrl}/auto/${vehicle.slug}</loc>
+    <lastmod>${new Date().toISOString()}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>`;
+      });
+
+      sitemap += `
+</urlset>`;
+
+      res.set("Content-Type", "application/xml");
+      res.send(sitemap);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to generate sitemap" });
+    }
+  });
+
+  // robots.txt for SEO
+  app.get("/robots.txt", (req, res) => {
+    const baseUrl = req.protocol + "://" + req.get("host");
+    const robots = `User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+
+Sitemap: ${baseUrl}/sitemap.xml`;
+    
+    res.set("Content-Type", "text/plain");
+    res.send(robots);
+  });
+
   app.post("/api/vehicles", async (req, res) => {
     try {
       const validatedData = insertVehicleSchema.parse(req.body);

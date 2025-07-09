@@ -45,7 +45,7 @@ Preferred communication style: Simple, everyday language.
 ## Key Components
 
 ### Database Schema
-- **vehicles**: Core entity storing car inventory (brand, model, year, price, mileage, fuel type, transmission, color, description, images, featured status)
+- **vehicles**: Core entity storing car inventory (brand, model, year, price, mileage, fuel type, transmission, color, description, images, featured status, slug, metaTitle, metaDescription)
 - **contacts**: Customer inquiries and contact form submissions
 - **users**: Basic user authentication system (username/password)
 - **reservations**: Vehicle reservations with customer details, deposit amounts, and payment intent IDs
@@ -55,12 +55,15 @@ Preferred communication style: Simple, everyday language.
 - `GET /api/vehicles` - Retrieve all vehicles
 - `GET /api/vehicles/featured` - Get featured vehicles for homepage
 - `GET /api/vehicles/:id` - Get specific vehicle details
+- `GET /api/vehicles/slug/:slug` - Get vehicle by SEO-friendly slug
 - `POST /api/vehicles` - Create new vehicle listing
 - `POST /api/contacts` - Submit contact form
 - `POST /api/reservations` - Create vehicle reservation
 - `GET /api/reservations` - Get all reservations (admin only)
 - `GET /api/vehicles/:id/reservations` - Get reservations for specific vehicle (admin only)
 - `POST /api/create-payment-intent` - Create payment intent for reservation deposit
+- `GET /sitemap.xml` - Dynamic sitemap generation for SEO
+- `GET /robots.txt` - Robots.txt for search engine crawlers
 
 ### Pages
 - **Home**: Landing page with hero, features, vehicle showcase, about, and contact sections
@@ -139,3 +142,36 @@ Preferred communication style: Simple, everyday language.
 - Runtime error overlay for debugging
 
 The application uses a modern, type-safe architecture with excellent developer experience through hot reloading, strict TypeScript, and comprehensive tooling integration.
+
+## SEO Optimizations (Recent Changes)
+
+### Technical SEO Enhancements
+- **Meta Tags**: Comprehensive meta tag implementation with Dutch language support
+- **Open Graph**: Full Open Graph protocol implementation for social media sharing
+- **Twitter Cards**: Twitter-specific meta tags for optimal social sharing
+- **Structured Data**: JSON-LD schema.org markup for search engines
+- **Sitemap**: Dynamic XML sitemap generation for all pages and vehicle listings
+- **Robots.txt**: Search engine crawler instructions with proper directives
+
+### URL Structure
+- **SEO-friendly URLs**: Changed from `/vehicle/:id` to `/auto/:slug` format
+- **Slug Generation**: Automatic slug creation using brand, model, and year
+- **Meta Generation**: Automatic meta title and description generation for each vehicle
+- **Dynamic Meta Updates**: Page-specific meta tags updated via JavaScript for SPA
+
+### Performance Optimizations
+- **Lazy Loading**: Intersection Observer API for efficient image loading
+- **Image Optimization**: Automatic image optimization for Unsplash images
+- **Preconnects**: DNS prefetch and preconnect for external resources
+- **Semantic HTML**: Proper HTML5 semantic structure throughout
+
+### Content Optimization
+- **Dutch Language**: Full Dutch language implementation in meta tags and content
+- **Breadcrumbs**: Semantic navigation structure
+- **Schema Markup**: Vehicle-specific structured data for rich snippets
+- **Alt Text**: Descriptive alt text for all images
+
+### Performance Metrics
+- **Core Web Vitals**: Optimized loading performance
+- **Lighthouse**: SEO score improvements through technical optimizations
+- **Page Speed**: Reduced initial load times through lazy loading and image optimization

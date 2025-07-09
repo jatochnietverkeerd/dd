@@ -55,7 +55,7 @@ export default function VehicleCard({ vehicle }: VehicleCardProps) {
             {vehicle.fuel}
           </span>
         </div>
-        <Link href={`/vehicle/${vehicle.id}`}>
+        <Link href={`/auto/${vehicle.slug}`}>
           <Button className="luxury-button w-full bg-luxury-gold text-dark-primary hover:bg-white rounded-full font-semibold">
             Meer Details
           </Button>

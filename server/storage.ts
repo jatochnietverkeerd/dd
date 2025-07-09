@@ -1,10 +1,12 @@
 import { vehicles, contacts, users, adminSessions, reservations, type Vehicle, type InsertVehicle, type Contact, type InsertContact, type User, type InsertUser, type AdminSession, type InsertAdminSession, type Reservation, type InsertReservation } from "@shared/schema";
+import { generateSlug, generateMetaTitle, generateMetaDescription } from "@shared/utils";
 
 export interface IStorage {
   // Vehicle operations
   getVehicles(): Promise<Vehicle[]>;
   getFeaturedVehicles(): Promise<Vehicle[]>;
   getVehicleById(id: number): Promise<Vehicle | undefined>;
+  getVehicleBySlug(slug: string): Promise<Vehicle | undefined>;
   createVehicle(vehicle: InsertVehicle): Promise<Vehicle>;
   updateVehicle(id: number, vehicle: Partial<InsertVehicle>): Promise<Vehicle | undefined>;
   deleteVehicle(id: number): Promise<boolean>;
@@ -270,9 +272,33 @@ export class MemStorage implements IStorage {
     return this.vehicles.get(id);
   }
 
+  async getVehicleBySlug(slug: string): Promise<Vehicle | undefined> {
+    return Array.from(this.vehicles.values()).find(v => v.slug === slug);
+  }
+
   async createVehicle(insertVehicle: InsertVehicle): Promise<Vehicle> {
     const id = this.currentVehicleId++;
-    const vehicle: Vehicle = { ...insertVehicle, id };
+    
+    // Generate SEO-friendly slug and meta tags
+    const slug = generateSlug(insertVehicle.brand, insertVehicle.model, insertVehicle.year);
+    const metaTitle = generateMetaTitle(insertVehicle.brand, insertVehicle.model, insertVehicle.year, insertVehicle.price);
+    const metaDescription = generateMetaDescription(
+      insertVehicle.brand, 
+      insertVehicle.model, 
+      insertVehicle.year, 
+      insertVehicle.mileage, 
+      insertVehicle.fuel, 
+      insertVehicle.transmission
+    );
+    
+    const vehicle: Vehicle = { 
+      ...insertVehicle, 
+      id, 
+      slug, 
+      metaTitle, 
+      metaDescription 
+    };
+    
     this.vehicles.set(id, vehicle);
     return vehicle;
   }

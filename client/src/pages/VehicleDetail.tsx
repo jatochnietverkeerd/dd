@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -29,17 +29,67 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ReservationForm from "@/components/ReservationForm";
 import type { Vehicle } from "@shared/schema";
+import { generateStructuredData } from "@shared/utils";
 
 export default function VehicleDetail() {
-  const { id } = useParams<{ id: string }>();
+  const { slug } = useParams<{ slug: string }>();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const [showReservationForm, setShowReservationForm] = useState(false);
 
   const { data: vehicle, isLoading } = useQuery<Vehicle>({
-    queryKey: ['/api/vehicles', id],
-    enabled: !!id,
+    queryKey: ['/api/vehicles/slug', slug],
+    queryFn: async () => {
+      const response = await fetch(`/api/vehicles/slug/${slug}`);
+      if (!response.ok) {
+        throw new Error('Vehicle not found');
+      }
+      return response.json();
+    },
+    enabled: !!slug,
   });
+
+  // Update page title and meta tags when vehicle data is loaded
+  useEffect(() => {
+    if (vehicle) {
+      document.title = vehicle.metaTitle || `${vehicle.brand} ${vehicle.model} ${vehicle.year} | DD Cars`;
+      
+      // Update meta description
+      const metaDescription = document.querySelector('meta[name="description"]');
+      if (metaDescription) {
+        metaDescription.setAttribute('content', vehicle.metaDescription || `${vehicle.brand} ${vehicle.model} ${vehicle.year} te koop bij DD Cars`);
+      }
+
+      // Update Open Graph tags
+      const ogTitle = document.querySelector('meta[property="og:title"]');
+      const ogDescription = document.querySelector('meta[property="og:description"]');
+      const ogImage = document.querySelector('meta[property="og:image"]');
+
+      if (ogTitle) ogTitle.setAttribute('content', vehicle.metaTitle || `${vehicle.brand} ${vehicle.model} ${vehicle.year}`);
+      if (ogDescription) ogDescription.setAttribute('content', vehicle.metaDescription || `${vehicle.brand} ${vehicle.model} ${vehicle.year} te koop bij DD Cars`);
+      if (ogImage && vehicle.imageUrl) ogImage.setAttribute('content', vehicle.imageUrl);
+
+      // Add structured data for SEO
+      const structuredData = generateStructuredData(vehicle);
+      const existingScript = document.querySelector('script[type="application/ld+json"][data-vehicle="true"]');
+      if (existingScript) {
+        document.head.removeChild(existingScript);
+      }
+      
+      const script = document.createElement('script');
+      script.type = 'application/ld+json';
+      script.setAttribute('data-vehicle', 'true');
+      script.textContent = JSON.stringify(structuredData);
+      document.head.appendChild(script);
+
+      return () => {
+        const scriptToRemove = document.querySelector('script[type="application/ld+json"][data-vehicle="true"]');
+        if (scriptToRemove) {
+          document.head.removeChild(scriptToRemove);
+        }
+      };
+    }
+  }, [vehicle]);
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('nl-NL', {

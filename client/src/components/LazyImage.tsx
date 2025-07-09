@@ -50,6 +50,11 @@ export default function LazyImage({
     onError?.();
   };
 
+  // Optimize image URL for better performance
+  const optimizedSrc = src.includes('unsplash.com') 
+    ? `${src}&w=800&h=600&q=80&auto=format&fit=crop`
+    : src;
+
   return (
     <div className={`relative overflow-hidden ${className}`}>
       <img
@@ -62,7 +67,7 @@ export default function LazyImage({
       />
       {isInView && (
         <img
-          src={src}
+          src={optimizedSrc}
           alt={alt}
           className={`w-full h-full object-cover transition-all duration-700 ease-out ${
             isLoaded 
@@ -71,6 +76,9 @@ export default function LazyImage({
           }`}
           onLoad={handleLoad}
           onError={handleError}
+          loading="lazy"
+          decoding="async"
+
         />
       )}
       {hasError && (
