@@ -135,10 +135,6 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
   });
 
   const onSubmit = (data: VehicleFormData) => {
-    console.log('Form submitted with data:', data);
-    console.log('Form errors:', form.formState.errors);
-    console.log('Images:', images);
-    
     const formDataWithImages = {
       ...data,
       images: images
@@ -342,13 +338,7 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
               type="submit"
               className="bg-yellow-500 hover:bg-yellow-600 text-black"
               disabled={createVehicleMutation.isPending || updateVehicleMutation.isPending}
-              onClick={() => {
-                console.log('Submit button clicked');
-                console.log('Form state:', form.formState);
-                console.log('Form errors:', form.formState.errors);
-                console.log('Form values:', form.getValues());
-                console.log('Form is valid:', form.formState.isValid);
-              }}
+
             >
               {createVehicleMutation.isPending || updateVehicleMutation.isPending
                 ? "Bezig..."
