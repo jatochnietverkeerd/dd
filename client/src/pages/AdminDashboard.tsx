@@ -15,6 +15,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { useToast } from "@/hooks/use-toast";
 import { LogOut, Car, Users, Plus, Edit, Trash2, Eye, CreditCard, Clock, CheckCircle, XCircle, Calculator, Download, FileText, TrendingUp, Mail } from "lucide-react";
 import type { Vehicle, Contact, Reservation, Purchase, Sale } from "@shared/schema";
+import VehicleForm from "@/components/VehicleForm";
 
 export default function AdminDashboard() {
   const [, setLocation] = useLocation();
@@ -22,6 +23,7 @@ export default function AdminDashboard() {
   const [token, setToken] = useState<string | null>(null);
   const [editingVehicle, setEditingVehicle] = useState<Vehicle | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [selectedYear, setSelectedYear] = useState("2024");
   const [selectedMonth, setSelectedMonth] = useState("all");
@@ -185,6 +187,11 @@ export default function AdminDashboard() {
     setIsEditDialogOpen(true);
   };
 
+  const handleAddVehicle = () => {
+    setEditingVehicle(null);
+    setIsAddDialogOpen(true);
+  };
+
   const getStatusBadge = (status: string) => {
     const statusConfig = {
       beschikbaar: { label: "Beschikbaar", variant: "default" as const, color: "bg-green-500" },
@@ -221,32 +228,7 @@ export default function AdminDashboard() {
     return diffDays > 0 ? `${diffDays} dagen` : "Vandaag";
   };
 
-  const handleUpdateVehicle = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!editingVehicle) return;
 
-    const formData = new FormData(e.target as HTMLFormElement);
-    const updates = {
-      brand: formData.get("brand") as string,
-      model: formData.get("model") as string,
-      year: parseInt(formData.get("year") as string),
-      price: parseInt(formData.get("price") as string),
-      mileage: parseInt(formData.get("mileage") as string),
-      fuelType: formData.get("fuelType") as string,
-      transmission: formData.get("transmission") as string,
-      color: formData.get("color") as string,
-      description: formData.get("description") as string,
-      imageUrl: formData.get("imageUrl") as string,
-      images: [
-        formData.get("image1") as string,
-        formData.get("image2") as string,
-        formData.get("image3") as string
-      ].filter(Boolean),
-      featured: formData.get("featured") === "true",
-    };
-
-    updateVehicleMutation.mutate({ id: editingVehicle.id, updates });
-  };
 
   const handleDeleteVehicle = (vehicleId: number) => {
     if (confirm("Weet je zeker dat je dit voertuig wilt verwijderen?")) {
@@ -321,7 +303,10 @@ export default function AdminDashboard() {
                     </SelectContent>
                   </Select>
                 </div>
-                <Button className="bg-yellow-500 hover:bg-yellow-600 text-black">
+                <Button 
+                  className="bg-yellow-500 hover:bg-yellow-600 text-black"
+                  onClick={handleAddVehicle}
+                >
                   <Plus className="w-4 h-4 mr-2" />
                   Voertuig Toevoegen
                 </Button>
@@ -1011,200 +996,19 @@ export default function AdminDashboard() {
         </Tabs>
       </div>
 
-      {/* Edit Vehicle Dialog */}
-      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent className="bg-gray-900 border-gray-800 text-white max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>Voertuig Bewerken</DialogTitle>
-          </DialogHeader>
-          {editingVehicle && (
-            <form onSubmit={handleUpdateVehicle} className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="brand">Merk</Label>
-                  <Input
-                    id="brand"
-                    name="brand"
-                    defaultValue={editingVehicle.brand}
-                    className="bg-gray-800 border-gray-700"
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="model">Model</Label>
-                  <Input
-                    id="model"
-                    name="model"
-                    defaultValue={editingVehicle.model}
-                    className="bg-gray-800 border-gray-700"
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="year">Jaar</Label>
-                  <Input
-                    id="year"
-                    name="year"
-                    type="number"
-                    defaultValue={editingVehicle.year}
-                    className="bg-gray-800 border-gray-700"
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="price">Prijs</Label>
-                  <Input
-                    id="price"
-                    name="price"
-                    type="number"
-                    defaultValue={editingVehicle.price}
-                    className="bg-gray-800 border-gray-700"
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="mileage">Kilometerstand</Label>
-                  <Input
-                    id="mileage"
-                    name="mileage"
-                    type="number"
-                    defaultValue={editingVehicle.mileage}
-                    className="bg-gray-800 border-gray-700"
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="color">Kleur</Label>
-                  <Input
-                    id="color"
-                    name="color"
-                    defaultValue={editingVehicle.color}
-                    className="bg-gray-800 border-gray-700"
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="fuelType">Brandstof</Label>
-                  <Select name="fuelType" defaultValue={editingVehicle.fuelType}>
-                    <SelectTrigger className="bg-gray-800 border-gray-700">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent className="bg-gray-800 border-gray-700">
-                      <SelectItem value="Benzine">Benzine</SelectItem>
-                      <SelectItem value="Diesel">Diesel</SelectItem>
-                      <SelectItem value="Elektrisch">Elektrisch</SelectItem>
-                      <SelectItem value="Hybride">Hybride</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label htmlFor="transmission">Transmissie</Label>
-                  <Select name="transmission" defaultValue={editingVehicle.transmission}>
-                    <SelectTrigger className="bg-gray-800 border-gray-700">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent className="bg-gray-800 border-gray-700">
-                      <SelectItem value="Automaat">Automaat</SelectItem>
-                      <SelectItem value="Handgeschakeld">Handgeschakeld</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-              <div>
-                <Label htmlFor="description">Beschrijving</Label>
-                <Textarea
-                  id="description"
-                  name="description"
-                  defaultValue={editingVehicle.description}
-                  className="bg-gray-800 border-gray-700"
-                  rows={3}
-                />
-              </div>
-              
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Afbeeldingen</h3>
-                <div>
-                  <Label htmlFor="imageUrl">Hoofdafbeelding URL</Label>
-                  <Input
-                    id="imageUrl"
-                    name="imageUrl"
-                    defaultValue={editingVehicle.imageUrl}
-                    className="bg-gray-800 border-gray-700"
-                    placeholder="https://images.unsplash.com/photo-..."
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="image1">Afbeelding 1 URL</Label>
-                  <Input
-                    id="image1"
-                    name="image1"
-                    defaultValue={editingVehicle.images?.[0] || ''}
-                    className="bg-gray-800 border-gray-700"
-                    placeholder="https://images.unsplash.com/photo-..."
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="image2">Afbeelding 2 URL</Label>
-                  <Input
-                    id="image2"
-                    name="image2"
-                    defaultValue={editingVehicle.images?.[1] || ''}
-                    className="bg-gray-800 border-gray-700"
-                    placeholder="https://images.unsplash.com/photo-..."
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="image3">Afbeelding 3 URL</Label>
-                  <Input
-                    id="image3"
-                    name="image3"
-                    defaultValue={editingVehicle.images?.[2] || ''}
-                    className="bg-gray-800 border-gray-700"
-                    placeholder="https://images.unsplash.com/photo-..."
-                  />
-                </div>
-                <div className="p-4 bg-gray-800 rounded border border-gray-700">
-                  <h4 className="font-semibold mb-2">Hoe je goede afbeeldingen vindt:</h4>
-                  <ul className="text-sm text-gray-300 space-y-1">
-                    <li>1. Ga naar <a href="https://unsplash.com" target="_blank" className="text-yellow-400 hover:underline">Unsplash.com</a></li>
-                    <li>2. Zoek naar "Volkswagen Polo GTI white" of "VW Golf GTI red"</li>
-                    <li>3. Klik op een afbeelding en kopieer de URL</li>
-                    <li>4. Voeg ?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600 toe aan het einde</li>
-                  </ul>
-                </div>
-              </div>
-              <div className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  id="featured"
-                  name="featured"
-                  value="true"
-                  defaultChecked={editingVehicle.featured}
-                  className="rounded"
-                />
-                <Label htmlFor="featured">Uitgelicht</Label>
-              </div>
-              <div className="flex justify-end space-x-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setIsEditDialogOpen(false)}
-                  className="border-gray-700 text-white hover:bg-gray-800"
-                >
-                  Annuleren
-                </Button>
-                <Button
-                  type="submit"
-                  className="bg-yellow-500 hover:bg-yellow-600 text-black"
-                  disabled={updateVehicleMutation.isPending}
-                >
-                  {updateVehicleMutation.isPending ? "Opslaan..." : "Opslaan"}
-                </Button>
-              </div>
-            </form>
-          )}
-        </DialogContent>
-      </Dialog>
+      {/* Vehicle Forms */}
+      <VehicleForm 
+        vehicle={editingVehicle}
+        isOpen={isEditDialogOpen}
+        onClose={() => setIsEditDialogOpen(false)}
+        token={token!}
+      />
+      
+      <VehicleForm 
+        isOpen={isAddDialogOpen}
+        onClose={() => setIsAddDialogOpen(false)}
+        token={token!}
+      />
     </div>
   );
 }
