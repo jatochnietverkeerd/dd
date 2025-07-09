@@ -51,6 +51,9 @@ Preferred communication style: Simple, everyday language.
 - **Home**: Landing page with hero, features, vehicle showcase, about, and contact sections
 - **Aanbod**: Dedicated vehicle inventory page with filtering and sorting capabilities
 - **VehicleDetail**: Individual vehicle detail pages with comprehensive information, media, and inspection details
+- **OverOns**: Dedicated about page with storytelling, team profiles, testimonials, and partner logos
+- **AdminLogin**: Secure admin login page for dashboard access
+- **AdminDashboard**: Admin interface for vehicle and contact management
 
 ### UI Components
 - **VehicleCard**: Individual vehicle display with pricing and specs

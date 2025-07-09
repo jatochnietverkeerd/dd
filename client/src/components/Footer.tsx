@@ -63,12 +63,12 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <button
-                  onClick={() => scrollToSection('over-ons')}
+                <Link 
+                  href="/over-ons"
                   className="text-gray-400 hover:text-luxury-gold transition-colors duration-300"
                 >
                   Over Ons
-                </button>
+                </Link>
               </li>
               <li>
                 <button

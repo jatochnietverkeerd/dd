@@ -49,12 +49,12 @@ export default function Header() {
             <Link href="/aanbod" className="text-white hover:text-luxury-gold transition-colors duration-300">
               Aanbod
             </Link>
-            <button
-              onClick={() => scrollToSection('over-ons')}
+            <Link 
+              href="/over-ons" 
               className="text-white hover:text-luxury-gold transition-colors duration-300"
             >
               Over Ons
-            </button>
+            </Link>
             <button
               onClick={() => scrollToSection('contact')}
               className="text-white hover:text-luxury-gold transition-colors duration-300"
@@ -92,12 +92,13 @@ export default function Header() {
           >
             Aanbod
           </Link>
-          <button
-            onClick={() => scrollToSection('over-ons')}
+          <Link 
+            href="/over-ons" 
+            onClick={closeMobileMenu}
             className="text-2xl text-white hover:text-luxury-gold transition-colors duration-300"
           >
             Over Ons
-          </button>
+          </Link>
           <button
             onClick={() => scrollToSection('contact')}
             className="text-2xl text-white hover:text-luxury-gold transition-colors duration-300"

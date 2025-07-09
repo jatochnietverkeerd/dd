@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Home from "@/pages/Home";
 import Aanbod from "@/pages/Aanbod";
 import VehicleDetail from "@/pages/VehicleDetail";
+import OverOns from "@/pages/OverOns";
 import AdminLogin from "@/pages/AdminLogin";
 import AdminDashboard from "@/pages/AdminDashboard";
 import NotFound from "@/pages/not-found";
@@ -16,6 +17,7 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/aanbod" component={Aanbod} />
       <Route path="/vehicle/:id" component={VehicleDetail} />
+      <Route path="/over-ons" component={OverOns} />
       <Route path="/admin/login" component={AdminLogin} />
       <Route path="/admin/dashboard" component={AdminDashboard} />
       <Route component={NotFound} />
