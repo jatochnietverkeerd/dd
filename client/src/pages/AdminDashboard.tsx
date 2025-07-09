@@ -54,7 +54,7 @@ export default function AdminDashboard() {
 
   const logoutMutation = useMutation({
     mutationFn: async () => {
-      await apiRequest("/api/admin/logout", {
+      return await apiRequest("/api/admin/logout", {
         method: "POST",
         headers: authHeaders,
       });
@@ -74,7 +74,7 @@ export default function AdminDashboard() {
 
   const deleteVehicleMutation = useMutation({
     mutationFn: async (vehicleId: number) => {
-      await apiRequest(`/api/admin/vehicles/${vehicleId}`, {
+      return await apiRequest(`/api/admin/vehicles/${vehicleId}`, {
         method: "DELETE",
         headers: authHeaders,
       });
