@@ -94,6 +94,8 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
       queryClient.invalidateQueries({ queryKey: ["/api/admin/vehicles"] });
       queryClient.invalidateQueries({ queryKey: ["/api/vehicles"] });
       queryClient.invalidateQueries({ queryKey: ["/api/vehicles/featured"] });
+      // Clear all query cache to force refresh
+      queryClient.clear();
       toast({
         title: "Voertuig toegevoegd",
         description: "Het voertuig is succesvol toegevoegd.",
@@ -101,6 +103,10 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
       onClose();
       form.reset();
       setImages([]);
+      // Force page refresh to ensure cache is cleared
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
     },
     onError: () => {
       toast({
@@ -130,6 +136,10 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
         description: "Het voertuig is succesvol bijgewerkt.",
       });
       onClose();
+      // Force page refresh to ensure cache is cleared
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
     },
     onError: () => {
       toast({
