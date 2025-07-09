@@ -1,0 +1,106 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: hsl(0, 0%, 4%);
+  --foreground: hsl(0, 0%, 100%);
+  --muted: hsl(0, 0%, 16%);
+  --muted-foreground: hsl(0, 0%, 64%);
+  --popover: hsl(0, 0%, 16%);
+  --popover-foreground: hsl(0, 0%, 100%);
+  --card: hsl(0, 0%, 10%);
+  --card-foreground: hsl(0, 0%, 100%);
+  --border: hsl(0, 0%, 23%);
+  --input: hsl(0, 0%, 16%);
+  --primary: hsl(48, 72%, 49%);
+  --primary-foreground: hsl(0, 0%, 4%);
+  --secondary: hsl(0, 0%, 16%);
+  --secondary-foreground: hsl(0, 0%, 100%);
+  --accent: hsl(0, 0%, 16%);
+  --accent-foreground: hsl(0, 0%, 100%);
+  --destructive: hsl(0, 84%, 60%);
+  --destructive-foreground: hsl(0, 0%, 100%);
+  --ring: hsl(48, 72%, 49%);
+  --radius: 0.5rem;
+  --luxury-gold: hsl(48, 72%, 49%);
+  --dark-primary: hsl(0, 0%, 4%);
+  --dark-secondary: hsl(0, 0%, 10%);
+  --dark-tertiary: hsl(0, 0%, 16%);
+  --dark-quaternary: hsl(0, 0%, 23%);
+}
+
+.dark {
+  --background: hsl(0, 0%, 4%);
+  --foreground: hsl(0, 0%, 100%);
+  --muted: hsl(0, 0%, 16%);
+  --muted-foreground: hsl(0, 0%, 64%);
+  --popover: hsl(0, 0%, 16%);
+  --popover-foreground: hsl(0, 0%, 100%);
+  --card: hsl(0, 0%, 10%);
+  --card-foreground: hsl(0, 0%, 100%);
+  --border: hsl(0, 0%, 23%);
+  --input: hsl(0, 0%, 16%);
+  --primary: hsl(48, 72%, 49%);
+  --primary-foreground: hsl(0, 0%, 4%);
+  --secondary: hsl(0, 0%, 16%);
+  --secondary-foreground: hsl(0, 0%, 100%);
+  --accent: hsl(0, 0%, 16%);
+  --accent-foreground: hsl(0, 0%, 100%);
+  --destructive: hsl(0, 84%, 60%);
+  --destructive-foreground: hsl(0, 0%, 100%);
+  --ring: hsl(48, 72%, 49%);
+  --radius: 0.5rem;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer utilities {
+  .luxury-gold {
+    color: var(--luxury-gold);
+  }
+  
+  .bg-luxury-gold {
+    background-color: var(--luxury-gold);
+  }
+  
+  .border-luxury-gold {
+    border-color: var(--luxury-gold);
+  }
+  
+  .text-luxury-gold {
+    color: var(--luxury-gold);
+  }
+  
+  .bg-dark-primary {
+    background-color: var(--dark-primary);
+  }
+  
+  .bg-dark-secondary {
+    background-color: var(--dark-secondary);
+  }
+  
+  .bg-dark-tertiary {
+    background-color: var(--dark-tertiary);
+  }
+  
+  .bg-dark-quaternary {
+    background-color: var(--dark-quaternary);
+  }
+  
+  .text-dark-primary {
+    color: var(--dark-primary);
+  }
+}

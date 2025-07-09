@@ -1,0 +1,115 @@
+import { useState } from "react";
+import { Link, useLocation } from "wouter";
+import { Menu, X, Car } from "lucide-react";
+
+export default function Header() {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [location] = useLocation();
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false);
+  };
+
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      const headerHeight = 80;
+      const elementPosition = element.offsetTop - headerHeight;
+      window.scrollTo({
+        top: elementPosition,
+        behavior: 'smooth'
+      });
+    }
+    closeMobileMenu();
+  };
+
+  return (
+    <header className="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-dark-primary/90 backdrop-blur-md">
+      <nav className="container mx-auto px-4 py-4">
+        <div className="flex items-center justify-between">
+          {/* Logo */}
+          <Link href="/" className="flex items-center space-x-2">
+            <div className="w-8 h-8 bg-luxury-gold rounded-full flex items-center justify-center">
+              <Car className="text-dark-primary text-sm" size={16} />
+            </div>
+            <span className="text-xl font-bold text-white">
+              DD<span className="text-luxury-gold">Cars</span>
+            </span>
+          </Link>
+          
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-8">
+            <button
+              onClick={() => scrollToSection('home')}
+              className="text-white hover:text-luxury-gold transition-colors duration-300"
+            >
+              Home
+            </button>
+            <button
+              onClick={() => scrollToSection('aanbod')}
+              className="text-white hover:text-luxury-gold transition-colors duration-300"
+            >
+              Aanbod
+            </button>
+            <button
+              onClick={() => scrollToSection('over-ons')}
+              className="text-white hover:text-luxury-gold transition-colors duration-300"
+            >
+              Over Ons
+            </button>
+            <button
+              onClick={() => scrollToSection('contact')}
+              className="text-white hover:text-luxury-gold transition-colors duration-300"
+            >
+              Contact
+            </button>
+          </div>
+          
+          {/* Mobile Menu Button */}
+          <button
+            onClick={toggleMobileMenu}
+            className="md:hidden text-white hover:text-luxury-gold transition-colors duration-300"
+          >
+            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
+      </nav>
+      
+      {/* Mobile Navigation */}
+      <div className={`md:hidden fixed inset-0 bg-dark-primary/95 backdrop-blur-md transform transition-transform duration-300 z-40 ${
+        isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
+      }`}>
+        <div className="flex flex-col items-center justify-center h-full space-y-8">
+          <button
+            onClick={() => scrollToSection('home')}
+            className="text-2xl text-white hover:text-luxury-gold transition-colors duration-300"
+          >
+            Home
+          </button>
+          <button
+            onClick={() => scrollToSection('aanbod')}
+            className="text-2xl text-white hover:text-luxury-gold transition-colors duration-300"
+          >
+            Aanbod
+          </button>
+          <button
+            onClick={() => scrollToSection('over-ons')}
+            className="text-2xl text-white hover:text-luxury-gold transition-colors duration-300"
+          >
+            Over Ons
+          </button>
+          <button
+            onClick={() => scrollToSection('contact')}
+            className="text-2xl text-white hover:text-luxury-gold transition-colors duration-300"
+          >
+            Contact
+          </button>
+        </div>
+      </div>
+    </header>
+  );
+}
