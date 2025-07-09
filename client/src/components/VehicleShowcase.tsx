@@ -62,7 +62,11 @@ export default function VehicleShowcase() {
           {(() => {
             // Show featured vehicles first, then fill with recent non-featured vehicles if needed
             const featured = featuredVehicles || [];
-            const nonFeatured = allVehicles?.filter(v => !v.featured && v.available !== false && v.status !== 'gearchiveerd') || [];
+            const availableVehicles = allVehicles?.filter(v => 
+              (v.available !== false && v.status !== 'gearchiveerd' && v.status !== 'verkocht') || 
+              (!v.status || v.status === 'beschikbaar')
+            ) || [];
+            const nonFeatured = availableVehicles.filter(v => !v.featured);
             const displayVehicles = [...featured];
             
             // Add non-featured vehicles to fill up to 6 vehicles total

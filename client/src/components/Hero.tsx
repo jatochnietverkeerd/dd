@@ -28,7 +28,11 @@ export default function Hero() {
           src="/hero-cars.png"
           alt="Premium Voertuigen"
           className="w-full h-full object-cover object-center image-zoom"
-        />
+          onError={(e: any) => {
+            console.error('Hero image failed to load:', e);
+            e.target.src = "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080";
+          }}
+        /></LazyImage>
       </div>
 
       <div className="relative z-20 container mx-auto px-4 h-full flex items-center">
