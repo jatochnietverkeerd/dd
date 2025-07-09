@@ -153,7 +153,9 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
   const onSubmit = (data: VehicleFormData) => {
     const formDataWithImages = {
       ...data,
-      images: images
+      images: images,
+      // Ensure new vehicles are available by default
+      available: true
     };
     
     if (vehicle) {

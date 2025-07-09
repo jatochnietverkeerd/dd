@@ -504,7 +504,9 @@ export class MemStorage implements IStorage {
       id, 
       slug, 
       metaTitle, 
-      metaDescription 
+      metaDescription,
+      // Ensure new vehicles are available by default
+      available: insertVehicle.available !== undefined ? insertVehicle.available : true
     };
     
     this.vehicles.set(id, vehicle);
