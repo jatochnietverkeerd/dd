@@ -13,7 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
-import { LogOut, Car, Users, Plus, Edit, Trash2, Eye, CreditCard, Clock, CheckCircle, XCircle, Calculator, Download, FileText, TrendingUp } from "lucide-react";
+import { LogOut, Car, Users, Plus, Edit, Trash2, Eye, CreditCard, Clock, CheckCircle, XCircle, Calculator, Download, FileText, TrendingUp, Mail } from "lucide-react";
 import type { Vehicle, Contact, Reservation, Purchase, Sale } from "@shared/schema";
 
 export default function AdminDashboard() {
@@ -728,6 +728,47 @@ export default function AdminDashboard() {
                                   <p className="text-white">{purchase.notes}</p>
                                 </div>
                               )}
+                              <div className="mt-4 flex gap-2">
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => window.open(`/api/admin/invoices/purchase/${purchase.vehicleId}/pdf`, '_blank')}
+                                  className="border-gray-700 text-white hover:bg-gray-800"
+                                >
+                                  <Download className="w-4 h-4 mr-2" />
+                                  Download PDF
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => {
+                                    const email = prompt('Email adres voor factuur:');
+                                    if (email) {
+                                      fetch(`/api/admin/invoices/purchase/${purchase.vehicleId}/email`, {
+                                        method: 'POST',
+                                        headers: {
+                                          'Content-Type': 'application/json',
+                                          'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+                                        },
+                                        body: JSON.stringify({ email })
+                                      })
+                                      .then(res => res.json())
+                                      .then(data => {
+                                        if (data.message) {
+                                          alert('Email verzonden!');
+                                        } else {
+                                          alert('Fout bij verzenden email');
+                                        }
+                                      })
+                                      .catch(() => alert('Fout bij verzenden email'));
+                                    }
+                                  }}
+                                  className="border-gray-700 text-white hover:bg-gray-800"
+                                >
+                                  <Mail className="w-4 h-4 mr-2" />
+                                  Email PDF
+                                </Button>
+                              </div>
                             </CardContent>
                           </Card>
                         );
@@ -808,6 +849,47 @@ export default function AdminDashboard() {
                                   <p className="text-white">{sale.notes}</p>
                                 </div>
                               )}
+                              <div className="mt-4 flex gap-2">
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => window.open(`/api/admin/invoices/sale/${sale.vehicleId}/pdf`, '_blank')}
+                                  className="border-gray-700 text-white hover:bg-gray-800"
+                                >
+                                  <Download className="w-4 h-4 mr-2" />
+                                  Download PDF
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => {
+                                    const email = prompt('Email adres voor factuur:', sale.customerEmail);
+                                    if (email) {
+                                      fetch(`/api/admin/invoices/sale/${sale.vehicleId}/email`, {
+                                        method: 'POST',
+                                        headers: {
+                                          'Content-Type': 'application/json',
+                                          'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+                                        },
+                                        body: JSON.stringify({ email })
+                                      })
+                                      .then(res => res.json())
+                                      .then(data => {
+                                        if (data.message) {
+                                          alert('Email verzonden!');
+                                        } else {
+                                          alert('Fout bij verzenden email');
+                                        }
+                                      })
+                                      .catch(() => alert('Fout bij verzenden email'));
+                                    }
+                                  }}
+                                  className="border-gray-700 text-white hover:bg-gray-800"
+                                >
+                                  <Mail className="w-4 h-4 mr-2" />
+                                  Email PDF
+                                </Button>
+                              </div>
                             </CardContent>
                           </Card>
                         );

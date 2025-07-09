@@ -4,6 +4,8 @@ import { storage } from "./storage";
 import { insertContactSchema, insertVehicleSchema, insertReservationSchema, insertPurchaseSchema, insertSaleSchema } from "@shared/schema";
 import { z } from "zod";
 import crypto from "crypto";
+import { generateInvoicePDF, createInvoiceData } from "./pdfService";
+import { sendInvoiceEmail } from "./emailService";
 
 // Admin authentication middleware
 async function authenticateAdmin(req: any, res: any, next: any) {
@@ -598,6 +600,110 @@ Sitemap: ${baseUrl}/sitemap.xml`;
       res.send(csvContent);
     } catch (error) {
       res.status(500).json({ message: "Failed to export sales" });
+    }
+  });
+
+  // Individual Invoice PDF endpoints
+  app.get('/api/admin/invoices/purchase/:vehicleId/pdf', authenticateAdmin, async (req, res) => {
+    try {
+      const vehicleId = parseInt(req.params.vehicleId);
+      const vehicle = await storage.getVehicleById(vehicleId);
+      const purchase = await storage.getPurchaseByVehicleId(vehicleId);
+      
+      if (!vehicle || !purchase) {
+        return res.status(404).json({ error: 'Vehicle or purchase not found' });
+      }
+      
+      const invoiceData = createInvoiceData(vehicle, purchase);
+      const pdfBuffer = await generateInvoicePDF(invoiceData);
+      
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `attachment; filename=inkoop_${purchase.invoiceNumber}_${vehicle.brand}_${vehicle.model}.pdf`);
+      res.send(pdfBuffer);
+    } catch (error) {
+      console.error('Error generating purchase invoice PDF:', error);
+      res.status(500).json({ error: 'Failed to generate PDF' });
+    }
+  });
+
+  app.get('/api/admin/invoices/sale/:vehicleId/pdf', authenticateAdmin, async (req, res) => {
+    try {
+      const vehicleId = parseInt(req.params.vehicleId);
+      const vehicle = await storage.getVehicleById(vehicleId);
+      const sale = await storage.getSaleByVehicleId(vehicleId);
+      
+      if (!vehicle || !sale) {
+        return res.status(404).json({ error: 'Vehicle or sale not found' });
+      }
+      
+      const invoiceData = createInvoiceData(vehicle, undefined, sale);
+      const pdfBuffer = await generateInvoicePDF(invoiceData);
+      
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `attachment; filename=verkoop_${sale.invoiceNumber}_${vehicle.brand}_${vehicle.model}.pdf`);
+      res.send(pdfBuffer);
+    } catch (error) {
+      console.error('Error generating sale invoice PDF:', error);
+      res.status(500).json({ error: 'Failed to generate PDF' });
+    }
+  });
+
+  // Email Invoice endpoints
+  app.post('/api/admin/invoices/purchase/:vehicleId/email', authenticateAdmin, async (req, res) => {
+    try {
+      const vehicleId = parseInt(req.params.vehicleId);
+      const { email } = req.body;
+      
+      if (!email) {
+        return res.status(400).json({ error: 'Email address is required' });
+      }
+      
+      const vehicle = await storage.getVehicleById(vehicleId);
+      const purchase = await storage.getPurchaseByVehicleId(vehicleId);
+      
+      if (!vehicle || !purchase) {
+        return res.status(404).json({ error: 'Vehicle or purchase not found' });
+      }
+      
+      const success = await sendInvoiceEmail(email, vehicle, purchase);
+      
+      if (success) {
+        res.json({ message: 'Invoice email sent successfully' });
+      } else {
+        res.status(500).json({ error: 'Failed to send invoice email' });
+      }
+    } catch (error) {
+      console.error('Error sending purchase invoice email:', error);
+      res.status(500).json({ error: 'Failed to send email' });
+    }
+  });
+
+  app.post('/api/admin/invoices/sale/:vehicleId/email', authenticateAdmin, async (req, res) => {
+    try {
+      const vehicleId = parseInt(req.params.vehicleId);
+      const { email } = req.body;
+      
+      if (!email) {
+        return res.status(400).json({ error: 'Email address is required' });
+      }
+      
+      const vehicle = await storage.getVehicleById(vehicleId);
+      const sale = await storage.getSaleByVehicleId(vehicleId);
+      
+      if (!vehicle || !sale) {
+        return res.status(404).json({ error: 'Vehicle or sale not found' });
+      }
+      
+      const success = await sendInvoiceEmail(email, vehicle, undefined, sale);
+      
+      if (success) {
+        res.json({ message: 'Invoice email sent successfully' });
+      } else {
+        res.status(500).json({ error: 'Failed to send invoice email' });
+      }
+    } catch (error) {
+      console.error('Error sending sale invoice email:', error);
+      res.status(500).json({ error: 'Failed to send email' });
     }
   });
 

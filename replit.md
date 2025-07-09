@@ -175,3 +175,31 @@ The application uses a modern, type-safe architecture with excellent developer e
 - **Core Web Vitals**: Optimized loading performance
 - **Lighthouse**: SEO score improvements through technical optimizations
 - **Page Speed**: Reduced initial load times through lazy loading and image optimization
+
+## Individual Invoice System (Latest Update - July 2025)
+
+### Invoice Generation Features
+- **PDF Generation**: Professional invoice PDFs using Puppeteer and Handlebars templates
+- **Individual Car Invoices**: Each vehicle can generate separate purchase or sale invoices
+- **Professional Layout**: Luxury-themed invoice design with company branding
+- **Automatic Calculations**: VAT, subtotals, and total amounts calculated automatically
+- **Dynamic Content**: Invoice data populated from database records
+
+### Email Integration
+- **Direct Email Sending**: Invoices can be emailed directly from admin interface
+- **HTML Email Templates**: Professional email templates with embedded vehicle details
+- **Attachment Support**: PDF invoices automatically attached to emails
+- **Development Mode**: Email simulation for testing without actual email sending
+
+### Admin Interface Features
+- **Download Buttons**: Direct PDF download for each purchase/sale record
+- **Email Buttons**: One-click email sending with prompt for recipient address
+- **Pre-filled Data**: Customer email addresses pre-populated for sales invoices
+- **Real-time Feedback**: Success/error messages for all invoice operations
+
+### Technical Implementation
+- **Puppeteer**: Headless Chrome for PDF generation
+- **Handlebars**: Template engine for dynamic invoice content
+- **Nodemailer**: Email service for invoice delivery
+- **Professional Templates**: Custom CSS styling for luxury appearance
+- **Error Handling**: Comprehensive error handling for all invoice operations
