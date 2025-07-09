@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Upload, X, ImageIcon } from 'lucide-react';
@@ -33,6 +33,16 @@ export default function ImageUploader({
       isUploaded: true
     }))
   );
+
+  // Update images when initialImages changes
+  useEffect(() => {
+    setImages(initialImages.map((url, index) => ({
+      id: `initial-${index}`,
+      url,
+      preview: url,
+      isUploaded: true
+    })));
+  }, [initialImages]);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const { toast } = useToast();
 

@@ -318,6 +318,7 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
 
           <div>
             <ImageUploader
+              key={vehicle?.id || 'new'}
               initialImages={images}
               onImagesChange={setImages}
               maxImages={20}
