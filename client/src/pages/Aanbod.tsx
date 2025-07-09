@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Search, Filter, Gauge, Fuel, Calendar, Euro } from "lucide-react";
+import { Link } from "wouter";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import type { Vehicle } from "@shared/schema";
@@ -238,9 +239,11 @@ export default function Aanbod() {
                     </Badge>
                   </div>
                   
-                  <Button className="w-full bg-luxury-gold text-dark-primary hover:bg-white transition-all duration-300 rounded-full font-semibold group-hover:shadow-lg">
-                    Details Bekijken
-                  </Button>
+                  <Link href={`/vehicle/${vehicle.id}`}>
+                    <Button className="w-full bg-luxury-gold text-dark-primary hover:bg-white transition-all duration-300 rounded-full font-semibold group-hover:shadow-lg">
+                      Details Bekijken
+                    </Button>
+                  </Link>
                 </CardContent>
               </Card>
             ))}

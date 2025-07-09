@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Gauge, Fuel } from "lucide-react";
+import { Link } from "wouter";
 import type { Vehicle } from "@shared/schema";
 
 interface VehicleCardProps {
@@ -47,9 +48,11 @@ export default function VehicleCard({ vehicle }: VehicleCardProps) {
             {vehicle.fuel}
           </span>
         </div>
-        <Button className="w-full bg-luxury-gold text-dark-primary hover:bg-white transition-colors duration-300 rounded-full font-semibold">
-          Meer Details
-        </Button>
+        <Link href={`/vehicle/${vehicle.id}`}>
+          <Button className="w-full bg-luxury-gold text-dark-primary hover:bg-white transition-colors duration-300 rounded-full font-semibold">
+            Meer Details
+          </Button>
+        </Link>
       </CardContent>
     </Card>
   );

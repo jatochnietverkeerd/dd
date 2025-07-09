@@ -14,8 +14,18 @@ export const vehicles = pgTable("vehicles", {
   color: text("color").notNull(),
   description: text("description"),
   imageUrl: text("image_url"),
+  images: text("images").array(),
   featured: boolean("featured").default(false),
   available: boolean("available").default(true),
+  power: text("power"),
+  chassisNumber: text("chassis_number"),
+  napCheck: text("nap_check"),
+  inspectionReport: text("inspection_report"),
+  maintenanceHistory: text("maintenance_history"),
+  options: text("options").array(),
+  story: text("story"),
+  videoUrl: text("video_url"),
+  view360Url: text("view_360_url"),
 });
 
 export const contacts = pgTable("contacts", {
