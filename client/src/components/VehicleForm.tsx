@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -58,14 +58,36 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
       status: vehicle?.status || "beschikbaar",
       images: vehicle?.images || [],
     },
+    mode: "onChange",
   });
+
+  // Reset form when vehicle changes or dialog opens
+  useEffect(() => {
+    if (isOpen) {
+      form.reset({
+        brand: vehicle?.brand || "",
+        model: vehicle?.model || "",
+        year: vehicle?.year || new Date().getFullYear(),
+        price: vehicle?.price || 0,
+        mileage: vehicle?.mileage || 0,
+        fuel: vehicle?.fuel || "benzine",
+        transmission: vehicle?.transmission || "handgeschakeld",
+        color: vehicle?.color || "",
+        description: vehicle?.description || "",
+        featured: vehicle?.featured || false,
+        status: vehicle?.status || "beschikbaar",
+        images: vehicle?.images || [],
+      });
+      setImages(vehicle?.images || []);
+    }
+  }, [vehicle, isOpen, form]);
 
   const createVehicleMutation = useMutation({
     mutationFn: async (data: VehicleFormData) => {
       return await apiRequest("/api/admin/vehicles", {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
-        body: { ...data, images },
+        body: data,
       });
     },
     onSuccess: () => {
@@ -92,7 +114,7 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
       return await apiRequest(`/api/admin/vehicles/${vehicle!.id}`, {
         method: "PUT",
         headers: { Authorization: `Bearer ${token}` },
-        body: { ...data, images },
+        body: data,
       });
     },
     onSuccess: () => {
@@ -117,10 +139,15 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
     console.log('Form errors:', form.formState.errors);
     console.log('Images:', images);
     
+    const formDataWithImages = {
+      ...data,
+      images: images
+    };
+    
     if (vehicle) {
-      updateVehicleMutation.mutate(data);
+      updateVehicleMutation.mutate(formDataWithImages);
     } else {
-      createVehicleMutation.mutate(data);
+      createVehicleMutation.mutate(formDataWithImages);
     }
   };
 
