@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, boolean, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, timestamp, decimal } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -71,6 +71,40 @@ export const reservations = pgTable("reservations", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Inkoop registratie
+export const purchases = pgTable("purchases", {
+  id: serial("id").primaryKey(),
+  vehicleId: integer("vehicle_id").references(() => vehicles.id).notNull(),
+  purchasePrice: decimal("purchase_price", { precision: 10, scale: 2 }).notNull(),
+  supplier: text("supplier").notNull(),
+  invoiceNumber: text("invoice_number").notNull(),
+  purchaseDate: timestamp("purchase_date").notNull(),
+  transportCost: decimal("transport_cost", { precision: 10, scale: 2 }).default("0.00"),
+  maintenanceCost: decimal("maintenance_cost", { precision: 10, scale: 2 }).default("0.00"),
+  cleaningCost: decimal("cleaning_cost", { precision: 10, scale: 2 }).default("0.00"),
+  otherCosts: decimal("other_costs", { precision: 10, scale: 2 }).default("0.00"),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Verkoop registratie
+export const sales = pgTable("sales", {
+  id: serial("id").primaryKey(),
+  vehicleId: integer("vehicle_id").references(() => vehicles.id).notNull(),
+  purchaseId: integer("purchase_id").references(() => purchases.id),
+  salePrice: decimal("sale_price", { precision: 10, scale: 2 }).notNull(),
+  customerName: text("customer_name").notNull(),
+  customerEmail: text("customer_email").notNull(),
+  customerPhone: text("customer_phone").notNull(),
+  customerAddress: text("customer_address").notNull(),
+  discount: decimal("discount", { precision: 10, scale: 2 }).default("0.00"),
+  vatRate: decimal("vat_rate", { precision: 5, scale: 2 }).default("21.00"), // BTW percentage
+  saleDate: timestamp("sale_date").notNull(),
+  invoiceNumber: text("invoice_number").notNull(),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 export const insertVehicleSchema = createInsertSchema(vehicles).omit({
   id: true,
 });
@@ -94,6 +128,16 @@ export const insertReservationSchema = createInsertSchema(reservations).omit({
   createdAt: true,
 });
 
+export const insertPurchaseSchema = createInsertSchema(purchases).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertSaleSchema = createInsertSchema(sales).omit({
+  id: true,
+  createdAt: true,
+});
+
 export type Vehicle = typeof vehicles.$inferSelect;
 export type InsertVehicle = z.infer<typeof insertVehicleSchema>;
 export type Contact = typeof contacts.$inferSelect;
@@ -104,3 +148,7 @@ export type AdminSession = typeof adminSessions.$inferSelect;
 export type InsertAdminSession = z.infer<typeof insertAdminSessionSchema>;
 export type Reservation = typeof reservations.$inferSelect;
 export type InsertReservation = z.infer<typeof insertReservationSchema>;
+export type Purchase = typeof purchases.$inferSelect;
+export type InsertPurchase = z.infer<typeof insertPurchaseSchema>;
+export type Sale = typeof sales.$inferSelect;
+export type InsertSale = z.infer<typeof insertSaleSchema>;

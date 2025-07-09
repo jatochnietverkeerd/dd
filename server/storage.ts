@@ -1,4 +1,4 @@
-import { vehicles, contacts, users, adminSessions, reservations, type Vehicle, type InsertVehicle, type Contact, type InsertContact, type User, type InsertUser, type AdminSession, type InsertAdminSession, type Reservation, type InsertReservation } from "@shared/schema";
+import { vehicles, contacts, users, adminSessions, reservations, purchases, sales, type Vehicle, type InsertVehicle, type Contact, type InsertContact, type User, type InsertUser, type AdminSession, type InsertAdminSession, type Reservation, type InsertReservation, type Purchase, type InsertPurchase, type Sale, type InsertSale } from "@shared/schema";
 import { generateSlug, generateMetaTitle, generateMetaDescription } from "@shared/utils";
 
 export interface IStorage {
@@ -32,6 +32,30 @@ export interface IStorage {
   getReservations(): Promise<Reservation[]>;
   getReservationsByVehicle(vehicleId: number): Promise<Reservation[]>;
   updateReservation(id: number, updates: Partial<InsertReservation>): Promise<Reservation | undefined>;
+  
+  // Purchase operations
+  createPurchase(purchase: InsertPurchase): Promise<Purchase>;
+  getPurchases(): Promise<Purchase[]>;
+  getPurchaseByVehicleId(vehicleId: number): Promise<Purchase | undefined>;
+  updatePurchase(id: number, updates: Partial<InsertPurchase>): Promise<Purchase | undefined>;
+  deletePurchase(id: number): Promise<boolean>;
+  
+  // Sale operations
+  createSale(sale: InsertSale): Promise<Sale>;
+  getSales(): Promise<Sale[]>;
+  getSaleByVehicleId(vehicleId: number): Promise<Sale | undefined>;
+  updateSale(id: number, updates: Partial<InsertSale>): Promise<Sale | undefined>;
+  deleteSale(id: number): Promise<boolean>;
+  
+  // Financial reports
+  getFinancialOverview(year?: number, month?: number): Promise<{
+    totalRevenue: number;
+    totalPurchases: number;
+    totalProfit: number;
+    vatCollected: number;
+    vehiclesSold: number;
+    vehiclesPurchased: number;
+  }>;
 }
 
 export class MemStorage implements IStorage {
@@ -40,11 +64,15 @@ export class MemStorage implements IStorage {
   private users: Map<number, User>;
   private adminSessions: Map<string, AdminSession>;
   private reservations: Map<number, Reservation>;
+  private purchases: Map<number, Purchase>;
+  private sales: Map<number, Sale>;
   private currentVehicleId: number;
   private currentContactId: number;
   private currentUserId: number;
   private currentSessionId: number;
   private currentReservationId: number;
+  private currentPurchaseId: number;
+  private currentSaleId: number;
 
   constructor() {
     this.vehicles = new Map();
@@ -52,15 +80,21 @@ export class MemStorage implements IStorage {
     this.users = new Map();
     this.adminSessions = new Map();
     this.reservations = new Map();
+    this.purchases = new Map();
+    this.sales = new Map();
     this.currentVehicleId = 1;
     this.currentContactId = 1;
     this.currentUserId = 1;
     this.currentSessionId = 1;
     this.currentReservationId = 1;
+    this.currentPurchaseId = 1;
+    this.currentSaleId = 1;
     
     // Initialize with sample premium vehicles and admin user
     this.initializeSampleVehicles();
     this.initializeAdminUser();
+    this.initializeSamplePurchases();
+    this.initializeSampleSales();
   }
 
   private initializeSampleVehicles() {
@@ -273,6 +307,96 @@ export class MemStorage implements IStorage {
     });
   }
 
+  private initializeSamplePurchases() {
+    const samplePurchases: Purchase[] = [
+      {
+        id: 1,
+        vehicleId: 1,
+        purchasePrice: 35000,
+        supplier: "Auto Handel B.V.",
+        invoiceNumber: "INV-2024-001",
+        purchaseDate: new Date("2024-01-15"),
+        transportCost: 250,
+        maintenanceCost: 500,
+        cleaningCost: 150,
+        otherCosts: 100,
+        notes: "Eerste inkoop BMW 5 Serie",
+        createdAt: new Date("2024-01-15")
+      },
+      {
+        id: 2,
+        vehicleId: 2,
+        purchasePrice: 28000,
+        supplier: "Premium Cars Import",
+        invoiceNumber: "INV-2024-002",
+        purchaseDate: new Date("2024-01-20"),
+        transportCost: 300,
+        maintenanceCost: 750,
+        cleaningCost: 200,
+        otherCosts: 150,
+        notes: "Mercedes C-Klasse inkoop",
+        createdAt: new Date("2024-01-20")
+      },
+      {
+        id: 3,
+        vehicleId: 3,
+        purchasePrice: 42000,
+        supplier: "Luxury Auto Trading",
+        invoiceNumber: "INV-2024-003",
+        purchaseDate: new Date("2024-02-01"),
+        transportCost: 400,
+        maintenanceCost: 1200,
+        cleaningCost: 300,
+        otherCosts: 200,
+        notes: "Audi A6 Avant quattro",
+        createdAt: new Date("2024-02-01")
+      }
+    ];
+
+    samplePurchases.forEach(purchase => {
+      this.purchases.set(purchase.id, purchase);
+    });
+    this.currentPurchaseId = 4;
+  }
+
+  private initializeSampleSales() {
+    const sampleSales: Sale[] = [
+      {
+        id: 1,
+        vehicleId: 1,
+        salePrice: 45000,
+        customerName: "Jan de Vries",
+        customerEmail: "jan@example.com",
+        customerPhone: "06-12345678",
+        discount: 1000,
+        vatRate: 21,
+        saleDate: new Date("2024-02-15"),
+        invoiceNumber: "FACT-2024-001",
+        notes: "Eerste verkoop dit jaar",
+        createdAt: new Date("2024-02-15")
+      },
+      {
+        id: 2,
+        vehicleId: 2,
+        salePrice: 38000,
+        customerName: "Maria Jansen",
+        customerEmail: "maria@example.com",
+        customerPhone: "06-87654321",
+        discount: 500,
+        vatRate: 21,
+        saleDate: new Date("2024-02-28"),
+        invoiceNumber: "FACT-2024-002",
+        notes: "Snelle verkoop Mercedes",
+        createdAt: new Date("2024-02-28")
+      }
+    ];
+
+    sampleSales.forEach(sale => {
+      this.sales.set(sale.id, sale);
+    });
+    this.currentSaleId = 3;
+  }
+
   async getVehicles(): Promise<Vehicle[]> {
     return Array.from(this.vehicles.values()).filter(v => v.available);
   }
@@ -429,6 +553,137 @@ export class MemStorage implements IStorage {
     const updatedReservation: Reservation = { ...existingReservation, ...updates };
     this.reservations.set(id, updatedReservation);
     return updatedReservation;
+  }
+
+  // Purchase operations
+  async createPurchase(insertPurchase: InsertPurchase): Promise<Purchase> {
+    const id = this.currentPurchaseId++;
+    const purchase: Purchase = { 
+      ...insertPurchase, 
+      id,
+      createdAt: new Date()
+    };
+    this.purchases.set(id, purchase);
+    return purchase;
+  }
+
+  async getPurchases(): Promise<Purchase[]> {
+    return Array.from(this.purchases.values());
+  }
+
+  async getPurchaseByVehicleId(vehicleId: number): Promise<Purchase | undefined> {
+    return Array.from(this.purchases.values()).find(p => p.vehicleId === vehicleId);
+  }
+
+  async updatePurchase(id: number, updates: Partial<InsertPurchase>): Promise<Purchase | undefined> {
+    const existingPurchase = this.purchases.get(id);
+    if (!existingPurchase) {
+      return undefined;
+    }
+    const updatedPurchase: Purchase = { ...existingPurchase, ...updates };
+    this.purchases.set(id, updatedPurchase);
+    return updatedPurchase;
+  }
+
+  async deletePurchase(id: number): Promise<boolean> {
+    return this.purchases.delete(id);
+  }
+
+  // Sale operations
+  async createSale(insertSale: InsertSale): Promise<Sale> {
+    const id = this.currentSaleId++;
+    const sale: Sale = { 
+      ...insertSale, 
+      id,
+      createdAt: new Date()
+    };
+    this.sales.set(id, sale);
+    return sale;
+  }
+
+  async getSales(): Promise<Sale[]> {
+    return Array.from(this.sales.values());
+  }
+
+  async getSaleByVehicleId(vehicleId: number): Promise<Sale | undefined> {
+    return Array.from(this.sales.values()).find(s => s.vehicleId === vehicleId);
+  }
+
+  async updateSale(id: number, updates: Partial<InsertSale>): Promise<Sale | undefined> {
+    const existingSale = this.sales.get(id);
+    if (!existingSale) {
+      return undefined;
+    }
+    const updatedSale: Sale = { ...existingSale, ...updates };
+    this.sales.set(id, updatedSale);
+    return updatedSale;
+  }
+
+  async deleteSale(id: number): Promise<boolean> {
+    return this.sales.delete(id);
+  }
+
+  // Financial reports
+  async getFinancialOverview(year?: number, month?: number): Promise<{
+    totalRevenue: number;
+    totalPurchases: number;
+    totalProfit: number;
+    vatCollected: number;
+    vehiclesSold: number;
+    vehiclesPurchased: number;
+  }> {
+    const currentYear = year || new Date().getFullYear();
+    const currentMonth = month;
+
+    const salesData = Array.from(this.sales.values()).filter(sale => {
+      const saleDate = new Date(sale.saleDate);
+      const saleYear = saleDate.getFullYear();
+      const saleMonth = saleDate.getMonth() + 1;
+      
+      if (currentMonth) {
+        return saleYear === currentYear && saleMonth === currentMonth;
+      }
+      return saleYear === currentYear;
+    });
+
+    const purchaseData = Array.from(this.purchases.values()).filter(purchase => {
+      const purchaseDate = new Date(purchase.purchaseDate);
+      const purchaseYear = purchaseDate.getFullYear();
+      const purchaseMonth = purchaseDate.getMonth() + 1;
+      
+      if (currentMonth) {
+        return purchaseYear === currentYear && purchaseMonth === currentMonth;
+      }
+      return purchaseYear === currentYear;
+    });
+
+    const totalRevenue = salesData.reduce((sum, sale) => {
+      return sum + (parseFloat(sale.salePrice) - parseFloat(sale.discount));
+    }, 0);
+
+    const totalPurchases = purchaseData.reduce((sum, purchase) => {
+      return sum + parseFloat(purchase.purchasePrice) + 
+             parseFloat(purchase.transportCost) + 
+             parseFloat(purchase.maintenanceCost) + 
+             parseFloat(purchase.cleaningCost) + 
+             parseFloat(purchase.otherCosts);
+    }, 0);
+
+    const vatCollected = salesData.reduce((sum, sale) => {
+      const netAmount = parseFloat(sale.salePrice) - parseFloat(sale.discount);
+      return sum + (netAmount * parseFloat(sale.vatRate) / 100);
+    }, 0);
+
+    const totalProfit = totalRevenue - totalPurchases;
+
+    return {
+      totalRevenue,
+      totalPurchases,
+      totalProfit,
+      vatCollected,
+      vehiclesSold: salesData.length,
+      vehiclesPurchased: purchaseData.length,
+    };
   }
 }
 

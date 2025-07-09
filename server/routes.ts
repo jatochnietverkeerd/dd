@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertContactSchema, insertVehicleSchema, insertReservationSchema } from "@shared/schema";
+import { insertContactSchema, insertVehicleSchema, insertReservationSchema, insertPurchaseSchema, insertSaleSchema } from "@shared/schema";
 import { z } from "zod";
 import crypto from "crypto";
 
@@ -390,6 +390,214 @@ Sitemap: ${baseUrl}/sitemap.xml`;
       });
     } catch (error) {
       res.status(500).json({ message: "Failed to create payment intent" });
+    }
+  });
+
+  // Purchase routes (Inkoop registratie)
+  app.post("/api/admin/purchases", authenticateAdmin, async (req, res) => {
+    try {
+      const validatedData = insertPurchaseSchema.parse(req.body);
+      const purchase = await storage.createPurchase(validatedData);
+      res.json(purchase);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid purchase data", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to create purchase" });
+    }
+  });
+
+  app.get("/api/admin/purchases", authenticateAdmin, async (req, res) => {
+    try {
+      const purchases = await storage.getPurchases();
+      res.json(purchases);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch purchases" });
+    }
+  });
+
+  app.get("/api/admin/purchases/vehicle/:vehicleId", authenticateAdmin, async (req, res) => {
+    try {
+      const vehicleId = parseInt(req.params.vehicleId);
+      if (isNaN(vehicleId)) {
+        return res.status(400).json({ message: "Invalid vehicle ID" });
+      }
+      
+      const purchase = await storage.getPurchaseByVehicleId(vehicleId);
+      res.json(purchase);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch purchase" });
+    }
+  });
+
+  app.put("/api/admin/purchases/:id", authenticateAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid purchase ID" });
+      }
+
+      const validatedData = insertPurchaseSchema.partial().parse(req.body);
+      const purchase = await storage.updatePurchase(id, validatedData);
+      
+      if (!purchase) {
+        return res.status(404).json({ message: "Purchase not found" });
+      }
+
+      res.json(purchase);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid purchase data", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to update purchase" });
+    }
+  });
+
+  app.delete("/api/admin/purchases/:id", authenticateAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid purchase ID" });
+      }
+
+      const deleted = await storage.deletePurchase(id);
+      if (!deleted) {
+        return res.status(404).json({ message: "Purchase not found" });
+      }
+
+      res.json({ message: "Purchase deleted successfully" });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete purchase" });
+    }
+  });
+
+  // Sale routes (Verkoop registratie)
+  app.post("/api/admin/sales", authenticateAdmin, async (req, res) => {
+    try {
+      const validatedData = insertSaleSchema.parse(req.body);
+      const sale = await storage.createSale(validatedData);
+      res.json(sale);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid sale data", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to create sale" });
+    }
+  });
+
+  app.get("/api/admin/sales", authenticateAdmin, async (req, res) => {
+    try {
+      const sales = await storage.getSales();
+      res.json(sales);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch sales" });
+    }
+  });
+
+  app.get("/api/admin/sales/vehicle/:vehicleId", authenticateAdmin, async (req, res) => {
+    try {
+      const vehicleId = parseInt(req.params.vehicleId);
+      if (isNaN(vehicleId)) {
+        return res.status(400).json({ message: "Invalid vehicle ID" });
+      }
+      
+      const sale = await storage.getSaleByVehicleId(vehicleId);
+      res.json(sale);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch sale" });
+    }
+  });
+
+  app.put("/api/admin/sales/:id", authenticateAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid sale ID" });
+      }
+
+      const validatedData = insertSaleSchema.partial().parse(req.body);
+      const sale = await storage.updateSale(id, validatedData);
+      
+      if (!sale) {
+        return res.status(404).json({ message: "Sale not found" });
+      }
+
+      res.json(sale);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid sale data", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to update sale" });
+    }
+  });
+
+  app.delete("/api/admin/sales/:id", authenticateAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid sale ID" });
+      }
+
+      const deleted = await storage.deleteSale(id);
+      if (!deleted) {
+        return res.status(404).json({ message: "Sale not found" });
+      }
+
+      res.json({ message: "Sale deleted successfully" });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete sale" });
+    }
+  });
+
+  // Financial overview routes
+  app.get("/api/admin/financial-overview", authenticateAdmin, async (req, res) => {
+    try {
+      const year = req.query.year ? parseInt(req.query.year as string) : undefined;
+      const month = req.query.month ? parseInt(req.query.month as string) : undefined;
+      
+      const overview = await storage.getFinancialOverview(year, month);
+      res.json(overview);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch financial overview" });
+    }
+  });
+
+  // Export routes
+  app.get("/api/admin/export/purchases", authenticateAdmin, async (req, res) => {
+    try {
+      const purchases = await storage.getPurchases();
+      
+      // Create CSV content
+      const csvHeaders = "ID,Vehicle ID,Purchase Price,Supplier,Invoice Number,Purchase Date,Transport Cost,Maintenance Cost,Cleaning Cost,Other Costs,Notes,Created At";
+      const csvRows = purchases.map(p => 
+        `${p.id},${p.vehicleId},"${p.purchasePrice}","${p.supplier}","${p.invoiceNumber}","${p.purchaseDate}","${p.transportCost}","${p.maintenanceCost}","${p.cleaningCost}","${p.otherCosts}","${p.notes || ''}","${p.createdAt}"`
+      );
+      const csvContent = [csvHeaders, ...csvRows].join('\n');
+      
+      res.setHeader('Content-Type', 'text/csv');
+      res.setHeader('Content-Disposition', 'attachment; filename="purchases.csv"');
+      res.send(csvContent);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to export purchases" });
+    }
+  });
+
+  app.get("/api/admin/export/sales", authenticateAdmin, async (req, res) => {
+    try {
+      const sales = await storage.getSales();
+      
+      // Create CSV content
+      const csvHeaders = "ID,Vehicle ID,Sale Price,Customer Name,Customer Email,Customer Phone,Discount,VAT Rate,Sale Date,Invoice Number,Notes,Created At";
+      const csvRows = sales.map(s => 
+        `${s.id},${s.vehicleId},"${s.salePrice}","${s.customerName}","${s.customerEmail}","${s.customerPhone}","${s.discount}","${s.vatRate}","${s.saleDate}","${s.invoiceNumber}","${s.notes || ''}","${s.createdAt}"`
+      );
+      const csvContent = [csvHeaders, ...csvRows].join('\n');
+      
+      res.setHeader('Content-Type', 'text/csv');
+      res.setHeader('Content-Disposition', 'attachment; filename="sales.csv"');
+      res.send(csvContent);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to export sales" });
     }
   });
 
