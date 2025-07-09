@@ -16,12 +16,14 @@ interface ImageUploaderProps {
   initialImages?: string[];
   onImagesChange: (images: string[]) => void;
   maxImages?: number;
+  token?: string;
 }
 
 export default function ImageUploader({ 
   initialImages = [], 
   onImagesChange, 
-  maxImages = 10 
+  maxImages = 10,
+  token 
 }: ImageUploaderProps) {
   const [images, setImages] = useState<ImageFile[]>(() => 
     initialImages.map((url, index) => ({
@@ -39,19 +41,27 @@ export default function ImageUploader({
     formData.append('image', file);
 
     try {
+      const headers: HeadersInit = {};
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
       const response = await fetch('/api/upload/image', {
         method: 'POST',
         body: formData,
+        headers,
       });
 
       if (!response.ok) {
-        throw new Error('Upload failed');
+        const errorData = await response.json().catch(() => ({ message: 'Upload failed' }));
+        throw new Error(errorData.message || 'Upload failed');
       }
 
       const data = await response.json();
       return data.url;
     } catch (error) {
-      throw new Error('Failed to upload image');
+      console.error('Upload error:', error);
+      throw error;
     }
   };
 
@@ -101,6 +111,7 @@ export default function ImageUploader({
             : img
         ));
       } catch (error) {
+        console.error('Upload error:', error);
         toast({
           title: "Upload fout",
           description: `Kon afbeelding niet uploaden: ${imageFile.file?.name}`,

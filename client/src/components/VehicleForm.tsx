@@ -278,6 +278,7 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
               initialImages={images}
               onImagesChange={setImages}
               maxImages={20}
+              token={token}
             />
           </div>
 
