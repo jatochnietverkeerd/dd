@@ -126,7 +126,7 @@ export default function Aanbod() {
                 </SelectTrigger>
                 <SelectContent className="bg-dark-tertiary border-dark-quaternary">
                   <SelectItem value="all">Alle merken</SelectItem>
-                  {uniqueBrands.map(brand => (
+                  {uniqueBrands.filter(brand => brand && brand.trim()).map(brand => (
                     <SelectItem key={brand} value={brand}>{brand}</SelectItem>
                   ))}
                 </SelectContent>
@@ -138,7 +138,7 @@ export default function Aanbod() {
                 </SelectTrigger>
                 <SelectContent className="bg-dark-tertiary border-dark-quaternary">
                   <SelectItem value="all">Alle brandstoffen</SelectItem>
-                  {uniqueFuels.map(fuel => (
+                  {uniqueFuels.filter(fuel => fuel && fuel.trim()).map(fuel => (
                     <SelectItem key={fuel} value={fuel}>{fuel}</SelectItem>
                   ))}
                 </SelectContent>

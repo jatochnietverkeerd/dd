@@ -34,6 +34,8 @@ export default function ImageUploader({
     }))
   );
 
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+  
   // Update images when initialImages changes
   useEffect(() => {
     setImages(initialImages.map((url, index) => ({
@@ -43,7 +45,6 @@ export default function ImageUploader({
       isUploaded: true
     })));
   }, [initialImages]);
-  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const { toast } = useToast();
 
   const updateParent = useCallback((newImages: ImageFile[]) => {
