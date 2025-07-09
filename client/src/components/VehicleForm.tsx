@@ -232,7 +232,7 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
 
             <div>
               <Label htmlFor="fuel">Brandstof</Label>
-              <Select value={form.watch("fuel")} onValueChange={(value) => form.setValue("fuel", value)}>
+              <Select value={form.watch("fuel")} onValueChange={(value) => form.setValue("fuel", value, { shouldValidate: true })}>
                 <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
                   <SelectValue placeholder="Selecteer brandstof" />
                 </SelectTrigger>
@@ -243,11 +243,14 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
                   <SelectItem value="elektrisch">Elektrisch</SelectItem>
                 </SelectContent>
               </Select>
+              {form.formState.errors.fuel && (
+                <p className="text-red-400 text-sm mt-1">{form.formState.errors.fuel.message}</p>
+              )}
             </div>
 
             <div>
               <Label htmlFor="transmission">Transmissie</Label>
-              <Select value={form.watch("transmission")} onValueChange={(value) => form.setValue("transmission", value)}>
+              <Select value={form.watch("transmission")} onValueChange={(value) => form.setValue("transmission", value, { shouldValidate: true })}>
                 <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
                   <SelectValue placeholder="Selecteer transmissie" />
                 </SelectTrigger>
@@ -257,6 +260,9 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
                   <SelectItem value="semi-automaat">Semi-automaat</SelectItem>
                 </SelectContent>
               </Select>
+              {form.formState.errors.transmission && (
+                <p className="text-red-400 text-sm mt-1">{form.formState.errors.transmission.message}</p>
+              )}
             </div>
 
             <div>
@@ -274,7 +280,7 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
 
             <div>
               <Label htmlFor="status">Status</Label>
-              <Select value={form.watch("status")} onValueChange={(value) => form.setValue("status", value)}>
+              <Select value={form.watch("status")} onValueChange={(value) => form.setValue("status", value, { shouldValidate: true })}>
                 <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
                   <SelectValue placeholder="Selecteer status" />
                 </SelectTrigger>
@@ -285,13 +291,16 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
                   <SelectItem value="in_onderhoud">In onderhoud</SelectItem>
                 </SelectContent>
               </Select>
+              {form.formState.errors.status && (
+                <p className="text-red-400 text-sm mt-1">{form.formState.errors.status.message}</p>
+              )}
             </div>
 
             <div className="flex items-center space-x-2">
               <Checkbox
                 id="featured"
                 checked={form.watch("featured")}
-                onCheckedChange={(checked) => form.setValue("featured", checked as boolean)}
+                onCheckedChange={(checked) => form.setValue("featured", checked as boolean, { shouldValidate: true })}
               />
               <Label htmlFor="featured">Uitgelicht</Label>
             </div>
