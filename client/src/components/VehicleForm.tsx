@@ -19,6 +19,13 @@ import ImageUploader from "./ImageUploader";
 
 const vehicleFormSchema = insertVehicleSchema.extend({
   images: z.array(z.string()).optional(),
+}).omit({ 
+  slug: true,
+  metaTitle: true,
+  metaDescription: true,
+  availableDate: true,
+  imageUrl: true,
+  available: true
 });
 
 type VehicleFormData = z.infer<typeof vehicleFormSchema>;
@@ -303,6 +310,8 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
                 console.log('Submit button clicked');
                 console.log('Form state:', form.formState);
                 console.log('Form errors:', form.formState.errors);
+                console.log('Form values:', form.getValues());
+                console.log('Form is valid:', form.formState.isValid);
               }}
             >
               {createVehicleMutation.isPending || updateVehicleMutation.isPending
