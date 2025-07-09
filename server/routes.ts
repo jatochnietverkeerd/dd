@@ -296,6 +296,19 @@ Sitemap: ${baseUrl}/sitemap.xml`;
     }
   });
 
+  app.post("/api/admin/vehicles", authenticateAdmin, async (req, res) => {
+    try {
+      const validatedData = insertVehicleSchema.parse(req.body);
+      const vehicle = await storage.createVehicle(validatedData);
+      res.status(201).json(vehicle);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid vehicle data", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to create vehicle" });
+    }
+  });
+
   app.put("/api/admin/vehicles/:id", authenticateAdmin, async (req, res) => {
     try {
       const id = parseInt(req.params.id);

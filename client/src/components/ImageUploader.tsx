@@ -105,11 +105,15 @@ export default function ImageUploader({
     for (const imageFile of newImages) {
       try {
         const url = await uploadImage(imageFile.file!);
-        setImages(prev => prev.map(img => 
-          img.id === imageFile.id 
-            ? { ...img, url, isUploaded: true }
-            : img
-        ));
+        setImages(prev => {
+          const newImages = prev.map(img => 
+            img.id === imageFile.id 
+              ? { ...img, url, isUploaded: true }
+              : img
+          );
+          updateParent(newImages);
+          return newImages;
+        });
       } catch (error) {
         console.error('Upload error:', error);
         toast({

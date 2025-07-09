@@ -537,7 +537,6 @@ export class MemStorage implements IStorage {
     
     const updatedVehicle: Vehicle = { ...existingVehicle, ...vehicleUpdate, ...seoFields };
     this.vehicles.set(id, updatedVehicle);
-    console.log('Updated vehicle with ID:', id, 'New images:', updatedVehicle.images);
     return updatedVehicle;
   }
 
