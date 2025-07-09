@@ -27,12 +27,14 @@ import {
 } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import ReservationForm from "@/components/ReservationForm";
 import type { Vehicle } from "@shared/schema";
 
 export default function VehicleDetail() {
   const { id } = useParams<{ id: string }>();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+  const [showReservationForm, setShowReservationForm] = useState(false);
 
   const { data: vehicle, isLoading } = useQuery<Vehicle>({
     queryKey: ['/api/vehicles', id],
@@ -417,11 +419,48 @@ export default function VehicleDetail() {
             </Tabs>
           </div>
 
+          {/* Reservation Section */}
+          {showReservationForm ? (
+            <div className="mb-12">
+              <ReservationForm 
+                vehicleId={vehicle.id}
+                vehicleBrand={vehicle.brand}
+                vehicleModel={vehicle.model}
+                vehiclePrice={vehicle.price}
+                onSuccess={() => setShowReservationForm(false)}
+              />
+            </div>
+          ) : (
+            <Card className="bg-dark-secondary border-dark-quaternary mb-12">
+              <CardContent className="p-8 text-center">
+                <h3 className="text-2xl font-light mb-4">
+                  Reserveer deze <span className="text-luxury-gold font-bold">{vehicle.brand} {vehicle.model}</span>
+                </h3>
+                <p className="text-gray-400 mb-6">
+                  Zeker van uw keuze? Reserveer nu met een veilige aanbetaling van slechts 10%.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <Button 
+                    onClick={() => setShowReservationForm(true)}
+                    className="bg-luxury-gold text-dark-primary hover:bg-white transition-colors duration-300 font-semibold px-8 py-3"
+                  >
+                    <CreditCard size={16} className="mr-2" />
+                    Reserveer nu voor €{Math.round(vehicle.price * 0.1).toLocaleString()}
+                  </Button>
+                  <Button variant="outline" className="border-luxury-gold text-luxury-gold hover:bg-luxury-gold hover:text-dark-primary transition-colors duration-300">
+                    <Heart size={16} className="mr-2" />
+                    Toevoegen aan favorieten
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
           {/* Contact CTA */}
           <Card className="bg-dark-secondary border-dark-quaternary">
             <CardContent className="p-8 text-center">
               <h3 className="text-2xl font-light mb-4">
-                Interesse in deze <span className="text-luxury-gold font-bold">{vehicle.brand} {vehicle.model}</span>?
+                Vragen over deze <span className="text-luxury-gold font-bold">{vehicle.brand} {vehicle.model}</span>?
               </h3>
               <p className="text-gray-400 mb-6">
                 Neem contact met ons op voor meer informatie of een proefrit.

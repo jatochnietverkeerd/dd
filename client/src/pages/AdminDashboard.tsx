@@ -13,8 +13,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
-import { LogOut, Car, Users, Plus, Edit, Trash2, Eye } from "lucide-react";
-import type { Vehicle, Contact } from "@shared/schema";
+import { LogOut, Car, Users, Plus, Edit, Trash2, Eye, CreditCard, Clock, CheckCircle, XCircle } from "lucide-react";
+import type { Vehicle, Contact, Reservation } from "@shared/schema";
 
 export default function AdminDashboard() {
   const [, setLocation] = useLocation();
@@ -49,6 +49,12 @@ export default function AdminDashboard() {
   const { data: contacts, isLoading: contactsLoading } = useQuery({
     queryKey: ["/api/admin/contacts"],
     queryFn: () => apiRequest("/api/admin/contacts", { headers: authHeaders }),
+    enabled: !!token,
+  });
+
+  const { data: reservations, isLoading: reservationsLoading } = useQuery({
+    queryKey: ["/api/reservations"],
+    queryFn: () => apiRequest("/api/reservations", { headers: authHeaders }),
     enabled: !!token,
   });
 
@@ -182,7 +188,7 @@ export default function AdminDashboard() {
 
       <div className="container mx-auto px-4 py-8">
         <Tabs defaultValue="vehicles" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 bg-gray-900">
+          <TabsList className="grid w-full grid-cols-3 bg-gray-900">
             <TabsTrigger value="vehicles" className="data-[state=active]:bg-gray-800">
               <Car className="w-4 h-4 mr-2" />
               Voertuigen
@@ -190,6 +196,10 @@ export default function AdminDashboard() {
             <TabsTrigger value="contacts" className="data-[state=active]:bg-gray-800">
               <Users className="w-4 h-4 mr-2" />
               Contacten
+            </TabsTrigger>
+            <TabsTrigger value="reservations" className="data-[state=active]:bg-gray-800">
+              <CreditCard className="w-4 h-4 mr-2" />
+              Reserveringen
             </TabsTrigger>
           </TabsList>
 
@@ -304,6 +314,95 @@ export default function AdminDashboard() {
                     </CardContent>
                   </Card>
                 ))}
+              </div>
+            )}
+          </TabsContent>
+
+          <TabsContent value="reservations" className="space-y-4">
+            <h2 className="text-xl font-semibold">Reserveringen</h2>
+            
+            {reservationsLoading ? (
+              <div className="text-center py-8">Laden...</div>
+            ) : (
+              <div className="grid gap-4">
+                {reservations?.map((reservation: Reservation) => {
+                  const vehicle = vehicles?.find((v: Vehicle) => v.id === reservation.vehicleId);
+                  const statusIcon = {
+                    pending: <Clock className="w-4 h-4 text-yellow-500" />,
+                    confirmed: <CheckCircle className="w-4 h-4 text-green-500" />,
+                    cancelled: <XCircle className="w-4 h-4 text-red-500" />
+                  }[reservation.status] || <Clock className="w-4 h-4 text-gray-500" />;
+                  
+                  return (
+                    <Card key={reservation.id} className="bg-gray-900 border-gray-800">
+                      <CardHeader>
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <CardTitle className="text-white flex items-center gap-2">
+                              {statusIcon}
+                              {reservation.customerName}
+                            </CardTitle>
+                            <CardDescription className="text-gray-400">
+                              {reservation.customerEmail} • {reservation.customerPhone}
+                            </CardDescription>
+                          </div>
+                          <div className="text-right">
+                            <Badge 
+                              className={`${
+                                reservation.status === 'confirmed' ? 'bg-green-500' :
+                                reservation.status === 'cancelled' ? 'bg-red-500' :
+                                'bg-yellow-500'
+                              } text-black`}
+                            >
+                              {reservation.status === 'confirmed' ? 'Bevestigd' :
+                               reservation.status === 'cancelled' ? 'Geannuleerd' :
+                               'In afwachting'}
+                            </Badge>
+                            <p className="text-sm text-gray-400 mt-1">
+                              {reservation.createdAt ? new Date(reservation.createdAt).toLocaleDateString() : ''}
+                            </p>
+                          </div>
+                        </div>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <h4 className="font-semibold text-white mb-2">Voertuig:</h4>
+                            <p className="text-gray-300">
+                              {vehicle ? `${vehicle.brand} ${vehicle.model} (${vehicle.year})` : 'Voertuig niet gevonden'}
+                            </p>
+                          </div>
+                          <div>
+                            <h4 className="font-semibold text-white mb-2">Aanbetaling:</h4>
+                            <p className="text-yellow-500 font-bold">
+                              €{(reservation.depositAmount / 100).toLocaleString()}
+                            </p>
+                          </div>
+                        </div>
+                        
+                        {reservation.notes && (
+                          <div className="mt-4">
+                            <h4 className="font-semibold text-white mb-2">Opmerkingen:</h4>
+                            <p className="text-gray-300">{reservation.notes}</p>
+                          </div>
+                        )}
+                        
+                        {reservation.stripePaymentIntentId && (
+                          <div className="mt-4">
+                            <h4 className="font-semibold text-white mb-2">Betaling ID:</h4>
+                            <p className="text-gray-400 text-sm font-mono">{reservation.stripePaymentIntentId}</p>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+                
+                {(!reservations || reservations.length === 0) && (
+                  <div className="text-center py-8 text-gray-400">
+                    Nog geen reserveringen ontvangen.
+                  </div>
+                )}
               </div>
             )}
           </TabsContent>

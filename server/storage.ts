@@ -1,4 +1,4 @@
-import { vehicles, contacts, users, adminSessions, type Vehicle, type InsertVehicle, type Contact, type InsertContact, type User, type InsertUser, type AdminSession, type InsertAdminSession } from "@shared/schema";
+import { vehicles, contacts, users, adminSessions, reservations, type Vehicle, type InsertVehicle, type Contact, type InsertContact, type User, type InsertUser, type AdminSession, type InsertAdminSession, type Reservation, type InsertReservation } from "@shared/schema";
 
 export interface IStorage {
   // Vehicle operations
@@ -23,6 +23,12 @@ export interface IStorage {
   getAdminSession(token: string): Promise<AdminSession | undefined>;
   deleteAdminSession(token: string): Promise<boolean>;
   cleanExpiredSessions(): Promise<void>;
+  
+  // Reservation operations
+  createReservation(reservation: InsertReservation): Promise<Reservation>;
+  getReservations(): Promise<Reservation[]>;
+  getReservationsByVehicle(vehicleId: number): Promise<Reservation[]>;
+  updateReservation(id: number, updates: Partial<InsertReservation>): Promise<Reservation | undefined>;
 }
 
 export class MemStorage implements IStorage {
@@ -30,20 +36,24 @@ export class MemStorage implements IStorage {
   private contacts: Map<number, Contact>;
   private users: Map<number, User>;
   private adminSessions: Map<string, AdminSession>;
+  private reservations: Map<number, Reservation>;
   private currentVehicleId: number;
   private currentContactId: number;
   private currentUserId: number;
   private currentSessionId: number;
+  private currentReservationId: number;
 
   constructor() {
     this.vehicles = new Map();
     this.contacts = new Map();
     this.users = new Map();
     this.adminSessions = new Map();
+    this.reservations = new Map();
     this.currentVehicleId = 1;
     this.currentContactId = 1;
     this.currentUserId = 1;
     this.currentSessionId = 1;
+    this.currentReservationId = 1;
     
     // Initialize with sample premium vehicles and admin user
     this.initializeSampleVehicles();
@@ -343,6 +353,36 @@ export class MemStorage implements IStorage {
         this.adminSessions.delete(token);
       }
     }
+  }
+
+  // Reservation operations
+  async createReservation(insertReservation: InsertReservation): Promise<Reservation> {
+    const id = this.currentReservationId++;
+    const reservation: Reservation = { 
+      ...insertReservation, 
+      id,
+      createdAt: new Date()
+    };
+    this.reservations.set(id, reservation);
+    return reservation;
+  }
+
+  async getReservations(): Promise<Reservation[]> {
+    return Array.from(this.reservations.values());
+  }
+
+  async getReservationsByVehicle(vehicleId: number): Promise<Reservation[]> {
+    return Array.from(this.reservations.values()).filter(r => r.vehicleId === vehicleId);
+  }
+
+  async updateReservation(id: number, updates: Partial<InsertReservation>): Promise<Reservation | undefined> {
+    const existingReservation = this.reservations.get(id);
+    if (!existingReservation) {
+      return undefined;
+    }
+    const updatedReservation: Reservation = { ...existingReservation, ...updates };
+    this.reservations.set(id, updatedReservation);
+    return updatedReservation;
   }
 }
 

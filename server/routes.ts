@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertContactSchema, insertVehicleSchema } from "@shared/schema";
+import { insertContactSchema, insertVehicleSchema, insertReservationSchema } from "@shared/schema";
 import { z } from "zod";
 import crypto from "crypto";
 
@@ -209,6 +209,71 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(contacts);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch contacts" });
+    }
+  });
+
+  // Reservation routes
+  app.post("/api/reservations", async (req, res) => {
+    try {
+      const validatedData = insertReservationSchema.parse(req.body);
+      const reservation = await storage.createReservation(validatedData);
+      res.json(reservation);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid reservation data", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to create reservation" });
+    }
+  });
+
+  app.get("/api/reservations", authenticateAdmin, async (req, res) => {
+    try {
+      const reservations = await storage.getReservations();
+      res.json(reservations);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch reservations" });
+    }
+  });
+
+  app.get("/api/vehicles/:id/reservations", authenticateAdmin, async (req, res) => {
+    try {
+      const vehicleId = parseInt(req.params.id);
+      if (isNaN(vehicleId)) {
+        return res.status(400).json({ message: "Invalid vehicle ID" });
+      }
+      
+      const reservations = await storage.getReservationsByVehicle(vehicleId);
+      res.json(reservations);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch vehicle reservations" });
+    }
+  });
+
+  // Stripe payment intent route for reservations
+  app.post("/api/create-payment-intent", async (req, res) => {
+    try {
+      const { amount, vehicleId } = req.body;
+      
+      if (!amount || !vehicleId) {
+        return res.status(400).json({ message: "Amount and vehicle ID are required" });
+      }
+
+      // For now, return a mock payment intent
+      // In production, you would integrate with Stripe here
+      const mockPaymentIntent = {
+        client_secret: `pi_mock_${Date.now()}_secret_${Math.random().toString(36).substr(2, 9)}`,
+        id: `pi_mock_${Date.now()}`,
+        amount: Math.round(amount * 100), // Convert to cents
+        currency: "eur",
+        status: "requires_payment_method"
+      };
+
+      res.json({ 
+        clientSecret: mockPaymentIntent.client_secret,
+        paymentIntentId: mockPaymentIntent.id
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to create payment intent" });
     }
   });
 

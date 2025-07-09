@@ -39,6 +39,8 @@ Preferred communication style: Simple, everyday language.
 - **vehicles**: Core entity storing car inventory (brand, model, year, price, mileage, fuel type, transmission, color, description, images, featured status)
 - **contacts**: Customer inquiries and contact form submissions
 - **users**: Basic user authentication system (username/password)
+- **reservations**: Vehicle reservations with customer details, deposit amounts, and payment intent IDs
+- **admin_sessions**: Session management for admin authentication
 
 ### API Endpoints
 - `GET /api/vehicles` - Retrieve all vehicles
@@ -46,6 +48,10 @@ Preferred communication style: Simple, everyday language.
 - `GET /api/vehicles/:id` - Get specific vehicle details
 - `POST /api/vehicles` - Create new vehicle listing
 - `POST /api/contacts` - Submit contact form
+- `POST /api/reservations` - Create vehicle reservation
+- `GET /api/reservations` - Get all reservations (admin only)
+- `GET /api/vehicles/:id/reservations` - Get reservations for specific vehicle (admin only)
+- `POST /api/create-payment-intent` - Create payment intent for reservation deposit
 
 ### Pages
 - **Home**: Landing page with hero, features, vehicle showcase, about, and contact sections
@@ -64,6 +70,7 @@ Preferred communication style: Simple, everyday language.
 - **About**: Company information section
 - **Header**: Navigation with routing to different pages
 - **Footer**: Site footer with links and contact information
+- **ReservationForm**: Secure vehicle reservation form with Stripe payment integration
 
 ### Storage Layer
 - **MemStorage**: In-memory storage implementation for development

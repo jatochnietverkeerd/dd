@@ -53,6 +53,19 @@ export const adminSessions = pgTable("admin_sessions", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+export const reservations = pgTable("reservations", {
+  id: serial("id").primaryKey(),
+  vehicleId: integer("vehicle_id").references(() => vehicles.id).notNull(),
+  customerName: text("customer_name").notNull(),
+  customerEmail: text("customer_email").notNull(),
+  customerPhone: text("customer_phone").notNull(),
+  depositAmount: integer("deposit_amount").notNull(), // Amount in cents
+  status: text("status").default("pending").notNull(), // pending, confirmed, cancelled
+  stripePaymentIntentId: text("stripe_payment_intent_id"),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 export const insertVehicleSchema = createInsertSchema(vehicles).omit({
   id: true,
 });
@@ -71,6 +84,11 @@ export const insertAdminSessionSchema = createInsertSchema(adminSessions).omit({
   createdAt: true,
 });
 
+export const insertReservationSchema = createInsertSchema(reservations).omit({
+  id: true,
+  createdAt: true,
+});
+
 export type Vehicle = typeof vehicles.$inferSelect;
 export type InsertVehicle = z.infer<typeof insertVehicleSchema>;
 export type Contact = typeof contacts.$inferSelect;
@@ -79,3 +97,5 @@ export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type AdminSession = typeof adminSessions.$inferSelect;
 export type InsertAdminSession = z.infer<typeof insertAdminSessionSchema>;
+export type Reservation = typeof reservations.$inferSelect;
+export type InsertReservation = z.infer<typeof insertReservationSchema>;
