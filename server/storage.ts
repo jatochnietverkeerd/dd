@@ -109,11 +109,11 @@ export class MemStorage implements IStorage {
         transmission: "Handgeschakeld",
         color: "Tornado Red",
         description: "Iconische Volkswagen Golf GTI in perfecte staat. De perfecte combinatie van sportiviteit en dagelijks gebruiksgemak.",
-        imageUrl: "https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
+        imageUrl: "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
         images: [
-          "https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
           "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
-          "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600"
+          "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
+          "https://images.unsplash.com/photo-1580273916550-e323be2ae537?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600"
         ],
         featured: true,
         available: true,
@@ -147,11 +147,11 @@ export class MemStorage implements IStorage {
         transmission: "Automaat",
         color: "Deep Black Pearl",
         description: "Moderne Volkswagen T-Roc in sportieve R-Line uitvoering. Hoge zitpositie en uitstekende wegligging.",
-        imageUrl: "https://images.unsplash.com/photo-1533473359331-0518db878d92?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
+        imageUrl: "https://images.unsplash.com/photo-1617531653332-bd46c24f2068?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
         images: [
-          "https://images.unsplash.com/photo-1533473359331-0518db878d92?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
-          "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
-          "https://images.unsplash.com/photo-1580273916550-e323be2ae537?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600"
+          "https://images.unsplash.com/photo-1617531653332-bd46c24f2068?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
+          "https://images.unsplash.com/photo-1606016159991-b4c9f4b33a3c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
+          "https://images.unsplash.com/photo-1565043666747-69f6646db2e0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600"
         ],
         featured: true,
         available: true,
@@ -185,11 +185,11 @@ export class MemStorage implements IStorage {
         transmission: "Automaat",
         color: "Pure White",
         description: "Gloednieuwe Volkswagen Polo GTI - compacte sportiviteit op zijn best.",
-        imageUrl: "https://images.unsplash.com/photo-1544636331-e26879cd4d9b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
+        imageUrl: "https://images.unsplash.com/photo-1555215695-3004980ad54e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
         images: [
-          "https://images.unsplash.com/photo-1544636331-e26879cd4d9b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
           "https://images.unsplash.com/photo-1555215695-3004980ad54e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
-          "https://images.unsplash.com/photo-1617531653332-bd46c24f2068?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600"
+          "https://images.unsplash.com/photo-1619767886558-efdc259cde1a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
+          "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600"
         ],
         featured: true,
         available: true,
@@ -223,10 +223,10 @@ export class MemStorage implements IStorage {
         transmission: "Automaat",
         color: "Mountain Grey",
         description: "Krachtige Mercedes-Benz A-Klasse A35 AMG. Compacte sportwagen met AMG prestaties.",
-        imageUrl: "https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
+        imageUrl: "https://images.unsplash.com/photo-1563720223185-11003d516935?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
         images: [
-          "https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
           "https://images.unsplash.com/photo-1563720223185-11003d516935?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
+          "https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
           "https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600"
         ],
         featured: true,
@@ -261,10 +261,10 @@ export class MemStorage implements IStorage {
         transmission: "Automaat",
         color: "Lapiz Blue",
         description: "Krachtige Volkswagen Golf R met vierwielaandrijving. De perfecte combinatie van sportiviteit en dagelijks gebruiksgemak.",
-        imageUrl: "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
+        imageUrl: "https://images.unsplash.com/photo-1580273916550-e323be2ae537?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
         images: [
-          "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
           "https://images.unsplash.com/photo-1580273916550-e323be2ae537?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
+          "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
           "https://images.unsplash.com/photo-1556189250-72ba954cfc2b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600"
         ],
         featured: false,
@@ -299,11 +299,11 @@ export class MemStorage implements IStorage {
         transmission: "Automaat",
         color: "Tornado Red / Pure White",
         description: "Exclusieve aanbieding: Volkswagen Polo GTI en Golf GTI samen als duo. Perfect voor liefhebbers van de GTI-lijn.",
-        imageUrl: "https://images.unsplash.com/photo-1544829099-b9a0c5303bea?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
+        imageUrl: "https://images.unsplash.com/photo-1606016159991-b4c9f4b33a3c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
         images: [
-          "https://images.unsplash.com/photo-1544829099-b9a0c5303bea?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
-          "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
-          "https://images.unsplash.com/photo-1617531653332-bd46c24f2068?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600"
+          "https://images.unsplash.com/photo-1606016159991-b4c9f4b33a3c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
+          "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
+          "https://images.unsplash.com/photo-1555215695-3004980ad54e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600"
         ],
         featured: true,
         available: true,
