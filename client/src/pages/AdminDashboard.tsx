@@ -13,7 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
-import { LogOut, Car, Users, Plus, Edit, Trash2, Eye, CreditCard, Clock, CheckCircle, XCircle, Calculator, Download, FileText, TrendingUp, Mail } from "lucide-react";
+import { LogOut, Car, Users, Plus, Edit, Trash2, Eye, CreditCard, Clock, CheckCircle, XCircle, Calculator, Download, FileText, TrendingUp, Mail, Home } from "lucide-react";
 import type { Vehicle, Contact, Reservation, Purchase, Sale } from "@shared/schema";
 import VehicleForm from "@/components/VehicleForm";
 
@@ -252,14 +252,23 @@ export default function AdminDashboard() {
             <h1 className="text-2xl font-bold">Admin Dashboard</h1>
             <p className="text-gray-400">Welkom, {user.username}</p>
           </div>
-          <Button
-            variant="outline"
-            onClick={handleLogout}
-            className="border-gray-700 text-white hover:bg-gray-800"
-          >
-            <LogOut className="w-4 h-4 mr-2" />
-            Uitloggen
-          </Button>
+          <div className="flex items-center space-x-2">
+            <Button
+              onClick={() => setLocation("/")}
+              className="bg-yellow-500 hover:bg-yellow-600 text-black"
+            >
+              <Home className="w-4 h-4 mr-2" />
+              Home
+            </Button>
+            <Button
+              variant="outline"
+              onClick={handleLogout}
+              className="border-gray-700 text-white hover:bg-gray-800"
+            >
+              <LogOut className="w-4 h-4 mr-2" />
+              Uitloggen
+            </Button>
+          </div>
         </div>
       </div>
 

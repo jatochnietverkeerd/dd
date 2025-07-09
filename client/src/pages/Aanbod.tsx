@@ -40,9 +40,9 @@ export default function Aanbod() {
     const matchesSearch = vehicle.brand.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          vehicle.model.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesBrand = brandFilter === "all" || vehicle.brand === brandFilter;
-    const matchesFuel = fuelFilter === "all" || vehicle.fuel === fuelFilter;
+    const matchesFuel = fuelFilter === "all" || (vehicle.fuel && vehicle.fuel === fuelFilter);
     
-    return matchesSearch && matchesBrand && matchesFuel && vehicle.available;
+    return matchesSearch && matchesBrand && matchesFuel && (vehicle.available !== false) && vehicle.status !== 'gearchiveerd';
   }).sort((a, b) => {
     switch (sortBy) {
       case "price-asc":
@@ -63,7 +63,7 @@ export default function Aanbod() {
   });
 
   const uniqueBrands = [...new Set(vehicles?.map(v => v.brand) || [])];
-  const uniqueFuels = [...new Set(vehicles?.map(v => v.fuel) || [])];
+  const uniqueFuels = [...new Set(vehicles?.map(v => v.fuel).filter(f => f && f.trim()) || [])];
 
   if (isLoading) {
     return (

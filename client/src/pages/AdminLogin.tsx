@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useLocation } from "wouter";
+import { Home } from "lucide-react";
 
 const loginSchema = z.object({
   username: z.string().min(1, "Gebruikersnaam is verplicht"),
@@ -56,6 +57,15 @@ export default function AdminLogin() {
 
   return (
     <div className="min-h-screen bg-black flex items-center justify-center p-4">
+      {/* Home Button */}
+      <Button
+        onClick={() => setLocation("/")}
+        className="fixed top-4 left-4 bg-yellow-500 hover:bg-yellow-600 text-black p-3 rounded-full shadow-lg"
+        size="sm"
+      >
+        <Home size={20} />
+      </Button>
+      
       <Card className="w-full max-w-md bg-gray-900 border-gray-800">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold text-white">Admin Login</CardTitle>
