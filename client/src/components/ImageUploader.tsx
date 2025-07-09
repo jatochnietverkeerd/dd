@@ -1,7 +1,7 @@
-import { useState, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Upload, X, GripVertical, Image as ImageIcon } from 'lucide-react';
+import { Upload, X, ImageIcon } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface ImageFile {
@@ -35,6 +35,13 @@ export default function ImageUploader({
   );
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const { toast } = useToast();
+
+  const updateParent = useCallback((newImages: ImageFile[]) => {
+    const urls = newImages
+      .filter(img => img.isUploaded)
+      .map(img => img.url);
+    onImagesChange(urls);
+  }, [onImagesChange]);
 
   const uploadImage = async (file: File): Promise<string> => {
     const formData = new FormData();
@@ -106,13 +113,13 @@ export default function ImageUploader({
       try {
         const url = await uploadImage(imageFile.file!);
         setImages(prev => {
-          const newImages = prev.map(img => 
+          const updated = prev.map(img => 
             img.id === imageFile.id 
               ? { ...img, url, isUploaded: true }
               : img
           );
-          updateParent(newImages);
-          return newImages;
+          updateParent(updated);
+          return updated;
         });
       } catch (error) {
         console.error('Upload error:', error);
@@ -124,7 +131,7 @@ export default function ImageUploader({
         setImages(prev => prev.filter(img => img.id !== imageFile.id));
       }
     }
-  }, [images.length, maxImages, toast]);
+  }, [images.length, maxImages, toast, updateParent]);
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -142,13 +149,6 @@ export default function ImageUploader({
       updateParent(newImages);
       return newImages;
     });
-  };
-
-  const updateParent = (newImages: ImageFile[]) => {
-    const urls = newImages
-      .filter(img => img.isUploaded)
-      .map(img => img.url);
-    onImagesChange(urls);
   };
 
   const handleDragStart = (index: number) => {
@@ -215,9 +215,9 @@ export default function ImageUploader({
       {images.length > 0 && (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {images.map((image, index) => (
-            <Card
+            <div
               key={image.id}
-              className={`bg-gray-800 border-gray-700 relative group cursor-move ${
+              className={`relative group bg-gray-800 rounded-lg overflow-hidden ${
                 draggedIndex === index ? 'opacity-50' : ''
               }`}
               draggable
@@ -225,53 +225,29 @@ export default function ImageUploader({
               onDragEnd={handleDragEnd}
               onDragOver={(e) => handleDragOverItem(e, index)}
             >
-              <CardContent className="p-2">
-                <div className="relative aspect-video bg-gray-700 rounded overflow-hidden">
-                  <img
-                    src={image.preview}
-                    alt={`Upload ${index + 1}`}
-                    className="w-full h-full object-cover"
-                  />
-                  
-                  {!image.isUploaded && (
-                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                      <div className="animate-spin w-6 h-6 border-2 border-yellow-500 border-t-transparent rounded-full" />
-                    </div>
-                  )}
-
-                  {/* Controls */}
-                  <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <Button
-                      type="button"
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => removeImage(image.id)}
-                      className="h-8 w-8 p-0"
-                    >
-                      <X className="w-4 h-4" />
-                    </Button>
-                  </div>
-
-                  <div className="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <GripVertical className="w-4 h-4 text-white" />
-                  </div>
-
-                  {/* Main image indicator */}
-                  {index === 0 && (
-                    <div className="absolute bottom-2 left-2 bg-yellow-500 text-black text-xs px-2 py-1 rounded">
-                      Hoofdafbeelding
-                    </div>
-                  )}
+              <img
+                src={image.preview}
+                alt={`Upload ${index + 1}`}
+                className="w-full h-32 object-cover"
+              />
+              
+              {!image.isUploaded && (
+                <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                  <div className="animate-spin w-6 h-6 border-2 border-white border-t-transparent rounded-full"></div>
                 </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      )}
+              )}
 
-      {images.length === 0 && (
-        <div className="text-center py-8 text-gray-400">
-          Nog geen afbeeldingen toegevoegd
+              <Button
+                type="button"
+                variant="destructive"
+                size="sm"
+                className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity w-6 h-6 p-0"
+                onClick={() => removeImage(image.id)}
+              >
+                <X className="w-4 h-4" />
+              </Button>
+            </div>
+          ))}
         </div>
       )}
     </div>

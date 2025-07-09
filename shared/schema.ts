@@ -107,6 +107,9 @@ export const sales = pgTable("sales", {
 
 export const insertVehicleSchema = createInsertSchema(vehicles).omit({
   id: true,
+  slug: true,
+  metaTitle: true,
+  metaDescription: true,
 });
 
 export const insertContactSchema = createInsertSchema(contacts).omit({
