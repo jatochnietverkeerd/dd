@@ -88,7 +88,7 @@ Preferred communication style: Simple, everyday language.
 ### Storage Layer
 - **MemStorage**: In-memory storage implementation for development
 - **IStorage**: Interface defining storage operations
-- Pre-populated with sample premium vehicles (BMW, Mercedes, Audi, etc.)
+- Pre-populated with affordable premium vehicles (Volkswagen GTI models, Mercedes A35 AMG, etc.) in 20.000-45.000 euro range
 
 ## Data Flow
 
@@ -203,3 +203,25 @@ The application uses a modern, type-safe architecture with excellent developer e
 - **Nodemailer**: Email service for invoice delivery
 - **Professional Templates**: Custom CSS styling for luxury appearance
 - **Error Handling**: Comprehensive error handling for all invoice operations
+
+## Vehicle Focus Update (July 2025)
+
+### Affordable Premium Car Range
+- **Price Range**: 20.000 - 45.000 euro target market
+- **Brand Focus**: Volkswagen GTI models (Golf GTI, Polo GTI, T-Roc), Mercedes-Benz A-Class AMG
+- **Target Audience**: Young professionals and enthusiasts looking for accessible premium performance
+- **Unique Offering**: GTI Duo package (Polo GTI + Golf GTI combination)
+
+### Updated Vehicle Inventory
+- **Volkswagen Golf GTI 2023**: €38.900 - Tornado Red, 245 PK, handgeschakeld
+- **Volkswagen T-Roc R-Line 2022**: €32.500 - Deep Black Pearl, 190 PK, automaat
+- **Volkswagen Polo GTI 2024**: €29.900 - Pure White, 207 PK, nieuwstaat
+- **Mercedes-Benz A35 AMG 2022**: €42.900 - Mountain Grey, 306 PK, AMG Performance
+- **Volkswagen Golf R 2021**: €44.500 - Lapiz Blue, 320 PK, vierwielaandrijving
+- **GTI Duo Package 2024**: €65.000 - Exclusive Polo GTI + Golf GTI combination
+
+### Market Positioning
+- **Accessibility**: Focus on attainable luxury performance cars
+- **Performance**: Emphasis on GTI heritage and AMG engineering
+- **Value Proposition**: Premium features at accessible price points
+- **Target Demographics**: 25-45 age group, performance enthusiasts, first-time luxury buyers
