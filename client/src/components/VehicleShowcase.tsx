@@ -59,14 +59,25 @@ export default function VehicleShowcase() {
         </div>
         
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {featuredVehicles?.map((vehicle, index) => (
-            <div 
-              key={vehicle.id} 
-              className={`stagger-delay-${Math.min(index * 100 + 100, 400)}`}
-            >
-              <VehicleCard vehicle={vehicle} />
-            </div>
-          ))}
+          {(() => {
+            // Show featured vehicles first, then fill with recent non-featured vehicles if needed
+            const featured = featuredVehicles || [];
+            const nonFeatured = allVehicles?.filter(v => !v.featured && v.available !== false && v.status !== 'gearchiveerd') || [];
+            const displayVehicles = [...featured];
+            
+            // Add non-featured vehicles to fill up to 6 vehicles total
+            const remainingSlots = Math.max(0, 6 - featured.length);
+            displayVehicles.push(...nonFeatured.slice(0, remainingSlots));
+            
+            return displayVehicles.slice(0, 6).map((vehicle, index) => (
+              <div 
+                key={vehicle.id} 
+                className={`stagger-delay-${Math.min(index * 100 + 100, 400)}`}
+              >
+                <VehicleCard vehicle={vehicle} />
+              </div>
+            ));
+          })()}
         </div>
         
         <div 

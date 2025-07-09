@@ -25,12 +25,12 @@ export default function Hero() {
       <div className="absolute inset-0 bg-gradient-to-r from-dark-primary via-dark-primary/70 to-transparent z-10"></div>
       <div className="absolute inset-0">
         <LazyImage
-          src="https://images.unsplash.com/photo-1544636331-e26879cd4d9b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1920&h=1080"
-          alt="Premium sports car in luxury showroom"
-          className="w-full h-full object-cover image-zoom"
+          src="/hero-cars.png"
+          alt="Premium Voertuigen"
+          className="w-full h-full object-cover object-center image-zoom"
         />
       </div>
-      
+
       <div className="relative z-20 container mx-auto px-4 h-full flex items-center">
         <div className="max-w-2xl">
           <h1 
