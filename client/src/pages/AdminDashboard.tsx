@@ -475,7 +475,7 @@ export default function AdminDashboard() {
                             <ShoppingCart className="w-4 h-4 mr-1" />
                             Inkoop
                           </Button>
-                          {purchases?.find(p => p.vehicleId === vehicle.id) && (
+                          {(vehicle.status === 'verkocht' || purchases?.find(p => p.vehicleId === vehicle.id)) && (
                             <Button
                               size="sm"
                               variant="outline"

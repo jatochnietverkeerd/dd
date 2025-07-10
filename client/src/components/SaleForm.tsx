@@ -23,7 +23,7 @@ const saleFormSchema = insertSaleSchema.extend({
   discount: z.number().min(0, "Korting kan niet negatief zijn"),
   finalPrice: z.number().positive("Eindprijs moet positief zijn"),
   saleDate: z.string().transform(val => new Date(val)),
-  deliveryDate: z.string().transform(val => val ? new Date(val) : null),
+  deliveryDate: z.string().optional().transform(val => val && val !== "" ? new Date(val) : null),
 }).omit({ 
   vatAmount: true,
   profitExclVat: true,
@@ -75,7 +75,53 @@ export default function SaleForm({ vehicle, purchase, sale, isOpen, onClose, tok
   // Calculate sale totals when form values change
   useEffect(() => {
     const subscription = form.watch((values) => {
-      if (values.salePrice && purchase) {
+      try {
+        if (values.salePrice && typeof values.salePrice === 'number' && values.salePrice > 0 && purchase) {
+          const purchaseCalculation = {
+            purchasePrice: Number(purchase.purchasePrice),
+            vatType: purchase.vatType as VatType,
+            vatAmount: Number(purchase.vatAmount),
+            bpmAmount: Number(purchase.bpmAmount),
+            transportCost: Number(purchase.transportCost),
+            maintenanceCost: Number(purchase.maintenanceCost),
+            cleaningCost: Number(purchase.cleaningCost),
+            guaranteeCost: Number(purchase.guaranteeCost),
+            otherCosts: Number(purchase.otherCosts),
+            totalCostInclVat: Number(purchase.totalCostInclVat),
+          };
+
+          const calculation = calculateSaleTotal(
+            values.salePrice,
+            vatType,
+            values.discount || 0,
+            purchaseCalculation
+          );
+
+          setCalculatedSale(calculation);
+          
+          // Update form values with calculated amounts safely
+          if (calculation && typeof calculation.salePriceInclVat === 'number') {
+            form.setValue("salePriceInclVat", calculation.salePriceInclVat, { shouldValidate: false });
+          }
+          if (calculation && typeof calculation.finalPrice === 'number') {
+            form.setValue("finalPrice", calculation.finalPrice, { shouldValidate: false });
+          }
+        }
+      } catch (error) {
+        console.warn("Error in sale calculation:", error);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [form, purchase, vatType]);
+
+  const saveSaleMutation = useMutation({
+    mutationFn: async (data: SaleFormData) => {
+      console.log("Submitting sale data:", data);
+      
+      // Calculate sale totals if not already calculated
+      let finalCalculation = calculatedSale;
+      if (!finalCalculation && purchase) {
         const purchaseCalculation = {
           purchasePrice: Number(purchase.purchasePrice),
           vatType: purchase.vatType as VatType,
@@ -89,37 +135,25 @@ export default function SaleForm({ vehicle, purchase, sale, isOpen, onClose, tok
           totalCostInclVat: Number(purchase.totalCostInclVat),
         };
 
-        const calculation = calculateSaleTotal(
-          values.salePrice,
+        finalCalculation = calculateSaleTotal(
+          data.salePrice,
           vatType,
-          values.discount || 0,
+          data.discount || 0,
           purchaseCalculation
         );
-
-        setCalculatedSale(calculation);
-        
-        // Update form values with calculated amounts
-        form.setValue("salePriceInclVat", calculation.salePriceInclVat);
-        form.setValue("finalPrice", calculation.finalPrice);
       }
-    });
 
-    return () => subscription.unsubscribe();
-  }, [form, purchase, vatType]);
-
-  const saveSaleMutation = useMutation({
-    mutationFn: async (data: SaleFormData) => {
-      if (!calculatedSale) {
+      if (!finalCalculation) {
         throw new Error("Verkoopberekening kon niet worden uitgevoerd");
       }
 
       const saleData = {
         ...data,
-        vatAmount: calculatedSale.vatAmount,
-        profitExclVat: calculatedSale.profitExclVat,
-        profitInclVat: calculatedSale.profitInclVat,
+        vatAmount: finalCalculation.vatAmount,
+        profitExclVat: finalCalculation.profitExclVat,
+        profitInclVat: finalCalculation.profitInclVat,
         saleDate: new Date(data.saleDate).toISOString(),
-        deliveryDate: data.deliveryDate ? new Date(data.deliveryDate).toISOString() : null,
+        deliveryDate: data.deliveryDate && data.deliveryDate !== "" ? new Date(data.deliveryDate).toISOString() : null,
       };
 
       if (sale) {
