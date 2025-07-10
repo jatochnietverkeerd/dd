@@ -32,6 +32,10 @@ const vehicleFormSchema = insertVehicleSchema.extend({
   cleaningCost: z.number().min(0).optional(),
   guaranteeCost: z.number().min(0).optional(),
   otherCosts: z.number().min(0).optional(),
+  // BPM calculation fields
+  co2Uitstoot: z.number().min(0).optional(),
+  datumEersteToelating: z.date().optional(),
+  nettoCatalogusprijs: z.number().min(0).optional(),
 }).omit({ 
   slug: true,
   metaTitle: true,
@@ -83,6 +87,10 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
       cleaningCost: 0,
       guaranteeCost: 0,
       otherCosts: 0,
+      // BPM calculation fields
+      co2Uitstoot: 0,
+      datumEersteToelating: new Date(),
+      nettoCatalogusprijs: 0,
     },
     mode: "onChange",
   });
@@ -501,6 +509,47 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
                       className="bg-gray-800 border-gray-700 text-white"
                       placeholder="0"
                     />
+                  </div>
+                </div>
+
+                {/* BPM Calculation Fields */}
+                <div className="mt-6 pt-4 border-t border-gray-600">
+                  <h4 className="text-md font-semibold text-blue-400 mb-3">BPM Berekening</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <Label htmlFor="co2Uitstoot">CO2 Uitstoot (g/km)</Label>
+                      <Input
+                        id="co2Uitstoot"
+                        type="number"
+                        {...form.register("co2Uitstoot", { valueAsNumber: true })}
+                        className="bg-gray-800 border-gray-700 text-white"
+                        placeholder="120"
+                      />
+                      <p className="text-xs text-gray-400 mt-1">Verplicht voor BPM berekening</p>
+                    </div>
+
+                    <div>
+                      <Label htmlFor="datumEersteToelating">Datum Eerste Toelating</Label>
+                      <Input
+                        id="datumEersteToelating"
+                        type="date"
+                        {...form.register("datumEersteToelating", { valueAsDate: true })}
+                        className="bg-gray-800 border-gray-700 text-white"
+                      />
+                      <p className="text-xs text-gray-400 mt-1">Verplicht voor BPM berekening</p>
+                    </div>
+
+                    <div>
+                      <Label htmlFor="nettoCatalogusprijs">Netto Catalogusprijs</Label>
+                      <Input
+                        id="nettoCatalogusprijs"
+                        type="number"
+                        {...form.register("nettoCatalogusprijs", { valueAsNumber: true })}
+                        className="bg-gray-800 border-gray-700 text-white"
+                        placeholder="30000"
+                      />
+                      <p className="text-xs text-gray-400 mt-1">Voor BPM berekening</p>
+                    </div>
                   </div>
                 </div>
 

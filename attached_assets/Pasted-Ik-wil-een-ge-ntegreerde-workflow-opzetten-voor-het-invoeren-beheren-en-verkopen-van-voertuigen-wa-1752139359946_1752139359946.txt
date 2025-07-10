@@ -1,0 +1,38 @@
+Ik wil een geïntegreerde workflow opzetten voor het invoeren, beheren en verkopen van voertuigen, waarbij de winstberekening altijd correct is. Dit vereist aanpassingen in zowel de data-invoer als in de automatisering van de verkoop.
+
+Voer de volgende twee opdrachten in de juiste volgorde uit:
+
+Opdracht 1: Uitbreiden van Voertuiggegevens voor BPM
+
+Pas eerst het 'Nieuw Voertuig' en 'Bewerk Voertuig' formulier en het onderliggende schema aan. Zorg ervoor dat naast de bestaande inkoopvelden, de volgende velden voor de BPM-registratie kunnen worden ingevoerd en opgeslagen:
+
+Nieuwe velden voor BPM-calculatie:
+
+co2Uitstoot (getal, verplicht)
+
+datumEersteToelating (datum, verplicht)
+
+nettoCatalogusprijs (getal)
+
+Bestaand veld voor de kosten:
+
+Zorg dat het veld bpmBedrag (getal) in de sectie "Inkoop gegevens" duidelijk aanwezig is. Dit veld bevat de daadwerkelijk betaalde BPM en is essentieel voor de winstberekening.
+
+Opdracht 2: Automatiseren van Verkoopregistratie inclusief BPM
+
+Creëer vervolgens een automatisering. Wanneer een gebruiker de status van een voertuig wijzigt naar "Verkocht", moet het systeem de volgende actie uitvoeren:
+
+Maak een Concept-Verkoopregistratie aan: Genereer automatisch een nieuwe verkoopregistratie in de boekhoudmodule (indien deze nog niet bestaat voor dit voertuig).
+
+Bereken en Neem de Totale Kostprijs over: Bij het aanmaken van deze registratie moet het systeem de volledige kostprijs berekenen en overnemen. De formule hiervoor is:
+Totale Kostprijs = inkoopprijs + transportkosten + onderhoudskosten + schoonmaakkosten + overige kosten + bpmBedrag
+
+Vul de Concept-Registratie:
+
+De berekende Totale Kostprijs moet in het juiste kostprijsveld worden geplaatst.
+
+De verkoopdatum wordt standaard de datum van vandaag.
+
+De velden voor verkoopprijs en klantgegevens blijven leeg, klaar om ingevuld te worden.
+
+Eindresultaat: De admin voert bij inkoop alle gegevens inclusief BPM-details in. Bij verkoop hoeft alleen de status te worden gewijzigd, waarna in de boekhouding een complete conceptfactuur klaarstaat waarop de winst direct correct wordt berekend na het invullen van de verkoopprijs.

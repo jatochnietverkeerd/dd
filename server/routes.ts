@@ -317,10 +317,65 @@ Sitemap: ${baseUrl}/sitemap.xml`;
       }
 
       const validatedData = insertVehicleSchema.partial().parse(req.body);
+      
+      // Get current vehicle to check status change
+      const currentVehicle = await storage.getVehicleById(id);
+      if (!currentVehicle) {
+        return res.status(404).json({ message: "Vehicle not found" });
+      }
+
       const vehicle = await storage.updateVehicle(id, validatedData);
       
       if (!vehicle) {
         return res.status(404).json({ message: "Vehicle not found" });
+      }
+
+      // Auto-create sale record when status changes to "verkocht"
+      if (validatedData.status === "verkocht" && currentVehicle.status !== "verkocht") {
+        try {
+          // Check if purchase record exists for cost calculation
+          const purchaseRecord = await storage.getPurchaseByVehicleId(id);
+          
+          // Check if sale record already exists
+          const existingSale = await storage.getSaleByVehicleId(id);
+          
+          if (!existingSale) {
+            // Calculate total cost price from purchase data
+            let totalCostPrice = 0;
+            if (purchaseRecord) {
+              totalCostPrice = 
+                parseFloat(purchaseRecord.purchasePrice.toString()) +
+                parseFloat(purchaseRecord.transportCost?.toString() || "0") +
+                parseFloat(purchaseRecord.maintenanceCost?.toString() || "0") +
+                parseFloat(purchaseRecord.cleaningCost?.toString() || "0") +
+                parseFloat(purchaseRecord.guaranteeCost?.toString() || "0") +
+                parseFloat(purchaseRecord.otherCosts?.toString() || "0") +
+                parseFloat(purchaseRecord.bpmAmount?.toString() || "0");
+            }
+            
+            // Create concept sale record
+            const conceptSale = await storage.createSale({
+              vehicleId: id,
+              salePrice: 0, // To be filled by admin
+              vatType: purchaseRecord?.vatType || "21%",
+              vatAmount: 0, // Will be calculated when sale price is set
+              customerName: "", // To be filled by admin
+              customerEmail: "", // To be filled by admin
+              customerPhone: "", // To be filled by admin
+              saleDate: new Date(),
+              purchaseCostPrice: totalCostPrice,
+              discount: 0,
+              finalPrice: 0,
+              profitAmount: 0,
+              notes: "Automatisch gegenereerde concept verkoopregistratie"
+            });
+            
+            console.log(`Auto-created concept sale record for vehicle ${id} with total cost price €${totalCostPrice}`);
+          }
+        } catch (saleError) {
+          console.error("Error creating auto sale record:", saleError);
+          // Continue with vehicle update even if sale creation fails
+        }
       }
 
       res.json(vehicle);

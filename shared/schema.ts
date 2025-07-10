@@ -30,6 +30,10 @@ export const vehicles = pgTable("vehicles", {
   slug: text("slug").notNull().unique(),
   metaTitle: text("meta_title"),
   metaDescription: text("meta_description"),
+  // BPM calculation fields
+  co2Uitstoot: integer("co2_uitstoot"), // CO2 emissions in g/km
+  datumEersteToelating: timestamp("datum_eerste_toelating"), // First registration date
+  nettoCatalogusprijs: integer("netto_catalogusprijs"), // Net catalog price
 });
 
 export const contacts = pgTable("contacts", {
@@ -96,23 +100,24 @@ export const sales = pgTable("sales", {
   id: serial("id").primaryKey(),
   vehicleId: integer("vehicle_id").references(() => vehicles.id).notNull(),
   purchaseId: integer("purchase_id").references(() => purchases.id),
-  salePrice: decimal("sale_price", { precision: 10, scale: 2 }).notNull(), // Excl. BTW
+  salePrice: decimal("sale_price", { precision: 10, scale: 2 }).default("0.00"), // Excl. BTW
   vatType: text("vat_type").notNull(), // "21%", "marge", "geen_btw" - inherited from purchase
   vatAmount: decimal("vat_amount", { precision: 10, scale: 2 }).default("0.00"),
-  salePriceInclVat: decimal("sale_price_incl_vat", { precision: 10, scale: 2 }).notNull(),
-  customerName: text("customer_name").notNull(),
-  customerEmail: text("customer_email").notNull(),
-  customerPhone: text("customer_phone").notNull(),
-  customerAddress: text("customer_address").notNull(),
+  salePriceInclVat: decimal("sale_price_incl_vat", { precision: 10, scale: 2 }).default("0.00"),
+  customerName: text("customer_name").default(""),
+  customerEmail: text("customer_email").default(""),
+  customerPhone: text("customer_phone").default(""),
+  customerAddress: text("customer_address").default(""),
   discount: decimal("discount", { precision: 10, scale: 2 }).default("0.00"),
-  finalPrice: decimal("final_price", { precision: 10, scale: 2 }).notNull(),
-  paymentMethod: text("payment_method").notNull(),
+  finalPrice: decimal("final_price", { precision: 10, scale: 2 }).default("0.00"),
+  paymentMethod: text("payment_method").default(""),
   saleDate: timestamp("sale_date").notNull(),
   deliveryDate: timestamp("delivery_date"),
   warrantyMonths: integer("warranty_months").default(12),
-  invoiceNumber: text("invoice_number").notNull(),
-  profitExclVat: decimal("profit_excl_vat", { precision: 10, scale: 2 }).notNull(),
-  profitInclVat: decimal("profit_incl_vat", { precision: 10, scale: 2 }).notNull(),
+  invoiceNumber: text("invoice_number").default(""),
+  profitExclVat: decimal("profit_excl_vat", { precision: 10, scale: 2 }).default("0.00"),
+  profitInclVat: decimal("profit_incl_vat", { precision: 10, scale: 2 }).default("0.00"),
+  purchaseCostPrice: decimal("purchase_cost_price", { precision: 10, scale: 2 }).default("0.00"),
   notes: text("notes"),
   createdAt: timestamp("created_at").defaultNow(),
 });
