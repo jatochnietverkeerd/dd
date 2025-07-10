@@ -175,6 +175,9 @@ export const insertPurchaseSchema = createInsertSchema(purchases).omit({
 export const insertSaleSchema = createInsertSchema(sales).omit({
   id: true,
   createdAt: true,
+}).extend({
+  saleDate: z.string().transform(val => new Date(val)),
+  deliveryDate: z.string().nullable().transform(val => val ? new Date(val) : null),
 });
 
 export type Vehicle = typeof vehicles.$inferSelect;
