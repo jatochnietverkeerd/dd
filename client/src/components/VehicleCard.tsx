@@ -33,7 +33,7 @@ export default function VehicleCard({ vehicle }: VehicleCardProps) {
     >
       <div className="relative overflow-hidden">
         <LazyImage
-          src={vehicle.images?.[0] || vehicle.imageUrl || "https://images.unsplash.com/photo-1555215695-3004980ad54e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600"}
+          src={vehicle.images?.[0] || "https://images.unsplash.com/photo-1555215695-3004980ad54e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600"}
           alt={`${vehicle.brand} ${vehicle.model}`}
           className="w-full h-48 object-cover image-zoom"
         />

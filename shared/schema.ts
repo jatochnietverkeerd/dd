@@ -13,7 +13,6 @@ export const vehicles = pgTable("vehicles", {
   transmission: text("transmission").notNull(),
   color: text("color").notNull(),
   description: text("description"),
-  imageUrl: text("image_url"),
   images: text("images").array(),
   featured: boolean("featured").default(false),
   available: boolean("available").default(true),

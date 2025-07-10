@@ -187,7 +187,7 @@ export default function Aanbod() {
               <Card key={vehicle.id} className="bg-dark-secondary border-dark-quaternary rounded-lg overflow-hidden group hover:transform hover:scale-105 hover:shadow-2xl transition-all duration-500">
                 <div className="relative overflow-hidden">
                   <img 
-                    src={vehicle.images?.[0] || vehicle.imageUrl || "https://images.unsplash.com/photo-1555215695-3004980ad54e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600"} 
+                    src={vehicle.images?.[0] || "https://images.unsplash.com/photo-1555215695-3004980ad54e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600"} 
                     alt={`${vehicle.brand} ${vehicle.model}`} 
                     className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500"
                   />

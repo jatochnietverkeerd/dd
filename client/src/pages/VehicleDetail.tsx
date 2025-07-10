@@ -67,7 +67,7 @@ export default function VehicleDetail() {
 
       if (ogTitle) ogTitle.setAttribute('content', vehicle.metaTitle || `${vehicle.brand} ${vehicle.model} ${vehicle.year}`);
       if (ogDescription) ogDescription.setAttribute('content', vehicle.metaDescription || `${vehicle.brand} ${vehicle.model} ${vehicle.year} te koop bij DD Cars`);
-      if (ogImage && (vehicle.images?.[0] || vehicle.imageUrl)) ogImage.setAttribute('content', vehicle.images?.[0] || vehicle.imageUrl);
+      if (ogImage && vehicle.images?.[0]) ogImage.setAttribute('content', vehicle.images?.[0]);
 
       // Add structured data for SEO
       const structuredData = generateStructuredData(vehicle);
@@ -148,7 +148,7 @@ export default function VehicleDetail() {
     );
   }
 
-  const images = vehicle.images || [vehicle.imageUrl || ""];
+  const images = vehicle.images || [];
 
   return (
     <div className="min-h-screen bg-dark-primary">

@@ -24,7 +24,6 @@ const vehicleFormSchema = insertVehicleSchema.extend({
   metaTitle: true,
   metaDescription: true,
   availableDate: true,
-  imageUrl: true,
   available: true
 });
 
@@ -50,8 +49,8 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
       year: vehicle?.year || new Date().getFullYear(),
       price: vehicle?.price || 0,
       mileage: vehicle?.mileage || 0,
-      fuel: vehicle?.fuel || "benzine",
-      transmission: vehicle?.transmission || "handgeschakeld",
+      fuel: vehicle?.fuel || "",
+      transmission: vehicle?.transmission || "",
       color: vehicle?.color || "",
       description: vehicle?.description || "",
       featured: vehicle?.featured || false,
@@ -70,8 +69,8 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
         year: vehicle?.year || new Date().getFullYear(),
         price: vehicle?.price || 0,
         mileage: vehicle?.mileage || 0,
-        fuel: vehicle?.fuel || "benzine",
-        transmission: vehicle?.transmission || "handgeschakeld",
+        fuel: vehicle?.fuel || "",
+        transmission: vehicle?.transmission || "",
         color: vehicle?.color || "",
         description: vehicle?.description || "",
         featured: vehicle?.featured || false,
