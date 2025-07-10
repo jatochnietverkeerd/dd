@@ -302,31 +302,7 @@ Sitemap: ${baseUrl}/sitemap.xml`;
       const validatedData = insertVehicleSchema.parse(req.body);
       const vehicle = await storage.createVehicle(validatedData);
       
-      // Automatically create purchase record if purchase details are provided
-      if (validatedData.purchasePrice && validatedData.purchasePrice > 0) {
-        try {
-          await storage.createPurchase({
-            vehicleId: vehicle.id,
-            purchasePrice: validatedData.purchasePrice.toString(),
-            vatType: validatedData.purchaseVatType || "21%",
-            vatAmount: "0.00", // Will be calculated
-            bpmAmount: (validatedData.bpmAmount || 0).toString(),
-            supplier: validatedData.supplier || "",
-            invoiceNumber: validatedData.invoiceNumber || "",
-            purchaseDate: validatedData.purchaseDate || new Date(),
-            transportCost: (validatedData.transportCost || 0).toString(),
-            maintenanceCost: (validatedData.maintenanceCost || 0).toString(),
-            cleaningCost: (validatedData.cleaningCost || 0).toString(),
-            guaranteeCost: (validatedData.guaranteeCost || 0).toString(),
-            otherCosts: (validatedData.otherCosts || 0).toString(),
-            totalCostInclVat: (validatedData.totalCostInclVat || validatedData.purchasePrice).toString(),
-            notes: validatedData.notes || ""
-          });
-          console.log("Auto-created purchase record for vehicle:", vehicle.id);
-        } catch (purchaseError) {
-          console.log("Failed to create purchase record:", purchaseError);
-        }
-      }
+      // No automatic purchase creation - will be done through separate purchase button
       
       res.status(201).json(vehicle);
     } catch (error) {

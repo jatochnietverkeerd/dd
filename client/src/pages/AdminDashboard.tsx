@@ -163,8 +163,23 @@ export default function AdminDashboard() {
         body: { status },
       });
     },
-    onSuccess: () => {
+    onSuccess: (result, variables) => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/vehicles"] });
+      
+      // If status was changed to "verkocht", trigger sale form
+      if (variables.status === "verkocht" && result.requireSaleForm) {
+        const vehicle = vehicles?.find(v => v.id === variables.vehicleId);
+        if (vehicle) {
+          setSelectedSaleVehicle(vehicle);
+          setIsSaleDialogOpen(true);
+          toast({
+            title: "Status bijgewerkt naar verkocht",
+            description: "Vul nu de verkoop details in.",
+          });
+          return;
+        }
+      }
+      
       toast({
         title: "Status bijgewerkt",
         description: "De voertuigstatus is succesvol bijgewerkt.",
