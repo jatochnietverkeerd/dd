@@ -100,15 +100,16 @@ export default function SaleForm({ vehicle, purchase, sale, isOpen, onClose, tok
           setCalculatedSale(calculation);
           
           // Update form values with calculated amounts safely
-          if (calculation && typeof calculation.salePriceInclVat === 'number') {
+          if (calculation && typeof calculation.salePriceInclVat === 'number' && !isNaN(calculation.salePriceInclVat)) {
             form.setValue("salePriceInclVat", calculation.salePriceInclVat, { shouldValidate: false });
           }
-          if (calculation && typeof calculation.finalPrice === 'number') {
+          if (calculation && typeof calculation.finalPrice === 'number' && !isNaN(calculation.finalPrice)) {
             form.setValue("finalPrice", calculation.finalPrice, { shouldValidate: false });
           }
         }
       } catch (error) {
         console.warn("Error in sale calculation:", error);
+        setCalculatedSale(null);
       }
     });
 
@@ -412,35 +413,35 @@ export default function SaleForm({ vehicle, purchase, sale, isOpen, onClose, tok
               <CardContent className="space-y-2">
                 <div className="flex justify-between text-sm">
                   <span>Verkoopprijs (excl. BTW):</span>
-                  <span>{formatCurrency(calculatedSale.salePrice)}</span>
+                  <span>{calculatedSale.salePrice ? formatCurrency(calculatedSale.salePrice) : '€0,00'}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span>BTW-bedrag:</span>
-                  <span>{formatCurrency(calculatedSale.vatAmount)}</span>
+                  <span>{calculatedSale.vatAmount ? formatCurrency(calculatedSale.vatAmount) : '€0,00'}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span>Korting:</span>
-                  <span>-{formatCurrency(calculatedSale.discount)}</span>
+                  <span>-{calculatedSale.discount ? formatCurrency(calculatedSale.discount) : '€0,00'}</span>
                 </div>
                 <div className="flex justify-between text-sm font-semibold">
                   <span>Eindprijs:</span>
-                  <span>{formatCurrency(calculatedSale.finalPrice)}</span>
+                  <span>{calculatedSale.finalPrice ? formatCurrency(calculatedSale.finalPrice) : '€0,00'}</span>
                 </div>
                 <div className="border-t border-gray-600 pt-2">
                   <div className="flex justify-between text-sm">
                     <span>Inkoopprijs totaal:</span>
-                    <span>{formatCurrency(purchase.totalCostInclVat)}</span>
+                    <span>{purchase.totalCostInclVat ? formatCurrency(purchase.totalCostInclVat) : '€0,00'}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span>Winst (excl. BTW):</span>
                     <span className={calculatedSale.profitExclVat >= 0 ? "text-green-400" : "text-red-400"}>
-                      {formatCurrency(calculatedSale.profitExclVat)}
+                      {calculatedSale.profitExclVat ? formatCurrency(calculatedSale.profitExclVat) : '€0,00'}
                     </span>
                   </div>
                   <div className="flex justify-between font-bold text-yellow-500">
                     <span>Winst (incl. BTW):</span>
                     <span className={calculatedSale.profitInclVat >= 0 ? "text-green-400" : "text-red-400"}>
-                      {formatCurrency(calculatedSale.profitInclVat)}
+                      {calculatedSale.profitInclVat ? formatCurrency(calculatedSale.profitInclVat) : '€0,00'}
                     </span>
                   </div>
                 </div>
