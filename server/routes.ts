@@ -319,6 +319,7 @@ Sitemap: ${baseUrl}/sitemap.xml`;
         return res.status(400).json({ message: "Invalid vehicle ID" });
       }
 
+      console.log("Update request body:", JSON.stringify(req.body, null, 2));
       const validatedData = insertVehicleSchema.partial().parse(req.body);
       
       // Get current vehicle to check status change
@@ -384,8 +385,10 @@ Sitemap: ${baseUrl}/sitemap.xml`;
       res.json(vehicle);
     } catch (error) {
       if (error instanceof z.ZodError) {
+        console.log("Update validation errors:", error.errors);
         return res.status(400).json({ message: "Invalid vehicle data", errors: error.errors });
       }
+      console.log("Update server error:", error);
       res.status(500).json({ message: "Failed to update vehicle" });
     }
   });

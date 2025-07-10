@@ -235,6 +235,12 @@ The application uses a modern, type-safe architecture with excellent developer e
 - **Comprehensive Cost Tracking**: Transport, maintenance, cleaning, and other costs
 - **BPM Integration**: Proper handling of Dutch Motor Vehicle Tax (BPM)
 
+### BPM Compliance Features (July 10, 2025)
+- **BPM Calculation Fields**: CO2 emission, first registration date, catalog price
+- **Automatic Concept Sale Creation**: When vehicle status changes to "verkocht", system automatically creates concept sale registration
+- **Total Cost Price Integration**: Includes all costs (purchase + transport + maintenance + BPM) in profit calculations
+- **Schema Validation**: Proper date handling and optional field validation for BPM fields
+
 ### Key Features
 - **Collapsible Sections**: Purchase details can be shown/hidden for clean interface
 - **Live Calculations**: Purchase totals and profit margins update in real-time
@@ -243,13 +249,15 @@ The application uses a modern, type-safe architecture with excellent developer e
 - **Supplier Management**: Track vehicle suppliers and invoice numbers
 
 ### Technical Implementation
-- **Form Validation**: Zod schema validation for all purchase fields
+- **Form Validation**: Zod schema validation with date transformation for all purchase fields
 - **Real-time Watching**: React Hook Form watch for live calculations
 - **Utility Functions**: Shared VAT calculation utilities for consistency
-- **Error Handling**: Comprehensive error handling for all form operations
+- **Error Handling**: Comprehensive error handling and recovery mechanisms
+- **Enhanced Logging**: Detailed validation error logging for debugging
 
 ### Database Stability Improvements
 - **Schema Synchronization**: All database columns properly synchronized
 - **Constraint Management**: Proper unique constraints without conflicts
 - **Data Persistence**: Reliable data storage without cache issues
 - **Error Prevention**: Comprehensive error handling and recovery mechanisms
+- **Date Field Handling**: Proper string-to-date transformation in schemas

@@ -190,9 +190,8 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
       images: images,
       // Ensure new vehicles are available by default
       available: true,
-      // Convert date strings to Date objects if needed
-      datumEersteToelating: data.datumEersteToelating ? new Date(data.datumEersteToelating) : undefined,
-      purchaseDate: data.purchaseDate ? new Date(data.purchaseDate) : undefined,
+      // Remove undefined values to prevent validation issues
+      ...Object.fromEntries(Object.entries(data).filter(([_, v]) => v !== undefined && v !== null && v !== "")),
     };
     
     if (vehicle) {

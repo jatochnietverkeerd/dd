@@ -130,7 +130,7 @@ export const insertVehicleSchema = createInsertSchema(vehicles).omit({
 }).extend({
   // Make BPM fields optional for vehicle creation
   co2Uitstoot: z.number().optional(),
-  datumEersteToelating: z.date().optional(),
+  datumEersteToelating: z.string().optional().transform(val => val ? new Date(val) : undefined),
   nettoCatalogusprijs: z.number().optional(),
   // Make purchase fields optional
   purchasePrice: z.number().optional(),
@@ -138,7 +138,7 @@ export const insertVehicleSchema = createInsertSchema(vehicles).omit({
   bpmAmount: z.number().optional(),
   supplier: z.string().optional(),
   invoiceNumber: z.string().optional(),
-  purchaseDate: z.date().optional(),
+  purchaseDate: z.string().optional().transform(val => val ? new Date(val) : undefined),
   transportCost: z.number().optional(),
   maintenanceCost: z.number().optional(),
   cleaningCost: z.number().optional(),
