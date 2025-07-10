@@ -569,13 +569,17 @@ Sitemap: ${baseUrl}/sitemap.xml`;
   // Sale routes (Verkoop registratie)
   app.post("/api/admin/sales", authenticateAdmin, async (req, res) => {
     try {
+      console.log("Received sale data:", JSON.stringify(req.body, null, 2));
       const validatedData = insertSaleSchema.parse(req.body);
+      console.log("Validated sale data:", JSON.stringify(validatedData, null, 2));
       const sale = await storage.createSale(validatedData);
       res.json(sale);
     } catch (error) {
       if (error instanceof z.ZodError) {
+        console.log("Validation errors:", error.errors);
         return res.status(400).json({ message: "Invalid sale data", errors: error.errors });
       }
+      console.log("Sale creation error:", error);
       res.status(500).json({ message: "Failed to create sale" });
     }
   });
