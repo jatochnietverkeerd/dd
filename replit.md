@@ -225,3 +225,31 @@ The application uses a modern, type-safe architecture with excellent developer e
 - **Performance**: Emphasis on GTI heritage and AMG engineering
 - **Value Proposition**: Premium features at accessible price points
 - **Target Demographics**: 25-45 age group, performance enthusiasts, first-time luxury buyers
+
+## Integrated Purchase/Sale Workflow (Latest Update - July 2025)
+
+### Enhanced Vehicle Form
+- **Integrated Inkoop**: Purchase details directly embedded in vehicle form
+- **Real-time Profit Calculation**: Automatic profit and margin calculations while entering data
+- **Dutch VAT Compliance**: Support for 21% VAT, margin regeling, and VAT-exempt transactions
+- **Comprehensive Cost Tracking**: Transport, maintenance, cleaning, and other costs
+- **BPM Integration**: Proper handling of Dutch Motor Vehicle Tax (BPM)
+
+### Key Features
+- **Collapsible Sections**: Purchase details can be shown/hidden for clean interface
+- **Live Calculations**: Purchase totals and profit margins update in real-time
+- **VAT Type Selection**: Proper compliance with Dutch automotive tax regulations
+- **Color-coded Profit Display**: Green for profit, red for loss, with percentage margins
+- **Supplier Management**: Track vehicle suppliers and invoice numbers
+
+### Technical Implementation
+- **Form Validation**: Zod schema validation for all purchase fields
+- **Real-time Watching**: React Hook Form watch for live calculations
+- **Utility Functions**: Shared VAT calculation utilities for consistency
+- **Error Handling**: Comprehensive error handling for all form operations
+
+### Database Stability Improvements
+- **Schema Synchronization**: All database columns properly synchronized
+- **Constraint Management**: Proper unique constraints without conflicts
+- **Data Persistence**: Reliable data storage without cache issues
+- **Error Prevention**: Comprehensive error handling and recovery mechanisms
