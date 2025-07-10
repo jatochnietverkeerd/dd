@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { useFadeInOnScroll } from "@/hooks/useScrollAnimation";
 import LazyImage from "@/components/LazyImage";
+import heroImage from "@assets/Gemini_Generated_Image_v45jgtv45jgtv45j_1752158919058.png";
 
 export default function Hero() {
   const { elementRef: titleRef, fadeInClass: titleFadeClass } = useFadeInOnScroll(0.2);
@@ -25,12 +26,12 @@ export default function Hero() {
       <div className="absolute inset-0 bg-gradient-to-r from-dark-primary via-dark-primary/70 to-transparent z-10"></div>
       <div className="absolute inset-0">
         <LazyImage
-          src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080&q=80"
-          alt="Premium Voertuigen"
+          src={heroImage}
+          alt="Premium Volkswagen GTI Voertuigen - DD Cars"
           className="w-full h-full object-cover object-center image-zoom"
           onError={(e: any) => {
             console.error('Hero image failed to load:', e);
-            e.target.src = "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080";
+            e.target.src = "https://images.unsplash.com/photo-1503376780353-7e6692767b70?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080&q=80";
           }}
         />
       </div>
