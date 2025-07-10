@@ -226,14 +226,14 @@ The application uses a modern, type-safe architecture with excellent developer e
 - **Value Proposition**: Premium features at accessible price points
 - **Target Demographics**: 25-45 age group, performance enthusiasts, first-time luxury buyers
 
-## Integrated Purchase/Sale Workflow (Latest Update - July 2025)
+## Simplified Vehicle Management Workflow (Latest Update - July 10, 2025)
 
-### Enhanced Vehicle Form
-- **Integrated Inkoop**: Purchase details directly embedded in vehicle form
-- **Real-time Profit Calculation**: Automatic profit and margin calculations while entering data
-- **Dutch VAT Compliance**: Support for 21% VAT, margin regeling, and VAT-exempt transactions
-- **Comprehensive Cost Tracking**: Transport, maintenance, cleaning, and other costs
-- **BPM Integration**: Proper handling of Dutch Motor Vehicle Tax (BPM)
+### Streamlined Separation of Concerns
+- **Pure Vehicle Form**: Vehicle form now contains only car details - no financial data
+- **Dedicated Purchase/Sale Buttons**: Separate workflow with manual control via dedicated buttons
+- **Eliminated Page Refresh**: Improved user experience without time-consuming page reloads
+- **Automatic Sale Trigger**: Status change to "verkocht" automatically opens sale form
+- **Clear Workflow**: Add vehicle → Use purchase button → Use sale button
 
 ### BPM Compliance Features (July 10, 2025)
 - **BPM Calculation Fields**: CO2 emission, first registration date, catalog price
@@ -261,3 +261,11 @@ The application uses a modern, type-safe architecture with excellent developer e
 - **Data Persistence**: Reliable data storage without cache issues
 - **Error Prevention**: Comprehensive error handling and recovery mechanisms
 - **Date Field Handling**: Proper string-to-date transformation in schemas
+
+## Visual Updates (July 10, 2025)
+
+### Hero Section Redesign
+- **New Hero Image**: Premium Volkswagen GTI performance cars showcasing brand focus
+- **Updated Messaging**: "Premium Performance" with "GTI & AMG Specialists" tagline
+- **Performance Focus**: Messaging aligned with affordable premium performance market
+- **Visual Consistency**: Hero imagery matches inventory focus on GTI and AMG vehicles

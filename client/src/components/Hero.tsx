@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { useFadeInOnScroll } from "@/hooks/useScrollAnimation";
 import LazyImage from "@/components/LazyImage";
+import heroImage from "@assets/Gemini_Generated_Image_v45jgtv45jgtv45j_1752158609633.png";
 
 export default function Hero() {
   const { elementRef: titleRef, fadeInClass: titleFadeClass } = useFadeInOnScroll(0.2);
@@ -25,8 +26,8 @@ export default function Hero() {
       <div className="absolute inset-0 bg-gradient-to-r from-dark-primary via-dark-primary/70 to-transparent z-10"></div>
       <div className="absolute inset-0">
         <LazyImage
-          src="/hero-cars.png"
-          alt="Premium Voertuigen"
+          src={heroImage}
+          alt="Premium Volkswagen GTI Performance Voertuigen"
           className="w-full h-full object-cover object-center image-zoom"
           onError={(e: any) => {
             console.error('Hero image failed to load:', e);
@@ -41,14 +42,14 @@ export default function Hero() {
             ref={titleRef}
             className={`text-5xl md:text-6xl font-light mb-6 leading-tight transition-all duration-700 ${titleFadeClass}`}
           >
-            Premium <span className="text-luxury-gold font-bold">Occasions</span><br />
-            <span className="text-3xl md:text-4xl text-gray-300">Exclusief & Uitzonderlijk</span>
+            Premium <span className="text-luxury-gold font-bold">Performance</span><br />
+            <span className="text-3xl md:text-4xl text-gray-300">GTI & AMG Specialists</span>
           </h1>
           <p 
             ref={textRef}
             className={`text-xl text-gray-300 mb-8 leading-relaxed transition-all duration-700 delay-200 ${textFadeClass}`}
           >
-            Ontdek onze collectie van premium voertuigen. Elke auto is zorgvuldig geselecteerd en gecontroleerd voor de meest veeleisende automobilist.
+            Specialists in GTI en AMG performance voertuigen. Toegankelijke luxe voor de sportieve rijder met oog voor kwaliteit en prestaties.
           </p>
           <div 
             ref={buttonRef}
