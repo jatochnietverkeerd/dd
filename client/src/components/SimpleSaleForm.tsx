@@ -16,18 +16,24 @@ import { calculateSaleTotal, formatCurrency, type VatType } from "@shared/vatUti
 import type { Vehicle, Sale, Purchase } from "@shared/schema";
 import { z } from "zod";
 
-const saleFormSchema = insertSaleSchema.extend({
+const saleFormSchema = z.object({
   vehicleId: z.number(),
+  purchaseId: z.number().optional(),
   salePrice: z.number().positive("Verkoopprijs moet positief zijn"),
+  vatType: z.string(),
   salePriceInclVat: z.number().positive("Verkoopprijs incl. BTW moet positief zijn"),
   discount: z.number().min(0, "Korting kan niet negatief zijn").default(0),
   finalPrice: z.number().positive("Eindprijs moet positief zijn"),
+  customerName: z.string().min(1, "Naam is verplicht"),
+  customerEmail: z.string().email("Geldig e-mailadres is verplicht"),
+  customerPhone: z.string().min(1, "Telefoonnummer is verplicht"),
+  customerAddress: z.string().min(1, "Adres is verplicht"),
+  paymentMethod: z.string().default("bank"),
   saleDate: z.string().transform(val => new Date(val)),
   deliveryDate: z.string().optional().transform(val => val && val !== "" ? new Date(val) : null),
-}).omit({ 
-  vatAmount: true,
-  profitExclVat: true,
-  profitInclVat: true
+  warrantyMonths: z.number().default(12),
+  invoiceNumber: z.string().optional(),
+  notes: z.string().optional(),
 });
 
 type SaleFormData = z.infer<typeof saleFormSchema>;
@@ -54,18 +60,18 @@ export default function SimpleSaleForm({ vehicle, purchase, sale, isOpen, onClos
     defaultValues: {
       vehicleId: vehicle.id,
       purchaseId: purchase?.id || undefined,
-      salePrice: sale?.salePrice ? Number(sale.salePrice) : undefined,
+      salePrice: sale?.salePrice ? Number(sale.salePrice) : 0,
       vatType: vatType,
-      salePriceInclVat: sale?.salePriceInclVat ? Number(sale.salePriceInclVat) : undefined,
+      salePriceInclVat: sale?.salePriceInclVat ? Number(sale.salePriceInclVat) : 0,
       customerName: sale?.customerName || "",
       customerEmail: sale?.customerEmail || "",
       customerPhone: sale?.customerPhone || "",
       customerAddress: sale?.customerAddress || "",
       discount: sale?.discount ? Number(sale.discount) : 0,
-      finalPrice: sale?.finalPrice ? Number(sale.finalPrice) : undefined,
+      finalPrice: sale?.finalPrice ? Number(sale.finalPrice) : 0,
       paymentMethod: sale?.paymentMethod || "bank",
       saleDate: sale?.saleDate ? new Date(sale.saleDate).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
-      deliveryDate: sale?.deliveryDate ? new Date(sale.deliveryDate).toISOString().split('T')[0] : undefined,
+      deliveryDate: sale?.deliveryDate ? new Date(sale.deliveryDate).toISOString().split('T')[0] : "",
       warrantyMonths: sale?.warrantyMonths || 12,
       invoiceNumber: sale?.invoiceNumber || "",
       notes: sale?.notes || "",
@@ -113,12 +119,26 @@ export default function SimpleSaleForm({ vehicle, purchase, sale, isOpen, onClos
       }
 
       const saleData = {
-        ...data,
+        vehicleId: data.vehicleId,
+        purchaseId: data.purchaseId || null,
+        salePrice: data.salePrice,
+        vatType: data.vatType,
         vatAmount: finalCalculation.vatAmount,
-        profitExclVat: finalCalculation.profitExclVat,
-        profitInclVat: finalCalculation.profitInclVat,
+        salePriceInclVat: finalCalculation.salePriceInclVat,
+        discount: data.discount,
+        finalPrice: finalCalculation.finalPrice,
+        customerName: data.customerName,
+        customerEmail: data.customerEmail,
+        customerPhone: data.customerPhone,
+        customerAddress: data.customerAddress,
+        paymentMethod: data.paymentMethod,
         saleDate: new Date(data.saleDate).toISOString(),
         deliveryDate: data.deliveryDate && data.deliveryDate !== "" ? new Date(data.deliveryDate).toISOString() : null,
+        warrantyMonths: data.warrantyMonths,
+        invoiceNumber: data.invoiceNumber || null,
+        notes: data.notes || null,
+        profitExclVat: finalCalculation.profitExclVat,
+        profitInclVat: finalCalculation.profitInclVat,
       };
 
       if (sale) {
