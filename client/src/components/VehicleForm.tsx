@@ -159,21 +159,33 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
         body: data,
       });
     },
-    onSuccess: () => {
+    onSuccess: (result) => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/vehicles"] });
       queryClient.invalidateQueries({ queryKey: ["/api/vehicles"] });
       queryClient.invalidateQueries({ queryKey: ["/api/vehicles/featured"] });
-      // Clear all query cache to force refresh
-      queryClient.clear();
-      toast({
-        title: "Voertuig bijgewerkt",
-        description: "Het voertuig is succesvol bijgewerkt.",
-      });
-      onClose();
-      // Force page refresh to ensure cache is cleared
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
+      
+      // Check if we need to show sale form
+      if (result.requireSaleForm) {
+        toast({
+          title: "Status bijgewerkt naar verkocht",
+          description: "Vul nu de verkoop details in.",
+        });
+        onClose();
+        // Trigger sale form - we'll need to communicate this to parent component
+        window.dispatchEvent(new CustomEvent('showSaleForm', { 
+          detail: { vehicleId: vehicle!.id } 
+        }));
+      } else {
+        toast({
+          title: "Voertuig bijgewerkt",
+          description: "Het voertuig is succesvol bijgewerkt.",
+        });
+        onClose();
+        // Force page refresh to ensure cache is cleared
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+      }
     },
     onError: () => {
       toast({

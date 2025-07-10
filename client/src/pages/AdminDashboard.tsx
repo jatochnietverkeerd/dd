@@ -51,6 +51,21 @@ export default function AdminDashboard() {
     setUser(JSON.parse(storedUser));
   }, [setLocation]);
 
+  // Listen for sale form trigger from vehicle form
+  useEffect(() => {
+    const handleShowSaleForm = (event: CustomEvent) => {
+      const vehicleId = event.detail.vehicleId;
+      const vehicle = vehicles?.find(v => v.id === vehicleId);
+      if (vehicle) {
+        setSelectedSaleVehicle(vehicle);
+        setIsSaleDialogOpen(true);
+      }
+    };
+
+    window.addEventListener('showSaleForm', handleShowSaleForm as EventListener);
+    return () => window.removeEventListener('showSaleForm', handleShowSaleForm as EventListener);
+  }, [vehicles]);
+
   const authHeaders = token ? { Authorization: `Bearer ${token}` } : {};
 
   const { data: vehicles, isLoading: vehiclesLoading } = useQuery({

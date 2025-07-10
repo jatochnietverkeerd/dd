@@ -301,6 +301,33 @@ Sitemap: ${baseUrl}/sitemap.xml`;
       console.log("Request body:", JSON.stringify(req.body, null, 2));
       const validatedData = insertVehicleSchema.parse(req.body);
       const vehicle = await storage.createVehicle(validatedData);
+      
+      // Automatically create purchase record if purchase details are provided
+      if (validatedData.purchasePrice && validatedData.purchasePrice > 0) {
+        try {
+          await storage.createPurchase({
+            vehicleId: vehicle.id,
+            purchasePrice: validatedData.purchasePrice.toString(),
+            vatType: validatedData.purchaseVatType || "21%",
+            vatAmount: "0.00", // Will be calculated
+            bpmAmount: (validatedData.bpmAmount || 0).toString(),
+            supplier: validatedData.supplier || "",
+            invoiceNumber: validatedData.invoiceNumber || "",
+            purchaseDate: validatedData.purchaseDate || new Date(),
+            transportCost: (validatedData.transportCost || 0).toString(),
+            maintenanceCost: (validatedData.maintenanceCost || 0).toString(),
+            cleaningCost: (validatedData.cleaningCost || 0).toString(),
+            guaranteeCost: (validatedData.guaranteeCost || 0).toString(),
+            otherCosts: (validatedData.otherCosts || 0).toString(),
+            totalCostInclVat: (validatedData.totalCostInclVat || validatedData.purchasePrice).toString(),
+            notes: validatedData.notes || ""
+          });
+          console.log("Auto-created purchase record for vehicle:", vehicle.id);
+        } catch (purchaseError) {
+          console.log("Failed to create purchase record:", purchaseError);
+        }
+      }
+      
       res.status(201).json(vehicle);
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -334,52 +361,13 @@ Sitemap: ${baseUrl}/sitemap.xml`;
         return res.status(404).json({ message: "Vehicle not found" });
       }
 
-      // Auto-create sale record when status changes to "verkocht"
+      // Return special response when status changes to "verkocht" to trigger sale form
       if (validatedData.status === "verkocht" && currentVehicle.status !== "verkocht") {
-        try {
-          // Check if purchase record exists for cost calculation
-          const purchaseRecord = await storage.getPurchaseByVehicleId(id);
-          
-          // Check if sale record already exists
-          const existingSale = await storage.getSaleByVehicleId(id);
-          
-          if (!existingSale) {
-            // Calculate total cost price from purchase data
-            let totalCostPrice = 0;
-            if (purchaseRecord) {
-              totalCostPrice = 
-                parseFloat(purchaseRecord.purchasePrice.toString()) +
-                parseFloat(purchaseRecord.transportCost?.toString() || "0") +
-                parseFloat(purchaseRecord.maintenanceCost?.toString() || "0") +
-                parseFloat(purchaseRecord.cleaningCost?.toString() || "0") +
-                parseFloat(purchaseRecord.guaranteeCost?.toString() || "0") +
-                parseFloat(purchaseRecord.otherCosts?.toString() || "0") +
-                parseFloat(purchaseRecord.bpmAmount?.toString() || "0");
-            }
-            
-            // Create concept sale record
-            const conceptSale = await storage.createSale({
-              vehicleId: id,
-              salePrice: 0, // To be filled by admin
-              vatType: purchaseRecord?.vatType || "21%",
-              vatAmount: 0, // Will be calculated when sale price is set
-              customerName: "", // To be filled by admin
-              customerEmail: "", // To be filled by admin
-              customerPhone: "", // To be filled by admin
-              saleDate: new Date(),
-              purchaseCostPrice: totalCostPrice,
-              discount: 0,
-              finalPrice: 0,
-              profitAmount: 0,
-              notes: "Automatisch gegenereerde concept verkoopregistratie"
-            });
-            
-            console.log(`Auto-created concept sale record for vehicle ${id} with total cost price €${totalCostPrice}`);
-          }
-        } catch (saleError) {
-          console.error("Error creating auto sale record:", saleError);
-          // Continue with vehicle update even if sale creation fails
-        }
+        return res.json({ 
+          ...vehicle, 
+          requireSaleForm: true,
+          message: "Status updated to sold - please complete sale details"
+        });
       }
 
       res.json(vehicle);
