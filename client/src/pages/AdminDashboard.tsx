@@ -13,9 +13,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
-import { LogOut, Car, Users, Plus, Edit, Trash2, Eye, CreditCard, Clock, CheckCircle, XCircle, Calculator, Download, FileText, TrendingUp, Mail, Home } from "lucide-react";
+import { LogOut, Car, Users, Plus, Edit, Trash2, Eye, CreditCard, Clock, CheckCircle, XCircle, Calculator, Download, FileText, TrendingUp, Mail, Home, ShoppingCart, Receipt } from "lucide-react";
 import type { Vehicle, Contact, Reservation, Purchase, Sale } from "@shared/schema";
 import VehicleForm from "@/components/VehicleForm";
+import PurchaseForm from "@/components/PurchaseForm";
+import SaleForm from "@/components/SaleForm";
 
 export default function AdminDashboard() {
   const [, setLocation] = useLocation();
@@ -27,6 +29,12 @@ export default function AdminDashboard() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [selectedYear, setSelectedYear] = useState("2024");
   const [selectedMonth, setSelectedMonth] = useState("all");
+  const [selectedPurchaseVehicle, setSelectedPurchaseVehicle] = useState<Vehicle | null>(null);
+  const [selectedSaleVehicle, setSelectedSaleVehicle] = useState<Vehicle | null>(null);
+  const [editingPurchase, setEditingPurchase] = useState<Purchase | null>(null);
+  const [editingSale, setEditingSale] = useState<Sale | null>(null);
+  const [isPurchaseDialogOpen, setIsPurchaseDialogOpen] = useState(false);
+  const [isSaleDialogOpen, setIsSaleDialogOpen] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -423,6 +431,35 @@ export default function AdminDashboard() {
                             </div>
                           )}
                         </div>
+                        
+                        <div className="flex space-x-2">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => {
+                              setSelectedPurchaseVehicle(vehicle);
+                              setIsPurchaseDialogOpen(true);
+                            }}
+                            className="border-gray-700 text-white hover:bg-gray-800"
+                          >
+                            <ShoppingCart className="w-4 h-4 mr-1" />
+                            Inkoop
+                          </Button>
+                          {purchases?.find(p => p.vehicleId === vehicle.id) && (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => {
+                                setSelectedSaleVehicle(vehicle);
+                                setIsSaleDialogOpen(true);
+                              }}
+                              className="border-gray-700 text-white hover:bg-gray-800"
+                            >
+                              <Receipt className="w-4 h-4 mr-1" />
+                              Verkoop
+                            </Button>
+                          )}
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
@@ -665,7 +702,18 @@ export default function AdminDashboard() {
               <TabsContent value="purchases" className="space-y-4">
                 <div className="flex justify-between items-center">
                   <h3 className="text-lg font-semibold">Inkoop Registratie</h3>
-                  <Button className="bg-yellow-500 hover:bg-yellow-600 text-black">
+                  <Button 
+                    onClick={() => {
+                      // Show vehicle selection dialog first
+                      // For now, show message that vehicle needs to be selected
+                      toast({
+                        title: "Selecteer voertuig",
+                        description: "Ga naar het voertuig tabblad en klik op 'Inkoop' bij het gewenste voertuig.",
+                        variant: "destructive",
+                      });
+                    }}
+                    className="bg-yellow-500 hover:bg-yellow-600 text-black"
+                  >
                     <Plus className="w-4 h-4 mr-2" />
                     Nieuwe Inkoop
                   </Button>
@@ -1018,6 +1066,37 @@ export default function AdminDashboard() {
         onClose={() => setIsAddDialogOpen(false)}
         token={token!}
       />
+
+      {/* Purchase Form */}
+      {selectedPurchaseVehicle && (
+        <PurchaseForm 
+          vehicle={selectedPurchaseVehicle}
+          purchase={editingPurchase}
+          isOpen={isPurchaseDialogOpen}
+          onClose={() => {
+            setIsPurchaseDialogOpen(false);
+            setSelectedPurchaseVehicle(null);
+            setEditingPurchase(null);
+          }}
+          token={token!}
+        />
+      )}
+
+      {/* Sale Form */}
+      {selectedSaleVehicle && (
+        <SaleForm 
+          vehicle={selectedSaleVehicle}
+          purchase={purchases?.find(p => p.vehicleId === selectedSaleVehicle.id)}
+          sale={editingSale}
+          isOpen={isSaleDialogOpen}
+          onClose={() => {
+            setIsSaleDialogOpen(false);
+            setSelectedSaleVehicle(null);
+            setEditingSale(null);
+          }}
+          token={token!}
+        />
+      )}
     </div>
   );
 }
