@@ -176,6 +176,13 @@ export const insertSaleSchema = createInsertSchema(sales).omit({
   id: true,
   createdAt: true,
 }).extend({
+  salePrice: z.number().transform(val => val.toString()),
+  vatAmount: z.number().transform(val => val.toString()),
+  salePriceInclVat: z.number().transform(val => val.toString()),
+  discount: z.number().transform(val => val.toString()),
+  finalPrice: z.number().transform(val => val.toString()),
+  profitExclVat: z.number().transform(val => val.toString()),
+  profitInclVat: z.number().transform(val => val.toString()),
   saleDate: z.string().transform(val => new Date(val)),
   deliveryDate: z.string().optional().transform(val => val && val !== "" ? new Date(val) : null),
 });
