@@ -17,7 +17,7 @@ import { LogOut, Car, Users, Plus, Edit, Trash2, Eye, CreditCard, Clock, CheckCi
 import type { Vehicle, Contact, Reservation, Purchase, Sale } from "@shared/schema";
 import VehicleForm from "@/components/VehicleForm";
 import PurchaseForm from "@/components/PurchaseForm";
-import SaleForm from "@/components/SaleForm";
+import SimpleSaleForm from "@/components/SimpleSaleForm";
 
 export default function AdminDashboard() {
   const [, setLocation] = useLocation();
@@ -1114,7 +1114,7 @@ export default function AdminDashboard() {
 
       {/* Sale Form */}
       {selectedSaleVehicle && (
-        <SaleForm 
+        <SimpleSaleForm 
           vehicle={selectedSaleVehicle}
           purchase={purchases?.find(p => p.vehicleId === selectedSaleVehicle.id)}
           sale={editingSale}

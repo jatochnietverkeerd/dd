@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -32,7 +32,7 @@ const saleFormSchema = insertSaleSchema.extend({
 
 type SaleFormData = z.infer<typeof saleFormSchema>;
 
-interface SaleFormProps {
+interface SimpleSaleFormProps {
   vehicle: Vehicle;
   purchase?: Purchase;
   sale?: Sale;
@@ -41,8 +41,9 @@ interface SaleFormProps {
   token: string;
 }
 
-export default function SaleForm({ vehicle, purchase, sale, isOpen, onClose, token }: SaleFormProps) {
-  const [calculatedSale, setCalculatedSale] = useState<any>(null);
+export default function SimpleSaleForm({ vehicle, purchase, sale, isOpen, onClose, token }: SimpleSaleFormProps) {
+  const [salePrice, setSalePrice] = useState(sale?.salePrice ? Number(sale.salePrice) : 0);
+  const [discount, setDiscount] = useState(sale?.discount ? Number(sale.discount) : 0);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -69,83 +70,44 @@ export default function SaleForm({ vehicle, purchase, sale, isOpen, onClose, tok
       invoiceNumber: sale?.invoiceNumber || "",
       notes: sale?.notes || "",
     },
-    mode: "onChange",
   });
 
-  // Calculate sale totals when form values change
-  useEffect(() => {
-    const subscription = form.watch((values) => {
-      try {
-        if (values.salePrice && typeof values.salePrice === 'number' && values.salePrice > 0 && purchase) {
-          const purchaseCalculation = {
-            purchasePrice: Number(purchase.purchasePrice) || 0,
-            vatType: purchase.vatType as VatType,
-            vatAmount: Number(purchase.vatAmount) || 0,
-            bpmAmount: Number(purchase.bpmAmount) || 0,
-            transportCost: Number(purchase.transportCost) || 0,
-            maintenanceCost: Number(purchase.maintenanceCost) || 0,
-            cleaningCost: Number(purchase.cleaningCost) || 0,
-            guaranteeCost: Number(purchase.guaranteeCost) || 0,
-            otherCosts: Number(purchase.otherCosts) || 0,
-            totalCostInclVat: Number(purchase.totalCostInclVat) || 0,
-          };
+  // Simple calculation function
+  const calculatePrices = () => {
+    if (!salePrice || !purchase) return null;
+    
+    try {
+      const purchaseCalculation = {
+        purchasePrice: Number(purchase.purchasePrice) || 0,
+        vatType: purchase.vatType as VatType,
+        vatAmount: Number(purchase.vatAmount) || 0,
+        bpmAmount: Number(purchase.bpmAmount) || 0,
+        transportCost: Number(purchase.transportCost) || 0,
+        maintenanceCost: Number(purchase.maintenanceCost) || 0,
+        cleaningCost: Number(purchase.cleaningCost) || 0,
+        guaranteeCost: Number(purchase.guaranteeCost) || 0,
+        otherCosts: Number(purchase.otherCosts) || 0,
+        totalCostInclVat: Number(purchase.totalCostInclVat) || 0,
+      };
 
-          const calculation = calculateSaleTotal(
-            values.salePrice,
-            vatType,
-            values.discount || 0,
-            purchaseCalculation
-          );
+      return calculateSaleTotal(
+        salePrice,
+        vatType,
+        discount,
+        purchaseCalculation
+      );
+    } catch (error) {
+      console.warn("Error calculating prices:", error);
+      return null;
+    }
+  };
 
-          if (calculation) {
-            setCalculatedSale(calculation);
-            
-            // Update form values with calculated amounts safely
-            if (typeof calculation.salePriceInclVat === 'number' && !isNaN(calculation.salePriceInclVat)) {
-              form.setValue("salePriceInclVat", calculation.salePriceInclVat, { shouldValidate: false });
-            }
-            if (typeof calculation.finalPrice === 'number' && !isNaN(calculation.finalPrice)) {
-              form.setValue("finalPrice", calculation.finalPrice, { shouldValidate: false });
-            }
-          }
-        }
-      } catch (error) {
-        console.warn("Error in sale calculation:", error);
-        setCalculatedSale(null);
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, [form, purchase, vatType]);
+  const calculatedSale = calculatePrices();
 
   const saveSaleMutation = useMutation({
     mutationFn: async (data: SaleFormData) => {
-      console.log("Submitting sale data:", data);
+      const finalCalculation = calculatePrices();
       
-      // Calculate sale totals if not already calculated
-      let finalCalculation = calculatedSale;
-      if (!finalCalculation && purchase) {
-        const purchaseCalculation = {
-          purchasePrice: Number(purchase.purchasePrice),
-          vatType: purchase.vatType as VatType,
-          vatAmount: Number(purchase.vatAmount),
-          bpmAmount: Number(purchase.bpmAmount),
-          transportCost: Number(purchase.transportCost),
-          maintenanceCost: Number(purchase.maintenanceCost),
-          cleaningCost: Number(purchase.cleaningCost),
-          guaranteeCost: Number(purchase.guaranteeCost),
-          otherCosts: Number(purchase.otherCosts),
-          totalCostInclVat: Number(purchase.totalCostInclVat),
-        };
-
-        finalCalculation = calculateSaleTotal(
-          data.salePrice,
-          vatType,
-          data.discount || 0,
-          purchaseCalculation
-        );
-      }
-
       if (!finalCalculation) {
         throw new Error("Verkoopberekening kon niet worden uitgevoerd");
       }
@@ -221,13 +183,19 @@ export default function SaleForm({ vehicle, purchase, sale, isOpen, onClose, tok
                   id="salePrice"
                   type="number"
                   step="0.01"
-                  {...form.register("salePrice", { valueAsNumber: true })}
+                  value={salePrice || ""}
+                  onChange={(e) => {
+                    const value = parseFloat(e.target.value) || 0;
+                    setSalePrice(value);
+                    form.setValue("salePrice", value);
+                    if (calculatedSale) {
+                      form.setValue("salePriceInclVat", calculatedSale.salePriceInclVat);
+                      form.setValue("finalPrice", calculatedSale.finalPrice);
+                    }
+                  }}
                   className="bg-gray-800 border-gray-700 text-white"
                   placeholder="35000.00"
                 />
-                {form.formState.errors.salePrice && (
-                  <p className="text-red-400 text-sm mt-1">{form.formState.errors.salePrice.message}</p>
-                )}
               </div>
 
               <div>
@@ -236,9 +204,8 @@ export default function SaleForm({ vehicle, purchase, sale, isOpen, onClose, tok
                   id="salePriceInclVat"
                   type="number"
                   step="0.01"
-                  {...form.register("salePriceInclVat", { valueAsNumber: true })}
+                  value={calculatedSale ? calculatedSale.salePriceInclVat : ""}
                   className="bg-gray-700 border-gray-600 text-gray-300"
-                  placeholder="42350.00"
                   disabled
                 />
               </div>
@@ -249,7 +216,12 @@ export default function SaleForm({ vehicle, purchase, sale, isOpen, onClose, tok
                   id="discount"
                   type="number"
                   step="0.01"
-                  {...form.register("discount", { valueAsNumber: true })}
+                  value={discount || ""}
+                  onChange={(e) => {
+                    const value = parseFloat(e.target.value) || 0;
+                    setDiscount(value);
+                    form.setValue("discount", value);
+                  }}
                   className="bg-gray-800 border-gray-700 text-white"
                   placeholder="0.00"
                 />
@@ -261,9 +233,8 @@ export default function SaleForm({ vehicle, purchase, sale, isOpen, onClose, tok
                   id="finalPrice"
                   type="number"
                   step="0.01"
-                  {...form.register("finalPrice", { valueAsNumber: true })}
+                  value={calculatedSale ? calculatedSale.finalPrice : ""}
                   className="bg-gray-700 border-gray-600 text-gray-300"
-                  placeholder="42350.00"
                   disabled
                 />
               </div>
@@ -284,9 +255,6 @@ export default function SaleForm({ vehicle, purchase, sale, isOpen, onClose, tok
                   className="bg-gray-800 border-gray-700 text-white"
                   placeholder="Jan Janssen"
                 />
-                {form.formState.errors.customerName && (
-                  <p className="text-red-400 text-sm mt-1">{form.formState.errors.customerName.message}</p>
-                )}
               </div>
 
               <div>
@@ -298,9 +266,6 @@ export default function SaleForm({ vehicle, purchase, sale, isOpen, onClose, tok
                   className="bg-gray-800 border-gray-700 text-white"
                   placeholder="jan@example.com"
                 />
-                {form.formState.errors.customerEmail && (
-                  <p className="text-red-400 text-sm mt-1">{form.formState.errors.customerEmail.message}</p>
-                )}
               </div>
 
               <div>
@@ -311,9 +276,6 @@ export default function SaleForm({ vehicle, purchase, sale, isOpen, onClose, tok
                   className="bg-gray-800 border-gray-700 text-white"
                   placeholder="06-12345678"
                 />
-                {form.formState.errors.customerPhone && (
-                  <p className="text-red-400 text-sm mt-1">{form.formState.errors.customerPhone.message}</p>
-                )}
               </div>
 
               <div>
@@ -339,9 +301,6 @@ export default function SaleForm({ vehicle, purchase, sale, isOpen, onClose, tok
                   placeholder="Straat 123, 1234 AB Plaats"
                   rows={2}
                 />
-                {form.formState.errors.customerAddress && (
-                  <p className="text-red-400 text-sm mt-1">{form.formState.errors.customerAddress.message}</p>
-                )}
               </div>
             </CardContent>
           </Card>
@@ -389,7 +348,7 @@ export default function SaleForm({ vehicle, purchase, sale, isOpen, onClose, tok
                   id="invoiceNumber"
                   {...form.register("invoiceNumber")}
                   className="bg-gray-800 border-gray-700 text-white"
-                  placeholder="V-2024-001"
+                  placeholder="FACT-2024-001"
                 />
               </div>
 
@@ -399,7 +358,7 @@ export default function SaleForm({ vehicle, purchase, sale, isOpen, onClose, tok
                   id="notes"
                   {...form.register("notes")}
                   className="bg-gray-800 border-gray-700 text-white"
-                  placeholder="Opmerkingen over de verkoop..."
+                  placeholder="Aanvullende opmerkingen..."
                   rows={3}
                 />
               </div>
@@ -415,35 +374,35 @@ export default function SaleForm({ vehicle, purchase, sale, isOpen, onClose, tok
               <CardContent className="space-y-2">
                 <div className="flex justify-between text-sm">
                   <span>Verkoopprijs (excl. BTW):</span>
-                  <span>{calculatedSale.salePrice ? formatCurrency(calculatedSale.salePrice) : '€0,00'}</span>
+                  <span>{formatCurrency(calculatedSale.salePrice)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span>BTW-bedrag:</span>
-                  <span>{calculatedSale.vatAmount ? formatCurrency(calculatedSale.vatAmount) : '€0,00'}</span>
+                  <span>{formatCurrency(calculatedSale.vatAmount)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span>Korting:</span>
-                  <span>-{calculatedSale.discount ? formatCurrency(calculatedSale.discount) : '€0,00'}</span>
+                  <span>-{formatCurrency(calculatedSale.discount)}</span>
                 </div>
                 <div className="flex justify-between text-sm font-semibold">
                   <span>Eindprijs:</span>
-                  <span>{calculatedSale.finalPrice ? formatCurrency(calculatedSale.finalPrice) : '€0,00'}</span>
+                  <span>{formatCurrency(calculatedSale.finalPrice)}</span>
                 </div>
                 <div className="border-t border-gray-600 pt-2">
                   <div className="flex justify-between text-sm">
                     <span>Inkoopprijs totaal:</span>
-                    <span>{purchase.totalCostInclVat ? formatCurrency(purchase.totalCostInclVat) : '€0,00'}</span>
+                    <span>{formatCurrency(purchase.totalCostInclVat)}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span>Winst (excl. BTW):</span>
                     <span className={calculatedSale.profitExclVat >= 0 ? "text-green-400" : "text-red-400"}>
-                      {calculatedSale.profitExclVat ? formatCurrency(calculatedSale.profitExclVat) : '€0,00'}
+                      {formatCurrency(calculatedSale.profitExclVat)}
                     </span>
                   </div>
                   <div className="flex justify-between font-bold text-yellow-500">
                     <span>Winst (incl. BTW):</span>
                     <span className={calculatedSale.profitInclVat >= 0 ? "text-green-400" : "text-red-400"}>
-                      {calculatedSale.profitInclVat ? formatCurrency(calculatedSale.profitInclVat) : '€0,00'}
+                      {formatCurrency(calculatedSale.profitInclVat)}
                     </span>
                   </div>
                 </div>
