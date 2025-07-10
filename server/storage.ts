@@ -1,5 +1,7 @@
 import { vehicles, contacts, users, adminSessions, reservations, purchases, sales, type Vehicle, type InsertVehicle, type Contact, type InsertContact, type User, type InsertUser, type AdminSession, type InsertAdminSession, type Reservation, type InsertReservation, type Purchase, type InsertPurchase, type Sale, type InsertSale } from "@shared/schema";
 import { generateSlug, generateMetaTitle, generateMetaDescription } from "@shared/utils";
+import { db } from "./db";
+import { eq, and, sql, desc } from "drizzle-orm";
 
 export interface IStorage {
   // Vehicle operations
@@ -58,296 +60,282 @@ export interface IStorage {
   }>;
 }
 
-export class MemStorage implements IStorage {
-  private vehicles: Map<number, Vehicle>;
-  private contacts: Map<number, Contact>;
-  private users: Map<number, User>;
-  private adminSessions: Map<string, AdminSession>;
-  private reservations: Map<number, Reservation>;
-  private purchases: Map<number, Purchase>;
-  private sales: Map<number, Sale>;
-  private currentVehicleId: number;
-  private currentContactId: number;
-  private currentUserId: number;
-  private currentSessionId: number;
-  private currentReservationId: number;
-  private currentPurchaseId: number;
-  private currentSaleId: number;
-
+export class DatabaseStorage implements IStorage {
   constructor() {
-    this.vehicles = new Map();
-    this.contacts = new Map();
-    this.users = new Map();
-    this.adminSessions = new Map();
-    this.reservations = new Map();
-    this.purchases = new Map();
-    this.sales = new Map();
-    this.currentVehicleId = 1;
-    this.currentContactId = 1;
-    this.currentUserId = 1;
-    this.currentSessionId = 1;
-    this.currentReservationId = 1;
-    this.currentPurchaseId = 1;
-    this.currentSaleId = 1;
-    
-    // Initialize with admin user only
-    this.initializeAdminUser();
+    this.initializeData();
   }
 
-  private initializeAdminUser() {
-    // Create default admin user (username: admin, password: admin123)
-    this.createUser({
-      username: "admin",
-      password: "admin123", // In real app, this should be hashed
-      role: "admin"
-    });
+  private async initializeData() {
+    try {
+      // Check if admin user exists
+      const adminExists = await db.select().from(users).where(eq(users.username, "admin")).limit(1);
+      if (adminExists.length === 0) {
+        await db.insert(users).values({
+          username: "admin",
+          password: "admin",
+          role: "admin"
+        });
+      }
+
+      // Check if vehicles exist
+      const vehicleCount = await db.select({ count: sql`count(*)` }).from(vehicles);
+      if (Number(vehicleCount[0].count) === 0) {
+        // Insert sample vehicles
+        await db.insert(vehicles).values([
+          {
+            brand: "Volkswagen",
+            model: "Polo GTI",
+            year: 2025,
+            price: 33000,
+            mileage: 17000,
+            fuel: "benzine",
+            transmission: "automaat",
+            color: "wit",
+            description: "Volkswagen Polo GTI 2025 in perfecte staat. Deze compacte sportwagen biedt de perfecte combinatie van stijl, prestaties en betrouwbaarheid. Met slechts 17.000 km op de teller is deze auto nog bijna nieuw.",
+            images: ["https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?q=80&w=1000&auto=format&fit=crop"],
+            featured: true,
+            available: true,
+            availableDate: new Date(),
+            status: "beschikbaar",
+            slug: generateSlug("Volkswagen", "Polo GTI", 2025),
+            metaTitle: generateMetaTitle("Volkswagen", "Polo GTI", 2025, 33000),
+            metaDescription: generateMetaDescription("Volkswagen", "Polo GTI", 2025, 17000, "benzine", "automaat")
+          },
+          {
+            brand: "Volkswagen",
+            model: "Golf R line",
+            year: 2025,
+            price: 38000,
+            mileage: 12000,
+            fuel: "hybrid",
+            transmission: "automaat",
+            color: "wit",
+            description: "Volkswagen Golf R line 2025 met hybride technologie. Deze moderne auto combineert sportiviteit met zuinigheid. Volledig onderhouden en in uitstekende staat.",
+            images: ["https://images.unsplash.com/photo-1606016247627-e6b9c8b7d0f1?q=80&w=1000&auto=format&fit=crop"],
+            featured: true,
+            available: true,
+            availableDate: new Date(),
+            status: "beschikbaar",
+            slug: generateSlug("Volkswagen", "Golf R line", 2025),
+            metaTitle: generateMetaTitle("Volkswagen", "Golf R line", 2025, 38000),
+            metaDescription: generateMetaDescription("Volkswagen", "Golf R line", 2025, 12000, "hybrid", "automaat")
+          },
+          {
+            brand: "Mercedes-Benz",
+            model: "A35 AMG",
+            year: 2024,
+            price: 42900,
+            mileage: 8500,
+            fuel: "benzine",
+            transmission: "automaat",
+            color: "grijs",
+            description: "Mercedes-Benz A35 AMG 2024 met 306 PK en vierwielaandrijving. Deze premium hot hatch combineert luxe met prestaties. Volledig onderhouden en in perfecte staat.",
+            images: ["https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?q=80&w=1000&auto=format&fit=crop"],
+            featured: true,
+            available: true,
+            availableDate: new Date(),
+            status: "beschikbaar",
+            slug: generateSlug("Mercedes-Benz", "A35 AMG", 2024),
+            metaTitle: generateMetaTitle("Mercedes-Benz", "A35 AMG", 2024, 42900),
+            metaDescription: generateMetaDescription("Mercedes-Benz", "A35 AMG", 2024, 8500, "benzine", "automaat")
+          }
+        ]);
+      }
+    } catch (error) {
+      console.error("Database initialization error:", error);
+    }
   }
 
   async getVehicles(): Promise<Vehicle[]> {
-    return Array.from(this.vehicles.values());
+    return await db.select().from(vehicles).orderBy(desc(vehicles.id));
   }
 
   async getVehiclesByStatus(status?: string): Promise<Vehicle[]> {
-    const vehicles = Array.from(this.vehicles.values());
-    if (!status) return vehicles;
-    return vehicles.filter(v => v.status === status);
+    if (status) {
+      return await db.select().from(vehicles).where(eq(vehicles.status, status)).orderBy(desc(vehicles.id));
+    }
+    return await this.getVehicles();
   }
 
   async getFeaturedVehicles(): Promise<Vehicle[]> {
-    return Array.from(this.vehicles.values()).filter(v => v.featured);
+    return await db.select().from(vehicles).where(eq(vehicles.featured, true)).orderBy(desc(vehicles.id));
   }
 
   async getVehicleById(id: number): Promise<Vehicle | undefined> {
-    return this.vehicles.get(id);
+    const result = await db.select().from(vehicles).where(eq(vehicles.id, id)).limit(1);
+    return result[0];
   }
 
   async getVehicleBySlug(slug: string): Promise<Vehicle | undefined> {
-    return Array.from(this.vehicles.values()).find(v => v.slug === slug);
+    const result = await db.select().from(vehicles).where(eq(vehicles.slug, slug)).limit(1);
+    return result[0];
   }
 
   async createVehicle(insertVehicle: InsertVehicle): Promise<Vehicle> {
-    const id = this.currentVehicleId++;
-    
-    // Generate SEO-friendly slug and meta tags
     const slug = generateSlug(insertVehicle.brand, insertVehicle.model, insertVehicle.year);
     const metaTitle = generateMetaTitle(insertVehicle.brand, insertVehicle.model, insertVehicle.year, insertVehicle.price);
-    const metaDescription = generateMetaDescription(
-      insertVehicle.brand, 
-      insertVehicle.model, 
-      insertVehicle.year, 
-      insertVehicle.mileage, 
-      insertVehicle.fuel, 
-      insertVehicle.transmission
-    );
-    
-    const vehicle: Vehicle = { 
-      ...insertVehicle, 
-      id, 
-      slug, 
-      metaTitle, 
+    const metaDescription = generateMetaDescription(insertVehicle.brand, insertVehicle.model, insertVehicle.year, insertVehicle.mileage, insertVehicle.fuel, insertVehicle.transmission);
+
+    const [vehicle] = await db.insert(vehicles).values({
+      ...insertVehicle,
+      slug,
+      metaTitle,
       metaDescription,
       availableDate: new Date(),
-      // Ensure new vehicles are available by default
-      available: insertVehicle.available !== undefined ? insertVehicle.available : true
-    };
-    
-    this.vehicles.set(id, vehicle);
+      available: true
+    }).returning();
+
     return vehicle;
   }
 
   async updateVehicle(id: number, vehicleUpdate: Partial<InsertVehicle>): Promise<Vehicle | undefined> {
-    const existingVehicle = this.vehicles.get(id);
-    if (!existingVehicle) {
-      return undefined;
-    }
-    
-    // Regenerate SEO fields if relevant data changed
-    let seoFields = {};
-    if (vehicleUpdate.brand || vehicleUpdate.model || vehicleUpdate.year || vehicleUpdate.price || vehicleUpdate.mileage || vehicleUpdate.fuel || vehicleUpdate.transmission) {
-      const brand = vehicleUpdate.brand || existingVehicle.brand;
-      const model = vehicleUpdate.model || existingVehicle.model;
-      const year = vehicleUpdate.year || existingVehicle.year;
-      const price = vehicleUpdate.price || existingVehicle.price;
-      const mileage = vehicleUpdate.mileage || existingVehicle.mileage;
-      const fuel = vehicleUpdate.fuel || existingVehicle.fuel;
-      const transmission = vehicleUpdate.transmission || existingVehicle.transmission;
-      
-      seoFields = {
-        slug: generateSlug(brand, model, year),
-        metaTitle: generateMetaTitle(brand, model, year, price),
-        metaDescription: generateMetaDescription(brand, model, year, mileage, fuel, transmission)
-      };
-    }
-    
-    const updatedVehicle: Vehicle = { ...existingVehicle, ...vehicleUpdate, ...seoFields };
-    this.vehicles.set(id, updatedVehicle);
-    return updatedVehicle;
+    const [vehicle] = await db.update(vehicles).set(vehicleUpdate).where(eq(vehicles.id, id)).returning();
+    return vehicle;
   }
 
   async deleteVehicle(id: number): Promise<boolean> {
-    return this.vehicles.delete(id);
+    const result = await db.delete(vehicles).where(eq(vehicles.id, id));
+    return (result.rowCount || 0) > 0;
   }
 
   async createContact(insertContact: InsertContact): Promise<Contact> {
-    const id = this.currentContactId++;
-    const contact: Contact = { ...insertContact, id, createdAt: new Date() };
-    this.contacts.set(id, contact);
+    const [contact] = await db.insert(contacts).values({
+      ...insertContact,
+      phone: insertContact.phone || null,
+      createdAt: new Date()
+    }).returning();
     return contact;
   }
 
   async getContacts(): Promise<Contact[]> {
-    return Array.from(this.contacts.values());
+    return await db.select().from(contacts).orderBy(desc(contacts.id));
   }
 
   async getUser(id: number): Promise<User | undefined> {
-    return this.users.get(id);
+    const result = await db.select().from(users).where(eq(users.id, id)).limit(1);
+    return result[0];
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
+    const result = await db.select().from(users).where(eq(users.username, username)).limit(1);
+    return result[0];
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const id = this.currentUserId++;
-    const user: User = { ...insertUser, id };
-    this.users.set(id, user);
+    const [user] = await db.insert(users).values({
+      ...insertUser,
+      role: insertUser.role || "user"
+    }).returning();
     return user;
   }
 
-  // Admin session operations
   async createAdminSession(sessionData: InsertAdminSession): Promise<AdminSession> {
-    const id = this.currentSessionId++;
-    const session: AdminSession = { 
-      ...sessionData, 
-      id,
-      createdAt: new Date()
-    };
-    this.adminSessions.set(sessionData.sessionToken, session);
+    const [session] = await db.insert(adminSessions).values(sessionData).returning();
     return session;
   }
 
   async getAdminSession(token: string): Promise<AdminSession | undefined> {
-    const session = this.adminSessions.get(token);
-    if (session && session.expiresAt > new Date()) {
-      return session;
-    }
-    if (session) {
-      this.adminSessions.delete(token);
-    }
-    return undefined;
+    const result = await db.select().from(adminSessions).where(eq(adminSessions.sessionToken, token)).limit(1);
+    return result[0];
   }
 
   async deleteAdminSession(token: string): Promise<boolean> {
-    return this.adminSessions.delete(token);
+    const result = await db.delete(adminSessions).where(eq(adminSessions.sessionToken, token));
+    return (result.rowCount || 0) > 0;
   }
 
   async cleanExpiredSessions(): Promise<void> {
-    const now = new Date();
-    for (const [token, session] of this.adminSessions.entries()) {
-      if (session.expiresAt <= now) {
-        this.adminSessions.delete(token);
-      }
-    }
+    await db.delete(adminSessions).where(sql`${adminSessions.expiresAt} < ${new Date()}`);
   }
 
-  // Reservation operations
   async createReservation(insertReservation: InsertReservation): Promise<Reservation> {
-    const id = this.currentReservationId++;
-    const reservation: Reservation = { 
-      ...insertReservation, 
-      id,
-      createdAt: new Date()
-    };
-    this.reservations.set(id, reservation);
+    const [reservation] = await db.insert(reservations).values({
+      ...insertReservation,
+      createdAt: new Date(),
+      status: insertReservation.status || "pending",
+      stripePaymentIntentId: insertReservation.stripePaymentIntentId || null,
+      notes: insertReservation.notes || null
+    }).returning();
     return reservation;
   }
 
   async getReservations(): Promise<Reservation[]> {
-    return Array.from(this.reservations.values());
+    return await db.select().from(reservations).orderBy(desc(reservations.id));
   }
 
   async getReservationsByVehicle(vehicleId: number): Promise<Reservation[]> {
-    return Array.from(this.reservations.values()).filter(r => r.vehicleId === vehicleId);
+    return await db.select().from(reservations).where(eq(reservations.vehicleId, vehicleId));
   }
 
   async updateReservation(id: number, updates: Partial<InsertReservation>): Promise<Reservation | undefined> {
-    const existingReservation = this.reservations.get(id);
-    if (!existingReservation) {
-      return undefined;
-    }
-    const updatedReservation: Reservation = { ...existingReservation, ...updates };
-    this.reservations.set(id, updatedReservation);
-    return updatedReservation;
+    const [reservation] = await db.update(reservations).set(updates).where(eq(reservations.id, id)).returning();
+    return reservation;
   }
 
-  // Purchase operations
   async createPurchase(insertPurchase: InsertPurchase): Promise<Purchase> {
-    const id = this.currentPurchaseId++;
-    const purchase: Purchase = { 
-      ...insertPurchase, 
-      id,
-      createdAt: new Date()
-    };
-    this.purchases.set(id, purchase);
+    const [purchase] = await db.insert(purchases).values({
+      ...insertPurchase,
+      createdAt: new Date(),
+      notes: insertPurchase.notes || null,
+      vatAmount: insertPurchase.vatAmount || null,
+      bpmAmount: insertPurchase.bpmAmount || null,
+      transportCost: insertPurchase.transportCost || null,
+      maintenanceCost: insertPurchase.maintenanceCost || null,
+      cleaningCost: insertPurchase.cleaningCost || null,
+      guaranteeCost: insertPurchase.guaranteeCost || null,
+      otherCosts: insertPurchase.otherCosts || null
+    }).returning();
     return purchase;
   }
 
   async getPurchases(): Promise<Purchase[]> {
-    return Array.from(this.purchases.values());
+    return await db.select().from(purchases).orderBy(desc(purchases.id));
   }
 
   async getPurchaseByVehicleId(vehicleId: number): Promise<Purchase | undefined> {
-    return Array.from(this.purchases.values()).find(p => p.vehicleId === vehicleId);
+    const result = await db.select().from(purchases).where(eq(purchases.vehicleId, vehicleId)).limit(1);
+    return result[0];
   }
 
   async updatePurchase(id: number, updates: Partial<InsertPurchase>): Promise<Purchase | undefined> {
-    const existingPurchase = this.purchases.get(id);
-    if (!existingPurchase) {
-      return undefined;
-    }
-    const updatedPurchase: Purchase = { ...existingPurchase, ...updates };
-    this.purchases.set(id, updatedPurchase);
-    return updatedPurchase;
+    const [purchase] = await db.update(purchases).set(updates).where(eq(purchases.id, id)).returning();
+    return purchase;
   }
 
   async deletePurchase(id: number): Promise<boolean> {
-    return this.purchases.delete(id);
+    const result = await db.delete(purchases).where(eq(purchases.id, id));
+    return (result.rowCount || 0) > 0;
   }
 
-  // Sale operations
   async createSale(insertSale: InsertSale): Promise<Sale> {
-    const id = this.currentSaleId++;
-    const sale: Sale = { 
-      ...insertSale, 
-      id,
-      createdAt: new Date()
-    };
-    this.sales.set(id, sale);
+    const [sale] = await db.insert(sales).values({
+      ...insertSale,
+      notes: insertSale.notes || null,
+      vatAmount: insertSale.vatAmount || null,
+      discount: insertSale.discount || null,
+      warrantyMonths: insertSale.warrantyMonths || null,
+      deliveryDate: insertSale.deliveryDate || null
+    }).returning();
     return sale;
   }
 
   async getSales(): Promise<Sale[]> {
-    return Array.from(this.sales.values());
+    return await db.select().from(sales).orderBy(desc(sales.id));
   }
 
   async getSaleByVehicleId(vehicleId: number): Promise<Sale | undefined> {
-    return Array.from(this.sales.values()).find(s => s.vehicleId === vehicleId);
+    const result = await db.select().from(sales).where(eq(sales.vehicleId, vehicleId)).limit(1);
+    return result[0];
   }
 
   async updateSale(id: number, updates: Partial<InsertSale>): Promise<Sale | undefined> {
-    const existingSale = this.sales.get(id);
-    if (!existingSale) {
-      return undefined;
-    }
-    const updatedSale: Sale = { ...existingSale, ...updates };
-    this.sales.set(id, updatedSale);
-    return updatedSale;
+    const [sale] = await db.update(sales).set(updates).where(eq(sales.id, id)).returning();
+    return sale;
   }
 
   async deleteSale(id: number): Promise<boolean> {
-    return this.sales.delete(id);
+    const result = await db.delete(sales).where(eq(sales.id, id));
+    return (result.rowCount || 0) > 0;
   }
 
   async getFinancialOverview(year?: number, month?: number): Promise<{
@@ -358,42 +346,50 @@ export class MemStorage implements IStorage {
     vehiclesSold: number;
     vehiclesPurchased: number;
   }> {
-    const sales = Array.from(this.sales.values());
-    const purchases = Array.from(this.purchases.values());
-    
-    // Filter by year/month if provided
-    let filteredSales = sales;
-    let filteredPurchases = purchases;
+    let conditions = [];
     
     if (year) {
-      filteredSales = sales.filter(s => s.createdAt && s.createdAt.getFullYear() === year);
-      filteredPurchases = purchases.filter(p => p.createdAt && p.createdAt.getFullYear() === year);
-      
-      if (month) {
-        filteredSales = filteredSales.filter(s => s.createdAt && s.createdAt.getMonth() === month - 1);
-        filteredPurchases = filteredPurchases.filter(p => p.createdAt && p.createdAt.getMonth() === month - 1);
-      }
+      conditions.push(sql`EXTRACT(year FROM ${sales.createdAt}) = ${year}`);
     }
-    
-    const totalRevenue = filteredSales.reduce((sum, sale) => sum + Number(sale.salePrice), 0);
-    const totalPurchases = filteredPurchases.reduce((sum, purchase) => {
-      return sum + Number(purchase.purchasePrice) + Number(purchase.transportCost || 0) + 
-             Number(purchase.maintenanceCost || 0) + Number(purchase.cleaningCost || 0) + 
-             Number(purchase.otherCosts || 0);
-    }, 0);
-    
-    const totalProfit = totalRevenue - totalPurchases;
-    const vatCollected = totalRevenue * 0.21; // 21% VAT
-    
+    if (month) {
+      conditions.push(sql`EXTRACT(month FROM ${sales.createdAt}) = ${month}`);
+    }
+
+    const salesData = await db
+      .select({
+        totalRevenue: sql<number>`COALESCE(SUM(CAST(${sales.salePriceInclVat} AS NUMERIC)), 0)`,
+        totalVat: sql<number>`COALESCE(SUM(CAST(${sales.vatAmount} AS NUMERIC)), 0)`,
+        totalProfit: sql<number>`COALESCE(SUM(CAST(${sales.profitInclVat} AS NUMERIC)), 0)`,
+        vehiclesSold: sql<number>`COUNT(*)`
+      })
+      .from(sales)
+      .where(conditions.length > 0 ? and(...conditions) : undefined);
+
+    const purchaseConditions = [];
+    if (year) {
+      purchaseConditions.push(sql`EXTRACT(year FROM ${purchases.createdAt}) = ${year}`);
+    }
+    if (month) {
+      purchaseConditions.push(sql`EXTRACT(month FROM ${purchases.createdAt}) = ${month}`);
+    }
+
+    const purchaseData = await db
+      .select({
+        totalPurchases: sql<number>`COALESCE(SUM(CAST(${purchases.totalCostInclVat} AS NUMERIC)), 0)`,
+        vehiclesPurchased: sql<number>`COUNT(*)`
+      })
+      .from(purchases)
+      .where(purchaseConditions.length > 0 ? and(...purchaseConditions) : undefined);
+
     return {
-      totalRevenue,
-      totalPurchases,
-      totalProfit,
-      vatCollected,
-      vehiclesSold: filteredSales.length,
-      vehiclesPurchased: filteredPurchases.length
+      totalRevenue: Number(salesData[0].totalRevenue) || 0,
+      totalPurchases: Number(purchaseData[0].totalPurchases) || 0,
+      totalProfit: Number(salesData[0].totalProfit) || 0,
+      vatCollected: Number(salesData[0].totalVat) || 0,
+      vehiclesSold: Number(salesData[0].vehiclesSold) || 0,
+      vehiclesPurchased: Number(purchaseData[0].vehiclesPurchased) || 0,
     };
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();
