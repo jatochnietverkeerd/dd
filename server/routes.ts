@@ -298,13 +298,16 @@ Sitemap: ${baseUrl}/sitemap.xml`;
 
   app.post("/api/admin/vehicles", authenticateAdmin, async (req, res) => {
     try {
+      console.log("Request body:", JSON.stringify(req.body, null, 2));
       const validatedData = insertVehicleSchema.parse(req.body);
       const vehicle = await storage.createVehicle(validatedData);
       res.status(201).json(vehicle);
     } catch (error) {
       if (error instanceof z.ZodError) {
+        console.log("Validation errors:", error.errors);
         return res.status(400).json({ message: "Invalid vehicle data", errors: error.errors });
       }
+      console.log("Server error:", error);
       res.status(500).json({ message: "Failed to create vehicle" });
     }
   });

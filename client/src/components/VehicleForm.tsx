@@ -189,7 +189,10 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
       ...data,
       images: images,
       // Ensure new vehicles are available by default
-      available: true
+      available: true,
+      // Convert date strings to Date objects if needed
+      datumEersteToelating: data.datumEersteToelating ? new Date(data.datumEersteToelating) : undefined,
+      purchaseDate: data.purchaseDate ? new Date(data.purchaseDate) : undefined,
     };
     
     if (vehicle) {

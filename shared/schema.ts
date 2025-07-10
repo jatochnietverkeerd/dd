@@ -127,6 +127,25 @@ export const insertVehicleSchema = createInsertSchema(vehicles).omit({
   slug: true,
   metaTitle: true,
   metaDescription: true,
+}).extend({
+  // Make BPM fields optional for vehicle creation
+  co2Uitstoot: z.number().optional(),
+  datumEersteToelating: z.date().optional(),
+  nettoCatalogusprijs: z.number().optional(),
+  // Make purchase fields optional
+  purchasePrice: z.number().optional(),
+  purchaseVatType: z.string().optional(),
+  bpmAmount: z.number().optional(),
+  supplier: z.string().optional(),
+  invoiceNumber: z.string().optional(),
+  purchaseDate: z.date().optional(),
+  transportCost: z.number().optional(),
+  maintenanceCost: z.number().optional(),
+  cleaningCost: z.number().optional(),
+  guaranteeCost: z.number().optional(),
+  otherCosts: z.number().optional(),
+  totalCostInclVat: z.number().optional(),
+  notes: z.string().optional(),
 });
 
 export const insertContactSchema = createInsertSchema(contacts).omit({
