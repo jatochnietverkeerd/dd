@@ -34,10 +34,10 @@ export default function Header() {
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-3 scale-on-hover">
             <div className="w-10 h-10 rounded-full flex items-center justify-center transition-transform duration-300 hover:scale-110" style={{backgroundColor: '#D9C89E'}}>
-              <Car className="text-dark-primary text-sm" size={18} />
+              <span className="text-black font-bold text-sm" style={{fontFamily: 'Playfair Display, serif'}}>DD</span>
             </div>
-            <span className="text-xl font-bold" style={{color: '#D9C89E'}}>
-              DD<span style={{color: '#D9C89E'}}>Cars</span>
+            <span className="text-xl font-bold" style={{color: '#D9C89E', fontFamily: 'Playfair Display, serif'}}>
+              Cars
             </span>
           </Link>
           
