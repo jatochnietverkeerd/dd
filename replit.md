@@ -176,33 +176,35 @@ The application uses a modern, type-safe architecture with excellent developer e
 - **Lighthouse**: SEO score improvements through technical optimizations
 - **Page Speed**: Reduced initial load times through lazy loading and image optimization
 
-## Individual Invoice System (Latest Update - July 2025)
+## Premium Invoice System (Latest Update - July 11, 2025)
 
-### Invoice Generation Features
-- **PDF Generation**: Professional invoice PDFs using Puppeteer and Handlebars templates
-- **Individual Car Invoices**: Each vehicle can generate separate purchase or sale invoices
-- **Professional Layout**: Luxury-themed invoice design with company branding
-- **Automatic Calculations**: VAT, subtotals, and total amounts calculated automatically
-- **Dynamic Content**: Invoice data populated from database records
+### Professional Invoice Generation
+- **PDFKit-based Generation**: Reliable PDF generation using PDFKit instead of Puppeteer for serverless compatibility
+- **Premium Design**: Luxury-themed invoice layout with dark header, gold accents, and professional typography
+- **Individual Car Invoices**: Each vehicle generates separate purchase or sale invoices with proper formatting
+- **VAT Compliance**: Proper VAT breakdown with excl. BTW, BTW amount, and total calculations
+- **Margeregeling Support**: Automatic handling of margin scheme invoices with proper disclaimers
 
-### Email Integration
-- **Direct Email Sending**: Invoices can be emailed directly from admin interface
-- **HTML Email Templates**: Professional email templates with embedded vehicle details
-- **Attachment Support**: PDF invoices automatically attached to emails
-- **Development Mode**: Email simulation for testing without actual email sending
+### Enhanced Layout Features
+- **Professional Header**: Dark background with gold "DD CARS" branding and invoice type
+- **Structured Information**: Clear sections for company info, customer/supplier, vehicle details, and financials
+- **Table-style Vehicle Details**: Organized vehicle information with labels and values
+- **Financial Breakdown**: Detailed cost breakdown including BPM, transport, maintenance, and cleaning costs
+- **Premium Footer**: Company tagline "Premium Performance • GTI & AMG Specialists" with contact information
 
-### Admin Interface Features
-- **Download Buttons**: Direct PDF download for each purchase/sale record
-- **Email Buttons**: One-click email sending with prompt for recipient address
-- **Pre-filled Data**: Customer email addresses pre-populated for sales invoices
-- **Real-time Feedback**: Success/error messages for all invoice operations
+### Advanced Modal Interface
+- **Professional Modal**: Enhanced invoice modal with better accessibility and user experience
+- **Four Main Actions**: View (inline), Download, Print, and Email functionality
+- **Loading States**: Proper loading indicators and error handling
+- **Email Validation**: Built-in email validation and user feedback
+- **Responsive Design**: Mobile-friendly modal with clear action buttons
 
 ### Technical Implementation
-- **Puppeteer**: Headless Chrome for PDF generation
-- **Handlebars**: Template engine for dynamic invoice content
-- **Nodemailer**: Email service for invoice delivery
-- **Professional Templates**: Custom CSS styling for luxury appearance
-- **Error Handling**: Comprehensive error handling for all invoice operations
+- **PDFKit**: Serverless-compatible PDF generation with professional styling
+- **Typography**: Helvetica font family with proper weights and sizes
+- **Color Scheme**: Dark headers (#1a1a1a), gold accents (#D4AF37), and professional layout
+- **Authentication**: Secure token-based authentication for all invoice operations
+- **Error Handling**: Comprehensive error handling with user-friendly messages
 
 ## Vehicle Focus Update (July 2025)
 
@@ -261,6 +263,22 @@ The application uses a modern, type-safe architecture with excellent developer e
 - **Data Persistence**: Reliable data storage without cache issues
 - **Error Prevention**: Comprehensive error handling and recovery mechanisms
 - **Working Forms**: All purchase and sale forms now submit successfully
+
+## Premium Invoice System Completed (July 11, 2025)
+
+### Major Invoice System Overhaul
+- **Complete PDF Redesign**: Switched from Puppeteer to PDFKit for reliable serverless PDF generation
+- **Professional Layout**: Premium invoice design with dark header, structured sections, and luxury styling
+- **VAT Compliance**: Proper VAT breakdown showing excl. BTW, BTW amount, and total with correct calculations
+- **BPM Support**: Integrated BPM fields in vehicle details and financial calculations
+- **Margeregeling Implementation**: Automatic margin scheme handling with proper legal disclaimers
+
+### Key Features Implemented
+- **Modal Interface**: Professional invoice modal with four main actions (View, Download, Print, Email)
+- **Authentication**: Secure token-based authentication for all invoice operations
+- **Error Handling**: Comprehensive error handling with user-friendly feedback messages
+- **Email Integration**: Working email functionality with validation and delivery confirmation
+- **Premium Branding**: "DD CARS" header with "Premium Performance • GTI & AMG Specialists" tagline
 
 ## Visual Updates (July 10, 2025)
 

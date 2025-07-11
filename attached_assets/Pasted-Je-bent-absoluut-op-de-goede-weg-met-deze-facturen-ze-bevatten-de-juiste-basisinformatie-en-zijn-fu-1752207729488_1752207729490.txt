@@ -1,0 +1,108 @@
+Je bent absoluut op de goede weg met deze facturen: ze bevatten de juiste basisinformatie en zijn functioneel. Maar als je streeft naar een factuur die perfect aansluit bij het premium imago van ddcars.nl, dan moet het visueel en inhoudelijk nog een stap verder. Hieronder geef ik een volledige evaluatie en verbeterplan.
+
+⸻
+
+🔍 EVALUATIE VAN DE HUIDIGE FACTUREN
+
+✅ Sterke punten:
+	•	Correcte indeling: Inkoop- en verkoopfacturen zijn duidelijk onderscheiden.
+	•	Essentiële gegevens aanwezig: Bedrijfsinformatie, klantinformatie, voertuiggegevens, btw en totaalprijs zijn opgenomen.
+	•	Datum en factuurnummer: Netjes toegevoegd met logische prefix.
+
+❌ Wat ontbreekt of kan beter?
+
+Aspect	Probleem	Verbetering
+Designstijl	Zéér basic en tekstgebaseerd, voelt als Word-document	Gebruik een professioneel factuursjabloon in lijn met de website (donkere accenten, luxe lettertypes, logo prominent, veel witruimte).
+Visuele hiërarchie	Alles staat op dezelfde manier op het blad (gelijke fonts, geen scheiding, alles links uitgelijnd)	Werk met visuele blokken (klantgegevens, voertuig, financieel) en gebruik vetgedrukte koppen, subtiele kaders of scheidingslijnen.
+BTW-structuur	Geen uitsplitsing van btw-bedrag zelf	Voeg regels toe: “Excl. BTW”, “BTW 21%”, en “Incl. BTW” zodat de koper ziet hoeveel belasting er is berekend.
+Winstberekening (backend)	Niet zichtbaar in verkoopfactuur, terwijl je BPM en marge moet volgen	Voeg op backend-niveau (niet per se zichtbaar op factuur) een marge-analyse toe: inkoop - verkoop - kosten = winst.
+BPM-vermelding	Geen BPM aanwezig (relevant voor importauto’s of marge-auto’s)	Vermeld bij relevante voertuigen expliciet: “BPM resterend: €X” of “BPM betaald”.
+Betaalinformatie	Geen bankrekening, geen betaalwijze of QR-code	Voeg betaalgegevens toe + optie voor QR-code / iDEAL-link op verkoopfacturen.
+Download/print ervaring	Niet afgestemd op gebruikerservaring	Toon factuur als aantrekkelijke pop-up preview met knoppen: “Download PDF”, “Print”, “E-mail Verzenden”.
+Huisstijl	Geen visuele koppeling met ddcars.nl	Gebruik het logo, mogelijk zwarte balk bovenaan (zoals site-header), zelfde typografie als de website.
+
+
+
+⸻
+
+💡 AANBEVOLEN FACTUURLAY-OUT (VISUEEL & FUNCTIONEEL)
+
+🔲 Header (Topbalk)
+	•	Bedrijfslogo linksboven.
+	•	“INKOOPFACTUUR” of “VERKOOPFACTUUR” prominent rechtsboven.
+	•	Factuurnummer & datum direct eronder.
+	•	Eventueel grijze of zwarte achtergrondbalk met witte letters (stijlvol, premium).
+
+🏢 Bedrijfsinformatie
+	•	Naam, adres, KvK, BTW-nummer, e-mail, telefoon — keurig in een net blok.
+	•	Rechts eventueel bankrekeningnummer & IBAN.
+
+👤 Klantinformatie (voor verkoopfactuur)
+	•	Naam koper.
+	•	Adres + e-mail.
+	•	Klantnummer (optioneel).
+
+🚗 Voertuiggegevens (in 2 kolommen voor balans)
+
+Kenmerk	Waarde
+Merk & model	Volkswagen T-Roc R-Line
+Bouwjaar	2025
+KM-stand	10.000 km
+Transmissie	Automaat
+Brandstof	Benzine
+Kleur	Zwart
+Chassisnummer	(toevoegen indien gewenst)
+Kenteken	(indien op naam)
+BPM	(indien van toepassing)
+
+💰 Financiële gegevens (met btw-berekening)
+
+Omschrijving	Bedrag
+Verkoopprijs excl. BTW	€34.710,74
+BTW (21%)	€7.289,26
+TOTAAL incl. BTW	€42.000,00
+
+Automatisch berekend uiteraard in backend.
+
+Voor inkoop:
+	•	Inkoopprijs, bijkomende kosten (zoals schoonmaak), BPM indien relevant.
+
+📥 Betalingsinformatie
+	•	IBAN: NLxxBANKxxxxxxx
+	•	Betaaltermijn: 7 dagen
+	•	QR-code of link naar betaalverzoek (optioneel)
+
+📎 Footer
+	•	Disclaimers (“Prijs incl. afleverkosten tenzij anders aangegeven”)
+	•	Link naar algemene voorwaarden
+
+⸻
+
+📤 Functies (in admin/backend)
+	•	✅ Factuur opslaan als PDF
+	•	✅ Versturen per mail
+	•	✅ Pop-up preview in het systeem (met print-optie)
+	•	✅ Download als PDF met button (icon stijl in lijn met website)
+	•	✅ Print-stijl (factuur opent in printvriendelijke layout)
+	•	✅ Genummerde facturen met automatisch tellende ID per type (INK, VRK)
+
+⸻
+
+🔁 BONUS: Suggestie voor verkoopfactuur marge-auto
+
+Voor voertuigen die onder de marge-regeling vallen (zoals veel occasions), mag de BTW niet zichtbaar zijn voor de klant. Je factuur moet dan dit bevatten:
+
+Deze verkoop valt onder de margeregeling. BTW niet aftrekbaar.
+
+En:
+	•	Geen BTW-uitleg in de bedragen.
+	•	Alleen totaalprijs zichtbaar.
+	•	Intern in de admin backend: inkoop vs verkoop = marge → resultaat.
+
+⸻
+
+📌 Conclusie & Volgende Stap
+
+Je intentie is 100% juist: dit is een premium platform, en je facturen moeten aanvoelen als een verlengstuk van je merk. Wat jij nu hebt, is een goed skelet — maar het design, de structuur, en functionaliteit moeten worden verfijnd om te passen bij een exclusief automerk zoals bijvoorbeeld Porsche Centrum Amsterdam of Louwman Exclusive.
+
+Wil je dat ik dit omzet in een volledig factuurdesign (HTML/CSS/JS + PDF lay-out) + de print-pop-up ervaring + ReplitAgent-instructie voor integratie?
