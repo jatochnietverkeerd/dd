@@ -54,17 +54,15 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<Buffer> {
     doc.circle(cardMargin + 45, cardMargin + 45, 20)
        .fill('#D4AF37');
     
-    // Add exact same car icon as website
+    // Add exact same car icon as website (very simple design)
     doc.fillColor('#1a1a1a')
-       // Simple car outline - main body
-       .roundedRect(cardMargin + 37, cardMargin + 42, 16, 6, 1)
+       // Car body - simple rounded rectangle
+       .roundedRect(cardMargin + 37, cardMargin + 43, 16, 5, 1)
        .fill()
-       // Car front/back bumpers
-       .rect(cardMargin + 35, cardMargin + 44, 2, 2)
+       // Car cabin/windshield - smaller rounded rectangle on top
+       .roundedRect(cardMargin + 40, cardMargin + 40, 10, 4, 1)
        .fill()
-       .rect(cardMargin + 55, cardMargin + 44, 2, 2)
-       .fill()
-       // Two simple wheels
+       // Two wheels - small filled circles
        .circle(cardMargin + 40, cardMargin + 49, 1.5)
        .fill()
        .circle(cardMargin + 50, cardMargin + 49, 1.5)
