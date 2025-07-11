@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 
 interface LazyImageProps {
@@ -12,16 +12,31 @@ interface LazyImageProps {
 export default function LazyImage({ src, alt, className = "", onClick, onError }: LazyImageProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
+  const imgRef = useRef<HTMLImageElement>(null);
+
+  // Cleanup function to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      if (imgRef.current) {
+        imgRef.current.onload = null;
+        imgRef.current.onerror = null;
+      }
+    };
+  }, []);
 
   const handleLoad = () => {
-    setIsLoading(false);
+    if (imgRef.current) {
+      setIsLoading(false);
+    }
   };
 
   const handleError = (e: any) => {
-    setIsLoading(false);
-    setHasError(true);
-    if (onError) {
-      onError(e);
+    if (imgRef.current) {
+      setIsLoading(false);
+      setHasError(true);
+      if (onError) {
+        onError(e);
+      }
     }
   };
 
@@ -34,11 +49,12 @@ export default function LazyImage({ src, alt, className = "", onClick, onError }
   }
 
   return (
-    <div className="relative">
+    <div className="relative overflow-hidden">
       {isLoading && (
         <Skeleton className={`absolute inset-0 bg-dark-tertiary ${className}`} />
       )}
       <img
+        ref={imgRef}
         src={src}
         alt={alt}
         className={`${className} ${isLoading ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300`}
