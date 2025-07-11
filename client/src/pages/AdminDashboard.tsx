@@ -18,6 +18,7 @@ import type { Vehicle, Contact, Reservation, Purchase, Sale } from "@shared/sche
 import VehicleForm from "@/components/VehicleForm";
 import PurchaseForm from "@/components/PurchaseForm";
 import SimpleSaleForm from "@/components/SimpleSaleForm";
+import InvoiceModal from "@/components/InvoiceModal";
 
 export default function AdminDashboard() {
   const [, setLocation] = useLocation();
@@ -35,6 +36,12 @@ export default function AdminDashboard() {
   const [editingSale, setEditingSale] = useState<Sale | null>(null);
   const [isPurchaseDialogOpen, setIsPurchaseDialogOpen] = useState(false);
   const [isSaleDialogOpen, setIsSaleDialogOpen] = useState(false);
+  const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false);
+  const [selectedInvoiceData, setSelectedInvoiceData] = useState<{
+    vehicle: Vehicle;
+    purchase?: Purchase;
+    sale?: Sale;
+  } | null>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -811,45 +818,16 @@ export default function AdminDashboard() {
                                   size="sm"
                                   variant="outline"
                                   onClick={() => {
-                                    const token = localStorage.getItem('adminToken');
-                                    if (token) {
-                                      window.open(`/api/admin/invoices/purchase/${purchase.vehicleId}/pdf?token=${token}`, '_blank');
+                                    const vehicle = vehicles?.find(v => v.id === purchase.vehicleId);
+                                    if (vehicle) {
+                                      setSelectedInvoiceData({ vehicle, purchase });
+                                      setIsInvoiceModalOpen(true);
                                     }
                                   }}
                                   className="border-gray-700 text-white hover:bg-gray-800"
                                 >
-                                  <Download className="w-4 h-4 mr-2" />
-                                  Download PDF
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  onClick={() => {
-                                    const email = prompt('Email adres voor factuur:');
-                                    if (email) {
-                                      fetch(`/api/admin/invoices/purchase/${purchase.vehicleId}/email`, {
-                                        method: 'POST',
-                                        headers: {
-                                          'Content-Type': 'application/json',
-                                          'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
-                                        },
-                                        body: JSON.stringify({ email })
-                                      })
-                                      .then(res => res.json())
-                                      .then(data => {
-                                        if (data.message) {
-                                          alert('Email verzonden!');
-                                        } else {
-                                          alert('Fout bij verzenden email');
-                                        }
-                                      })
-                                      .catch(() => alert('Fout bij verzenden email'));
-                                    }
-                                  }}
-                                  className="border-gray-700 text-white hover:bg-gray-800"
-                                >
-                                  <Mail className="w-4 h-4 mr-2" />
-                                  Email PDF
+                                  <Receipt className="w-4 h-4 mr-2" />
+                                  Open Factuur
                                 </Button>
                               </div>
                             </CardContent>
@@ -937,45 +915,16 @@ export default function AdminDashboard() {
                                   size="sm"
                                   variant="outline"
                                   onClick={() => {
-                                    const token = localStorage.getItem('adminToken');
-                                    if (token) {
-                                      window.open(`/api/admin/invoices/sale/${sale.vehicleId}/pdf?token=${token}`, '_blank');
+                                    const vehicle = vehicles?.find(v => v.id === sale.vehicleId);
+                                    if (vehicle) {
+                                      setSelectedInvoiceData({ vehicle, sale });
+                                      setIsInvoiceModalOpen(true);
                                     }
                                   }}
                                   className="border-gray-700 text-white hover:bg-gray-800"
                                 >
-                                  <Download className="w-4 h-4 mr-2" />
-                                  Download PDF
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  onClick={() => {
-                                    const email = prompt('Email adres voor factuur:', sale.customerEmail);
-                                    if (email) {
-                                      fetch(`/api/admin/invoices/sale/${sale.vehicleId}/email`, {
-                                        method: 'POST',
-                                        headers: {
-                                          'Content-Type': 'application/json',
-                                          'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
-                                        },
-                                        body: JSON.stringify({ email })
-                                      })
-                                      .then(res => res.json())
-                                      .then(data => {
-                                        if (data.message) {
-                                          alert('Email verzonden!');
-                                        } else {
-                                          alert('Fout bij verzenden email');
-                                        }
-                                      })
-                                      .catch(() => alert('Fout bij verzenden email'));
-                                    }
-                                  }}
-                                  className="border-gray-700 text-white hover:bg-gray-800"
-                                >
-                                  <Mail className="w-4 h-4 mr-2" />
-                                  Email PDF
+                                  <Receipt className="w-4 h-4 mr-2" />
+                                  Open Factuur
                                 </Button>
                               </div>
                             </CardContent>
@@ -1134,6 +1083,21 @@ export default function AdminDashboard() {
             setSelectedSaleVehicle(null);
             setEditingSale(null);
           }}
+          token={token!}
+        />
+      )}
+
+      {/* Invoice Modal */}
+      {selectedInvoiceData && (
+        <InvoiceModal
+          isOpen={isInvoiceModalOpen}
+          onClose={() => {
+            setIsInvoiceModalOpen(false);
+            setSelectedInvoiceData(null);
+          }}
+          vehicle={selectedInvoiceData.vehicle}
+          purchase={selectedInvoiceData.purchase}
+          sale={selectedInvoiceData.sale}
           token={token!}
         />
       )}
