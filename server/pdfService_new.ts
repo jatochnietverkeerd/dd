@@ -54,9 +54,9 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<Buffer> {
     doc.circle(cardMargin + 45, cardMargin + 45, 20)
        .fill('#D4AF37');
     
-    // DD letters centered in the golden circle
-    doc.fillColor('#1a1a1a').fontSize(12).font('Helvetica-Bold')
-       .text('DD', cardMargin + 40, cardMargin + 40);
+    // DD letters centered in the golden circle - same size as CARS
+    doc.fillColor('#1a1a1a').fontSize(24).font('Helvetica-Bold')
+       .text('DD', cardMargin + 32, cardMargin + 35);
     
     // CARS in gold like website
     doc.fillColor('#D4AF37').fontSize(24).font('Helvetica-Bold')
