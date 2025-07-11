@@ -54,17 +54,13 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<Buffer> {
     doc.circle(cardMargin + 45, cardMargin + 45, 20)
        .fill('#D4AF37');
     
-    // Simple DD letters in the golden circle for invoice
-    doc.fillColor('#1a1a1a').fontSize(14).font('Helvetica-Bold')
-       .text('DD', cardMargin + 38, cardMargin + 38);
-    
-    // Company name with same styling as website
-    doc.fillColor('#1a1a1a').fontSize(24).font('Helvetica-Bold')
-       .text('DD', cardMargin + 75, cardMargin + 35);
+    // DD letters centered in the golden circle
+    doc.fillColor('#1a1a1a').fontSize(12).font('Helvetica-Bold')
+       .text('DD', cardMargin + 40, cardMargin + 40);
     
     // CARS in gold like website
     doc.fillColor('#D4AF37').fontSize(24).font('Helvetica-Bold')
-       .text('CARS', cardMargin + 115, cardMargin + 35);
+       .text('CARS', cardMargin + 75, cardMargin + 35);
     
     // Invoice type in header
     doc.fillColor('#374151').fontSize(16).font('Helvetica-Bold')
