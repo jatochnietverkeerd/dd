@@ -14,6 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { LogOut, Car, Users, Plus, Edit, Trash2, Eye, CreditCard, Clock, CheckCircle, XCircle, Calculator, Download, FileText, TrendingUp, Mail, Home, ShoppingCart, Receipt } from "lucide-react";
+import * as XLSX from 'xlsx';
 import type { Vehicle, Contact, Reservation, Purchase, Sale } from "@shared/schema";
 import VehicleForm from "@/components/VehicleForm";
 import PurchaseForm from "@/components/PurchaseForm";
@@ -28,7 +29,7 @@ export default function AdminDashboard() {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [selectedYear, setSelectedYear] = useState("2024");
+  const [selectedYear, setSelectedYear] = useState("2025");
   const [selectedMonth, setSelectedMonth] = useState("all");
   const [selectedPurchaseVehicle, setSelectedPurchaseVehicle] = useState<Vehicle | null>(null);
   const [selectedSaleVehicle, setSelectedSaleVehicle] = useState<Vehicle | null>(null);
@@ -44,6 +45,57 @@ export default function AdminDashboard() {
   } | null>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  // Excel export function
+  const exportToExcel = (data: any[], type: 'purchases' | 'sales') => {
+    if (!data || data.length === 0) {
+      toast({
+        title: "Geen data beschikbaar",
+        description: "Er is geen data om te exporteren.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    let filteredData = data;
+    
+    // Filter by selected year and month
+    if (selectedYear !== 'all' || selectedMonth !== 'all') {
+      filteredData = data.filter(item => {
+        const itemDate = new Date(item.createdAt || item.purchaseDate || item.saleDate);
+        const itemYear = itemDate.getFullYear();
+        const itemMonth = itemDate.getMonth() + 1;
+        
+        const yearMatch = selectedYear === 'all' || itemYear === parseInt(selectedYear);
+        const monthMatch = selectedMonth === 'all' || itemMonth === parseInt(selectedMonth);
+        
+        return yearMatch && monthMatch;
+      });
+    }
+
+    if (filteredData.length === 0) {
+      toast({
+        title: "Geen data voor geselecteerde periode",
+        description: "Er is geen data beschikbaar voor de geselecteerde jaar/maand.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const workbook = XLSX.utils.book_new();
+    const worksheet = XLSX.utils.json_to_sheet(filteredData);
+    
+    const sheetName = type === 'purchases' ? 'Inkoop' : 'Verkoop';
+    XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
+    
+    const filename = `${type === 'purchases' ? 'inkoop' : 'verkoop'}_${selectedYear}_${selectedMonth !== 'all' ? selectedMonth : 'alle_maanden'}.xlsx`;
+    XLSX.writeFile(workbook, filename);
+    
+    toast({
+      title: "Export succesvol",
+      description: `${type === 'purchases' ? 'Inkoop' : 'Verkoop'} data is geëxporteerd naar Excel.`,
+    });
+  };
 
   useEffect(() => {
     const storedToken = localStorage.getItem("adminToken");
@@ -629,33 +681,56 @@ export default function AdminDashboard() {
             <div className="flex justify-between items-center">
               <h2 className="text-xl font-semibold">Boekhouding</h2>
               <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-2">
+                  <Select value={selectedYear} onValueChange={setSelectedYear}>
+                    <SelectTrigger className="w-24 bg-gray-800 border-gray-700">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-gray-800 border-gray-700">
+                      <SelectItem value="2025">2025</SelectItem>
+                      <SelectItem value="2024">2024</SelectItem>
+                      <SelectItem value="2023">2023</SelectItem>
+                      <SelectItem value="all">Alle jaren</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Select value={selectedMonth} onValueChange={setSelectedMonth}>
+                    <SelectTrigger className="w-32 bg-gray-800 border-gray-700">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-gray-800 border-gray-700">
+                      <SelectItem value="all">Alle maanden</SelectItem>
+                      <SelectItem value="1">Januari</SelectItem>
+                      <SelectItem value="2">Februari</SelectItem>
+                      <SelectItem value="3">Maart</SelectItem>
+                      <SelectItem value="4">April</SelectItem>
+                      <SelectItem value="5">Mei</SelectItem>
+                      <SelectItem value="6">Juni</SelectItem>
+                      <SelectItem value="7">Juli</SelectItem>
+                      <SelectItem value="8">Augustus</SelectItem>
+                      <SelectItem value="9">September</SelectItem>
+                      <SelectItem value="10">Oktober</SelectItem>
+                      <SelectItem value="11">November</SelectItem>
+                      <SelectItem value="12">December</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
                 <Button 
                   variant="outline" 
                   size="sm"
-                  onClick={() => {
-                    const link = document.createElement('a');
-                    link.href = '/api/admin/export/purchases';
-                    link.download = 'purchases.csv';
-                    link.click();
-                  }}
+                  onClick={() => exportToExcel(purchases, 'purchases')}
                   className="border-gray-700 text-white hover:bg-gray-800"
                 >
                   <Download className="w-4 h-4 mr-2" />
-                  Export Inkoop
+                  Export Inkoop Excel
                 </Button>
                 <Button 
                   variant="outline" 
                   size="sm"
-                  onClick={() => {
-                    const link = document.createElement('a');
-                    link.href = '/api/admin/export/sales';
-                    link.download = 'sales.csv';
-                    link.click();
-                  }}
+                  onClick={() => exportToExcel(sales, 'sales')}
                   className="border-gray-700 text-white hover:bg-gray-800"
                 >
                   <Download className="w-4 h-4 mr-2" />
-                  Export Verkoop
+                  Export Verkoop Excel
                 </Button>
               </div>
             </div>
@@ -949,8 +1024,11 @@ export default function AdminDashboard() {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent className="bg-gray-800 border-gray-700">
+                        <SelectItem value="2025">2025</SelectItem>
                         <SelectItem value="2024">2024</SelectItem>
                         <SelectItem value="2023">2023</SelectItem>
+                        <SelectItem value="2022">2022</SelectItem>
+                        <SelectItem value="all">Alle jaren</SelectItem>
                       </SelectContent>
                     </Select>
                     <Select value={selectedMonth} onValueChange={setSelectedMonth}>

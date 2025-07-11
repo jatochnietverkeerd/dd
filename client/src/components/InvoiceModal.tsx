@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -153,10 +153,10 @@ export default function InvoiceModal({ isOpen, onClose, vehicle, purchase, sale,
           <DialogTitle className="text-white text-xl">
             {purchase ? 'Inkoop' : 'Verkoop'} Factuur
           </DialogTitle>
+          <DialogDescription className="text-gray-400">
+            Factuur modal voor {vehicle.brand} {vehicle.model} met opties voor bekijken, downloaden, printen en emailen.
+          </DialogDescription>
         </DialogHeader>
-        <div id="invoice-modal-description" className="sr-only">
-          Factuur modal voor {vehicle.brand} {vehicle.model} met opties voor bekijken, downloaden, printen en emailen.
-        </div>
         
         <div className="space-y-6">
           {/* Invoice Summary */}

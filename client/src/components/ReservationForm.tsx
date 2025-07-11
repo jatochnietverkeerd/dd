@@ -41,7 +41,7 @@ export default function ReservationForm({
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const { toast } = useToast();
   
-  const depositAmount = Math.round(vehiclePrice * 0.1); // 10% deposit
+  const depositAmount = 500; // Fixed €500 deposit
   
   const form = useForm<ReservationFormData>({
     resolver: zodResolver(reservationFormSchema),
@@ -132,7 +132,7 @@ export default function ReservationForm({
           Reserveer {vehicleBrand} {vehicleModel}
         </CardTitle>
         <CardDescription className="text-gray-400">
-          Reserveer deze prachtige auto met een aanbetaling van 10% van de totaalprijs.
+          Reserveer deze prachtige auto voor €500. De auto blijft 72 uur voor u gereserveerd.
         </CardDescription>
       </CardHeader>
 

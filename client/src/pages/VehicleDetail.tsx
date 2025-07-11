@@ -487,7 +487,7 @@ export default function VehicleDetail() {
                   Reserveer deze <span className="text-luxury-gold font-bold">{vehicle.brand} {vehicle.model}</span>
                 </h3>
                 <p className="text-gray-400 mb-6">
-                  Zeker van uw keuze? Reserveer nu met een veilige aanbetaling van slechts 10%.
+                  Zeker van uw keuze? Reserveer nu voor €500. De auto blijft 72 uur voor u gereserveerd.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <Button 
@@ -495,7 +495,7 @@ export default function VehicleDetail() {
                     className="bg-luxury-gold text-dark-primary hover:bg-white transition-colors duration-300 font-semibold px-8 py-3"
                   >
                     <CreditCard size={16} className="mr-2" />
-                    Reserveer nu voor €{Math.round(vehicle.price * 0.1).toLocaleString()}
+                    Reserveer nu voor €500
                   </Button>
                   <Button variant="outline" className="border-luxury-gold text-luxury-gold hover:bg-luxury-gold hover:text-dark-primary transition-colors duration-300">
                     <Heart size={16} className="mr-2" />
