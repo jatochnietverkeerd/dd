@@ -16,10 +16,10 @@ export default function About() {
             className={`transition-all duration-700 ${textFadeClass}`}
           >
             <h2 className="text-4xl font-light mb-6">Over <span className="font-bold" style={{color: '#D9C89E'}}>DD Cars</span></h2>
-            <p className="text-gray-300 mb-6 leading-relaxed">
+            <p className="mb-6 leading-relaxed" style={{color: '#D9C89E'}}>
               DD Cars is gespecialiseerd in de verkoop van premium en exclusieve occasions. Met meer dan 15 jaar ervaring in de automotive sector, bieden wij alleen de beste voertuigen aan onze klanten.
             </p>
-            <p className="text-gray-300 mb-8 leading-relaxed">
+            <p className="mb-8 leading-relaxed" style={{color: '#D9C89E'}}>
               Onze passie voor automobiele excellentie drijft ons om elke dag het beste te leveren. Van luxe sedans tot sportieve coupés, wij hebben de perfecte auto voor elke smaak en budget.
             </p>
             <div 
@@ -28,11 +28,11 @@ export default function About() {
             >
               <div className="scale-on-hover">
                 <h3 className="text-2xl font-bold mb-2" style={{color: '#D9C89E'}}>500+</h3>
-                <p className="text-gray-400">Tevreden Klanten</p>
+                <p style={{color: '#D9C89E'}}>Tevreden Klanten</p>
               </div>
               <div className="scale-on-hover">
                 <h3 className="text-2xl font-bold mb-2" style={{color: '#D9C89E'}}>15+</h3>
-                <p className="text-gray-400">Jaar Ervaring</p>
+                <p style={{color: '#D9C89E'}}>Jaar Ervaring</p>
               </div>
             </div>
           </div>

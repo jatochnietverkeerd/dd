@@ -74,7 +74,7 @@ export default function Contact() {
           className={`text-center mb-16 transition-all duration-700 ${titleFadeClass}`}
         >
           <h2 className="text-4xl font-light mb-4">Neem <span className="font-bold" style={{color: '#D9C89E'}}>Contact</span> Op</h2>
-          <p className="text-gray-400 max-w-2xl mx-auto">Heeft u vragen of wilt u meer informatie over een van onze voertuigen? Neem vandaag nog contact met ons op.</p>
+          <p className="max-w-2xl mx-auto" style={{color: '#D9C89E'}}>Heeft u vragen of wilt u meer informatie over een van onze voertuigen? Neem vandaag nog contact met ons op.</p>
         </div>
         
         <div className="grid lg:grid-cols-2 gap-12">
@@ -87,8 +87,8 @@ export default function Contact() {
                 <MapPin className="text-dark-primary" size={20} />
               </div>
               <div>
-                <h3 className="text-xl font-semibold mb-2">Adres</h3>
-                <p className="text-gray-400">
+                <h3 className="text-xl font-semibold mb-2" style={{color: '#D9C89E'}}>Adres</h3>
+                <p style={{color: '#D9C89E'}}>
                   Hoofdstraat 123<br />
                   1234 AB Amsterdam<br />
                   Nederland
@@ -101,8 +101,8 @@ export default function Contact() {
                 <Phone className="text-dark-primary" size={20} />
               </div>
               <div>
-                <h3 className="text-xl font-semibold mb-2">Telefoon</h3>
-                <p className="text-gray-400">+31 20 123 4567</p>
+                <h3 className="text-xl font-semibold mb-2" style={{color: '#D9C89E'}}>Telefoon</h3>
+                <p style={{color: '#D9C89E'}}>+31 20 123 4567</p>
               </div>
             </div>
             
@@ -111,8 +111,8 @@ export default function Contact() {
                 <Mail className="text-dark-primary" size={20} />
               </div>
               <div>
-                <h3 className="text-xl font-semibold mb-2">E-mail</h3>
-                <p className="text-gray-400">info@ddcars.nl</p>
+                <h3 className="text-xl font-semibold mb-2" style={{color: '#D9C89E'}}>E-mail</h3>
+                <p style={{color: '#D9C89E'}}>info@ddcars.nl</p>
               </div>
             </div>
             
@@ -121,8 +121,8 @@ export default function Contact() {
                 <Clock className="text-dark-primary" size={20} />
               </div>
               <div>
-                <h3 className="text-xl font-semibold mb-2">Openingstijden</h3>
-                <p className="text-gray-400">
+                <h3 className="text-xl font-semibold mb-2" style={{color: '#D9C89E'}}>Openingstijden</h3>
+                <p style={{color: '#D9C89E'}}>
                   Ma-Vr: 09:00 - 18:00<br />
                   Zat: 10:00 - 17:00<br />
                   Zon: Gesloten
@@ -136,7 +136,7 @@ export default function Contact() {
             className={`bg-dark-secondary border-dark-quaternary transition-all duration-700 delay-400 ${formFadeClass}`}
           >
             <CardContent className="p-8">
-              <h3 className="text-2xl font-semibold mb-6">Stuur een bericht</h3>
+              <h3 className="text-2xl font-semibold mb-6" style={{color: '#D9C89E'}}>Stuur een bericht</h3>
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid md:grid-cols-2 gap-4">
                   <Input
