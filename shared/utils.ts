@@ -10,6 +10,28 @@ export function generateSlug(brand: string, model: string, year: number): string
   return baseSlug;
 }
 
+// Generate a unique slug by checking existing slugs and adding a number suffix if needed
+export async function generateUniqueSlug(brand: string, model: string, year: number, checkExists: (slug: string) => Promise<boolean>): Promise<string> {
+  const baseSlug = generateSlug(brand, model, year);
+  
+  // Check if the base slug already exists
+  const exists = await checkExists(baseSlug);
+  if (!exists) {
+    return baseSlug;
+  }
+  
+  // If it exists, try with numbers until we find a unique one
+  let counter = 1;
+  let uniqueSlug = `${baseSlug}-${counter}`;
+  
+  while (await checkExists(uniqueSlug)) {
+    counter++;
+    uniqueSlug = `${baseSlug}-${counter}`;
+  }
+  
+  return uniqueSlug;
+}
+
 export function generateMetaTitle(brand: string, model: string, year: number, price: number): string {
   const formattedPrice = new Intl.NumberFormat('nl-NL', {
     style: 'currency',

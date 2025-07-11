@@ -1,5 +1,5 @@
 import { vehicles, contacts, users, adminSessions, reservations, purchases, sales, type Vehicle, type InsertVehicle, type Contact, type InsertContact, type User, type InsertUser, type AdminSession, type InsertAdminSession, type Reservation, type InsertReservation, type Purchase, type InsertPurchase, type Sale, type InsertSale } from "@shared/schema";
-import { generateSlug, generateMetaTitle, generateMetaDescription } from "@shared/utils";
+import { generateSlug, generateUniqueSlug, generateMetaTitle, generateMetaDescription } from "@shared/utils";
 import { db } from "./db";
 import { eq, and, sql, desc } from "drizzle-orm";
 
@@ -199,7 +199,15 @@ export class DatabaseStorage implements IStorage {
 
   async createVehicle(insertVehicle: InsertVehicle): Promise<Vehicle> {
     await this.ensureInitialized();
-    const slug = generateSlug(insertVehicle.brand, insertVehicle.model, insertVehicle.year);
+    
+    // Create a function to check if slug exists
+    const checkSlugExists = async (slug: string): Promise<boolean> => {
+      const existing = await db.select().from(vehicles).where(eq(vehicles.slug, slug)).limit(1);
+      return existing.length > 0;
+    };
+    
+    // Generate a unique slug
+    const slug = await generateUniqueSlug(insertVehicle.brand, insertVehicle.model, insertVehicle.year, checkSlugExists);
     const metaTitle = generateMetaTitle(insertVehicle.brand, insertVehicle.model, insertVehicle.year, insertVehicle.price);
     const metaDescription = generateMetaDescription(insertVehicle.brand, insertVehicle.model, insertVehicle.year, insertVehicle.mileage, insertVehicle.fuel, insertVehicle.transmission);
 
