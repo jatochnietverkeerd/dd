@@ -132,7 +132,7 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<Buffer> {
        .text(`${data.vehicle.color}`, rightCol, vehicleY + 90);
     
     // Add BPM information if available from purchase or sale
-    const bpmAmount = data.purchase?.bpmAmount || data.sale?.bmpAmount || 0;
+    const bpmAmount = data.purchase?.bpmAmount || data.sale?.bpmAmount || 0;
     if (bpmAmount > 0) {
       doc.fontSize(9).font('Helvetica-Bold')
          .text('BPM:', leftCol, vehicleY + 108);
@@ -178,14 +178,16 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<Buffer> {
       yPos += 22;
     }
     
-    // Additional costs for purchases
+    // BPM for both purchases and sales (using the variable already declared above)
+    if (bpmAmount > 0) {
+      doc.fontSize(10).font('Helvetica')
+         .text('BPM:', leftCol, yPos)
+         .text(`€${bpmAmount.toLocaleString('nl-NL', { minimumFractionDigits: 2 })}`, cardMargin + 420, yPos);
+      yPos += 18;
+    }
+    
+    // Additional costs for purchases only
     if (data.purchase) {
-      if (data.purchase.bpmAmount > 0) {
-        doc.fontSize(10).font('Helvetica')
-           .text('BPM:', leftCol, yPos)
-           .text(`€${data.purchase.bpmAmount.toLocaleString('nl-NL', { minimumFractionDigits: 2 })}`, cardMargin + 420, yPos);
-        yPos += 18;
-      }
       if (data.purchase.transportCost > 0) {
         doc.text('Transportkosten:', leftCol, yPos)
            .text(`€${data.purchase.transportCost.toLocaleString('nl-NL', { minimumFractionDigits: 2 })}`, cardMargin + 420, yPos);
