@@ -54,31 +54,27 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<Buffer> {
     doc.circle(cardMargin + 45, cardMargin + 45, 20)
        .fill('#D4AF37');
     
-    // Exact website car icon - very simple and clean
+    // Ultra simple car icon like website
     doc.fillColor('#1a1a1a')
-       .lineWidth(1.8)
+       .lineWidth(1.5)
        .lineJoin('round')
        .lineCap('round');
     
     const centerX = cardMargin + 45;
     const centerY = cardMargin + 45;
     
-    // Simple car outline exactly like website
-    // Main car body - rounded rectangle
-    doc.roundedRect(centerX - 7, centerY - 1, 14, 6, 2)
+    // Car body - simple rectangle
+    doc.rect(centerX - 6, centerY, 12, 4)
        .stroke();
     
-    // Car windshield - simple angled line
-    doc.moveTo(centerX - 4, centerY - 1)
-       .lineTo(centerX - 2, centerY - 4)
-       .lineTo(centerX + 2, centerY - 4)
-       .lineTo(centerX + 4, centerY - 1)
+    // Car top/cabin - smaller rectangle
+    doc.rect(centerX - 3, centerY - 2, 6, 2)
        .stroke();
     
-    // Two wheels - simple circles
-    doc.circle(centerX - 4, centerY + 6, 1.5)
+    // Two wheels
+    doc.circle(centerX - 4, centerY + 5, 1)
        .stroke()
-       .circle(centerX + 4, centerY + 6, 1.5)
+       .circle(centerX + 4, centerY + 5, 1)
        .stroke();
     
     // Company name with clean styling
