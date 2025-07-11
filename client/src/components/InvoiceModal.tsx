@@ -29,10 +29,8 @@ export default function InvoiceModal({ isOpen, onClose, vehicle, purchase, sale,
 
   const handleDownload = async () => {
     try {
-      const response = await fetch(`/api/admin/invoices/${invoiceType}/${vehicle.id}/pdf`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+      const response = await fetch(`/api/admin/invoices/${invoiceType}/${vehicle.id}/pdf?token=${token}`, {
+        method: 'GET'
       });
       
       if (!response.ok) {
@@ -54,6 +52,7 @@ export default function InvoiceModal({ isOpen, onClose, vehicle, purchase, sale,
         description: "De factuur is succesvol gedownload."
       });
     } catch (error) {
+      console.error('Download error:', error);
       toast({
         title: "Download gefaald",
         description: "Er is een fout opgetreden bij het downloaden van de PDF.",
@@ -64,10 +63,8 @@ export default function InvoiceModal({ isOpen, onClose, vehicle, purchase, sale,
 
   const handlePrint = async () => {
     try {
-      const response = await fetch(`/api/admin/invoices/${invoiceType}/${vehicle.id}/pdf`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+      const response = await fetch(`/api/admin/invoices/${invoiceType}/${vehicle.id}/pdf?token=${token}`, {
+        method: 'GET'
       });
       
       if (!response.ok) {
@@ -89,6 +86,7 @@ export default function InvoiceModal({ isOpen, onClose, vehicle, purchase, sale,
         description: "De factuur wordt geopend voor printen."
       });
     } catch (error) {
+      console.error('Print error:', error);
       toast({
         title: "Print gefaald",
         description: "Er is een fout opgetreden bij het printen van de PDF.",
@@ -99,10 +97,8 @@ export default function InvoiceModal({ isOpen, onClose, vehicle, purchase, sale,
 
   const handlePreview = async () => {
     try {
-      const response = await fetch(`/api/admin/invoices/${invoiceType}/${vehicle.id}/pdf`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+      const response = await fetch(`/api/admin/invoices/${invoiceType}/${vehicle.id}/pdf?token=${token}`, {
+        method: 'GET'
       });
       
       if (!response.ok) {
@@ -118,6 +114,7 @@ export default function InvoiceModal({ isOpen, onClose, vehicle, purchase, sale,
         description: "De factuur is geopend in een nieuw tabblad."
       });
     } catch (error) {
+      console.error('Preview error:', error);
       toast({
         title: "Preview gefaald",
         description: "Er is een fout opgetreden bij het openen van de factuur.",
@@ -138,11 +135,10 @@ export default function InvoiceModal({ isOpen, onClose, vehicle, purchase, sale,
 
     setIsEmailSending(true);
     try {
-      const response = await fetch(`/api/admin/invoices/${invoiceType}/${vehicle.id}/email`, {
+      const response = await fetch(`/api/admin/invoices/${invoiceType}/${vehicle.id}/email?token=${token}`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({ email: emailAddress })
       });
@@ -170,12 +166,15 @@ export default function InvoiceModal({ isOpen, onClose, vehicle, purchase, sale,
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[600px] bg-gray-900 border-gray-800">
+      <DialogContent className="sm:max-w-[600px] bg-gray-900 border-gray-800" aria-describedby="invoice-modal-description">
         <DialogHeader>
           <DialogTitle className="text-white text-xl">
             {purchase ? 'Inkoop' : 'Verkoop'} Factuur
           </DialogTitle>
         </DialogHeader>
+        <div id="invoice-modal-description" className="sr-only">
+          Factuur modal voor {vehicle.brand} {vehicle.model} met opties voor bekijken, downloaden, printen en emailen.
+        </div>
         
         <div className="space-y-6">
           {/* Invoice Summary */}
