@@ -2,10 +2,4 @@ import { createRoot } from "react-dom/client";
 import App from "./App";
 import "./index.css";
 
-const container = document.getElementById("root")!;
-
-// Prevent double mounting in development
-if (!container.hasChildNodes()) {
-  const root = createRoot(container);
-  root.render(<App />);
-}
+createRoot(document.getElementById("root")!).render(<App />);
