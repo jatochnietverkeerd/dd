@@ -65,11 +65,11 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<Buffer> {
     const scale = 0.7;
     
     // Main car body (simplified from Lucide SVG path)
-    doc.path(`M ${centerX - 8*scale} ${centerY + 2*scale} 
-              L ${centerX - 6*scale} ${centerY - 1*scale} 
-              L ${centerX + 6*scale} ${centerY - 1*scale} 
-              L ${centerX + 8*scale} ${centerY + 2*scale} 
-              Z`)
+    doc.moveTo(centerX - 8*scale, centerY + 2*scale)
+       .lineTo(centerX - 6*scale, centerY - 1*scale)
+       .lineTo(centerX + 6*scale, centerY - 1*scale)
+       .lineTo(centerX + 8*scale, centerY + 2*scale)
+       .closePath()
        .stroke();
     
     // Car wheels (exact positions from Lucide SVG)
