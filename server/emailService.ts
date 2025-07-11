@@ -51,7 +51,7 @@ export async function sendInvoiceEmail(
       htmlContent = `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <div style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); color: white; padding: 30px; border-radius: 10px; margin-bottom: 20px;">
-            <h1 style="color: #d4af37; margin: 0; font-size: 28px;">DD Cars</h1>
+            <h1 style="color: #d9c89e; margin: 0; font-size: 28px;">DD Cars</h1>
             <p style="margin: 10px 0 0 0; opacity: 0.9;">Premium Auto Dealership</p>
           </div>
           
@@ -62,7 +62,7 @@ export async function sendInvoiceEmail(
             
             <p>Hierbij ontvangt u de inkoopfactuur voor de volgende auto:</p>
             
-            <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #d4af37;">
+            <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #d9c89e;">
               <h3 style="margin: 0 0 15px 0; color: #333;">${vehicle.brand} ${vehicle.model}</h3>
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 14px;">
                 <div><strong>Bouwjaar:</strong> ${vehicle.year}</div>
@@ -111,7 +111,7 @@ DD Cars
       htmlContent = `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <div style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); color: white; padding: 30px; border-radius: 10px; margin-bottom: 20px;">
-            <h1 style="color: #d4af37; margin: 0; font-size: 28px;">DD Cars</h1>
+            <h1 style="color: #d9c89e; margin: 0; font-size: 28px;">DD Cars</h1>
             <p style="margin: 10px 0 0 0; opacity: 0.9;">Premium Auto Dealership</p>
           </div>
           
@@ -122,7 +122,7 @@ DD Cars
             
             <p>Hartelijk dank voor uw aankoop! Hierbij ontvangt u de factuur voor uw nieuwe auto:</p>
             
-            <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #d4af37;">
+            <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #d9c89e;">
               <h3 style="margin: 0 0 15px 0; color: #333;">${vehicle.brand} ${vehicle.model}</h3>
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 14px;">
                 <div><strong>Bouwjaar:</strong> ${vehicle.year}</div>
@@ -136,7 +136,7 @@ DD Cars
             
             <p>We wensen u veel rijplezier met uw nieuwe auto!</p>
             
-            <div style="background: #fff9e6; padding: 15px; border-radius: 8px; border-left: 4px solid #d4af37; margin: 20px 0;">
+            <div style="background: #fff9e6; padding: 15px; border-radius: 8px; border-left: 4px solid #d9c89e; margin: 20px 0;">
               <p style="margin: 0; font-size: 14px;"><strong>Service na verkoop:</strong><br>
               Voor vragen over onderhoud, garantie of andere zaken kunt u altijd contact met ons opnemen.</p>
             </div>
@@ -222,7 +222,7 @@ export async function sendTestEmail(to: string): Promise<boolean> {
       text: 'This is a test email to verify email configuration.',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-          <h2 style="color: #d4af37;">Test Email - DD Cars</h2>
+          <h2 style="color: #d9c89e;">Test Email - DD Cars</h2>
           <p>This is a test email to verify that the email configuration is working correctly.</p>
           <p>If you receive this email, the email service is functioning properly.</p>
         </div>
