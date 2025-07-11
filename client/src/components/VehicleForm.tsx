@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { insertVehicleSchema } from "@shared/schema";
 import type { Vehicle } from "@shared/schema";
@@ -21,7 +21,7 @@ const vehicleFormSchema = z.object({
   brand: z.string().min(1, "Merk is verplicht"),
   model: z.string().min(1, "Model is verplicht"),
   year: z.number().min(1900, "Bouwjaar moet na 1900 zijn"),
-  price: z.string().min(1, "Prijs is verplicht"),
+  price: z.string().min(1, "Prijs is verplicht").regex(/^\d+(\.\d{1,2})?$/, "Prijs moet een geldig bedrag zijn"),
   mileage: z.number().min(0, "Kilometerstand moet positief zijn"),
   fuel: z.string().min(1, "Brandstof is verplicht"),
   transmission: z.string().min(1, "Transmissie is verplicht"),
@@ -184,6 +184,9 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
           <DialogTitle className="text-yellow-500">
             {vehicle ? "Voertuig bewerken" : "Nieuw voertuig toevoegen"}
           </DialogTitle>
+          <DialogDescription className="text-gray-400">
+            {vehicle ? "Bewerk de voertuig informatie en sla de wijzigingen op." : "Voeg een nieuw voertuig toe aan de voorraad."}
+          </DialogDescription>
         </DialogHeader>
         
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -232,10 +235,12 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
               <Label htmlFor="price">Prijs (€)</Label>
               <Input
                 id="price"
-                type="number"
-                {...form.register("price", { valueAsNumber: true })}
+                type="text"
+                {...form.register("price")}
                 className="bg-gray-800 border-gray-700 text-white"
                 placeholder="35000"
+                pattern="[0-9]*"
+                inputMode="numeric"
               />
               {form.formState.errors.price && (
                 <p className="text-red-400 text-sm mt-1">{form.formState.errors.price.message}</p>
