@@ -54,8 +54,8 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<Buffer> {
     doc.circle(cardMargin + 45, cardMargin + 45, 20)
        .fill('#D9C89E');
     
-    // DD letters centered in the pantone circle - same size as CARS
-    doc.fillColor('#1a1a1a').fontSize(24).font('Helvetica-Bold')
+    // DD letters centered in the pantone circle - same color as CARS
+    doc.fillColor('#D9C89E').fontSize(24).font('Helvetica-Bold')
        .text('DD', cardMargin + 32, cardMargin + 35);
     
     // CARS in Pantone 7501 M
