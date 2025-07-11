@@ -280,6 +280,18 @@ The application uses a modern, type-safe architecture with excellent developer e
 - **Email Integration**: Working email functionality with validation and delivery confirmation
 - **Premium Branding**: "DD CARS" header with "Premium Performance • GTI & AMG Specialists" tagline
 
+## Color Scheme Update - Pantone 7501 M Implementation (July 11, 2025)
+
+### Complete Home Page Color Redesign
+- **Pantone 7501 M (#D9C89E)**: Replaced all yellow/gold accents with warm beige color
+- **Hero Section**: "Occasions" title text and both CTA buttons updated to new color
+- **Navigation**: Logo, menu item hover effects, and mobile menu colors updated
+- **Vehicle Showcase**: Section title "Aanbod" updated to new color scheme
+- **About Section**: Company name highlight and statistics numbers updated
+- **Contact Section**: Section title and all contact info icons updated
+- **Scrollbar**: Custom scrollbar styling updated to match new color
+- **Direct Implementation**: Using inline styles for precise color control instead of CSS variables
+
 ## Modern Invoice Design Update (July 11, 2025)
 
 ### Visual Improvements

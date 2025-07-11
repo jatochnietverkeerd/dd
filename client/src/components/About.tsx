@@ -15,7 +15,7 @@ export default function About() {
             ref={textRef}
             className={`transition-all duration-700 ${textFadeClass}`}
           >
-            <h2 className="text-4xl font-light mb-6">Over <span className="text-luxury-gold font-bold">DD Cars</span></h2>
+            <h2 className="text-4xl font-light mb-6">Over <span className="font-bold" style={{color: '#D9C89E'}}>DD Cars</span></h2>
             <p className="text-gray-300 mb-6 leading-relaxed">
               DD Cars is gespecialiseerd in de verkoop van premium en exclusieve occasions. Met meer dan 15 jaar ervaring in de automotive sector, bieden wij alleen de beste voertuigen aan onze klanten.
             </p>
@@ -27,11 +27,11 @@ export default function About() {
               className={`grid grid-cols-2 gap-6 transition-all duration-700 delay-200 ${statsFadeClass}`}
             >
               <div className="scale-on-hover">
-                <h3 className="text-2xl font-bold text-luxury-gold mb-2">500+</h3>
+                <h3 className="text-2xl font-bold mb-2" style={{color: '#D9C89E'}}>500+</h3>
                 <p className="text-gray-400">Tevreden Klanten</p>
               </div>
               <div className="scale-on-hover">
-                <h3 className="text-2xl font-bold text-luxury-gold mb-2">15+</h3>
+                <h3 className="text-2xl font-bold mb-2" style={{color: '#D9C89E'}}>15+</h3>
                 <p className="text-gray-400">Jaar Ervaring</p>
               </div>
             </div>

@@ -73,7 +73,7 @@ export default function Contact() {
           ref={titleRef}
           className={`text-center mb-16 transition-all duration-700 ${titleFadeClass}`}
         >
-          <h2 className="text-4xl font-light mb-4">Neem <span className="text-luxury-gold font-bold">Contact</span> Op</h2>
+          <h2 className="text-4xl font-light mb-4">Neem <span className="font-bold" style={{color: '#D9C89E'}}>Contact</span> Op</h2>
           <p className="text-gray-400 max-w-2xl mx-auto">Heeft u vragen of wilt u meer informatie over een van onze voertuigen? Neem vandaag nog contact met ons op.</p>
         </div>
         
@@ -83,7 +83,7 @@ export default function Contact() {
             className={`space-y-8 transition-all duration-700 delay-200 ${contactInfoFadeClass}`}
           >
             <div className="flex items-start space-x-4">
-              <div className="w-12 h-12 bg-luxury-gold rounded-full flex items-center justify-center flex-shrink-0">
+              <div className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0" style={{backgroundColor: '#D9C89E'}}>
                 <MapPin className="text-dark-primary" size={20} />
               </div>
               <div>
@@ -97,7 +97,7 @@ export default function Contact() {
             </div>
             
             <div className="flex items-start space-x-4">
-              <div className="w-12 h-12 bg-luxury-gold rounded-full flex items-center justify-center flex-shrink-0">
+              <div className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0" style={{backgroundColor: '#D9C89E'}}>
                 <Phone className="text-dark-primary" size={20} />
               </div>
               <div>
@@ -107,7 +107,7 @@ export default function Contact() {
             </div>
             
             <div className="flex items-start space-x-4">
-              <div className="w-12 h-12 bg-luxury-gold rounded-full flex items-center justify-center flex-shrink-0">
+              <div className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0" style={{backgroundColor: '#D9C89E'}}>
                 <Mail className="text-dark-primary" size={20} />
               </div>
               <div>
@@ -117,7 +117,7 @@ export default function Contact() {
             </div>
             
             <div className="flex items-start space-x-4">
-              <div className="w-12 h-12 bg-luxury-gold rounded-full flex items-center justify-center flex-shrink-0">
+              <div className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0" style={{backgroundColor: '#D9C89E'}}>
                 <Clock className="text-dark-primary" size={20} />
               </div>
               <div>

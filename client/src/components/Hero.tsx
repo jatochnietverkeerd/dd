@@ -42,7 +42,7 @@ export default function Hero() {
             ref={titleRef}
             className={`text-5xl md:text-6xl font-light mb-6 leading-tight transition-all duration-700 ${titleFadeClass}`}
           >
-            Premium <span className="text-luxury-gold font-bold">Occasions</span><br />
+            Premium <span className="font-bold" style={{color: '#D9C89E'}}>Occasions</span><br />
             <span className="text-3xl md:text-4xl text-gray-300">Exclusief & Uitzonderlijk</span>
           </h1>
           <p 
@@ -57,14 +57,24 @@ export default function Hero() {
           >
             <Button
               onClick={() => scrollToSection('aanbod')}
-              className="luxury-button bg-luxury-gold text-dark-primary px-8 py-3 rounded-full font-semibold hover:bg-white border-0"
+              className="luxury-button px-8 py-3 rounded-full font-semibold hover:bg-white border-0"
+              style={{backgroundColor: '#D9C89E', color: '#1a1a1a'}}
             >
               Bekijk Aanbod
             </Button>
             <Button
               onClick={() => scrollToSection('contact')}
               variant="outline"
-              className="luxury-button border-luxury-gold text-luxury-gold px-8 py-3 rounded-full font-semibold hover:bg-luxury-gold hover:text-dark-primary"
+              className="luxury-button px-8 py-3 rounded-full font-semibold"
+              style={{borderColor: '#D9C89E', color: '#D9C89E'}}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#D9C89E';
+                e.currentTarget.style.color = '#1a1a1a';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+                e.currentTarget.style.color = '#D9C89E';
+              }}
             >
               Contact Opnemen
             </Button>

@@ -33,44 +33,44 @@ export default function Header() {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-3 scale-on-hover">
-            <div className="w-10 h-10 bg-luxury-gold rounded-full flex items-center justify-center transition-transform duration-300 hover:scale-110">
+            <div className="w-10 h-10 rounded-full flex items-center justify-center transition-transform duration-300 hover:scale-110" style={{backgroundColor: '#D9C89E'}}>
               <Car className="text-dark-primary text-sm" size={18} />
             </div>
-            <span className="text-xl font-bold text-luxury-gold">
-              DD<span className="text-luxury-gold">Cars</span>
+            <span className="text-xl font-bold" style={{color: '#D9C89E'}}>
+              DD<span style={{color: '#D9C89E'}}>Cars</span>
             </span>
           </Link>
           
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <Link href="/" className="text-white hover:text-luxury-gold transition-all duration-300 relative group">
+            <Link href="/" className="text-white transition-all duration-300 relative group hover:text-[#D9C89E]">
               <span className="relative z-10">Home</span>
-              <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-luxury-gold transition-all duration-300 group-hover:w-full"></div>
+              <div className="absolute -bottom-1 left-0 w-0 h-0.5 transition-all duration-300 group-hover:w-full" style={{backgroundColor: '#D9C89E'}}></div>
             </Link>
-            <Link href="/aanbod" className="text-white hover:text-luxury-gold transition-all duration-300 relative group">
+            <Link href="/aanbod" className="text-white transition-all duration-300 relative group hover:text-[#D9C89E]">
               <span className="relative z-10">Aanbod</span>
-              <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-luxury-gold transition-all duration-300 group-hover:w-full"></div>
+              <div className="absolute -bottom-1 left-0 w-0 h-0.5 transition-all duration-300 group-hover:w-full" style={{backgroundColor: '#D9C89E'}}></div>
             </Link>
             <Link 
               href="/over-ons" 
-              className="text-white hover:text-luxury-gold transition-all duration-300 relative group"
+              className="text-white transition-all duration-300 relative group hover:text-[#D9C89E]"
             >
               <span className="relative z-10">Over Ons</span>
-              <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-luxury-gold transition-all duration-300 group-hover:w-full"></div>
+              <div className="absolute -bottom-1 left-0 w-0 h-0.5 transition-all duration-300 group-hover:w-full" style={{backgroundColor: '#D9C89E'}}></div>
             </Link>
             <button
               onClick={() => scrollToSection('contact')}
-              className="text-white hover:text-luxury-gold transition-all duration-300 relative group"
+              className="text-white transition-all duration-300 relative group hover:text-[#D9C89E]"
             >
               <span className="relative z-10">Contact</span>
-              <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-luxury-gold transition-all duration-300 group-hover:w-full"></div>
+              <div className="absolute -bottom-1 left-0 w-0 h-0.5 transition-all duration-300 group-hover:w-full" style={{backgroundColor: '#D9C89E'}}></div>
             </button>
           </div>
           
           {/* Mobile Menu Button */}
           <button
             onClick={toggleMobileMenu}
-            className="md:hidden text-white hover:text-luxury-gold transition-all duration-300 scale-on-hover"
+            className="md:hidden text-white transition-all duration-300 scale-on-hover hover:text-[#D9C89E]"
           >
             {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -85,27 +85,27 @@ export default function Header() {
           <Link 
             href="/" 
             onClick={closeMobileMenu}
-            className="text-2xl text-white hover:text-luxury-gold transition-colors duration-300"
+            className="text-2xl text-white transition-colors duration-300 hover:text-[#D9C89E]"
           >
             Home
           </Link>
           <Link 
             href="/aanbod" 
             onClick={closeMobileMenu}
-            className="text-2xl text-white hover:text-luxury-gold transition-colors duration-300"
+            className="text-2xl text-white transition-colors duration-300 hover:text-[#D9C89E]"
           >
             Aanbod
           </Link>
           <Link 
             href="/over-ons" 
             onClick={closeMobileMenu}
-            className="text-2xl text-white hover:text-luxury-gold transition-colors duration-300"
+            className="text-2xl text-white transition-colors duration-300 hover:text-[#D9C89E]"
           >
             Over Ons
           </Link>
           <button
             onClick={() => scrollToSection('contact')}
-            className="text-2xl text-white hover:text-luxury-gold transition-colors duration-300"
+            className="text-2xl text-white transition-colors duration-300 hover:text-[#D9C89E]"
           >
             Contact
           </button>
