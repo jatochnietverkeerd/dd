@@ -720,8 +720,12 @@ Sitemap: ${baseUrl}/sitemap.xml`;
       const invoiceData = createInvoiceData(vehicle, purchase);
       const pdfBuffer = await generateInvoicePDF(invoiceData);
       
+      const filename = `inkoop_${purchase.invoiceNumber}_${vehicle.brand}_${vehicle.model}.pdf`;
+      const disposition = req.query.download === 'true' ? 'attachment' : 'inline';
+      
       res.setHeader('Content-Type', 'application/pdf');
-      res.setHeader('Content-Disposition', `attachment; filename=inkoop_${purchase.invoiceNumber}_${vehicle.brand}_${vehicle.model}.pdf`);
+      res.setHeader('Content-Disposition', `${disposition}; filename="${filename}"`);
+      res.setHeader('Content-Length', pdfBuffer.length);
       res.send(pdfBuffer);
     } catch (error) {
       console.error('Error generating purchase invoice PDF:', error);
@@ -742,8 +746,12 @@ Sitemap: ${baseUrl}/sitemap.xml`;
       const invoiceData = createInvoiceData(vehicle, undefined, sale);
       const pdfBuffer = await generateInvoicePDF(invoiceData);
       
+      const filename = `verkoop_${sale.invoiceNumber}_${vehicle.brand}_${vehicle.model}.pdf`;
+      const disposition = req.query.download === 'true' ? 'attachment' : 'inline';
+      
       res.setHeader('Content-Type', 'application/pdf');
-      res.setHeader('Content-Disposition', `attachment; filename=verkoop_${sale.invoiceNumber}_${vehicle.brand}_${vehicle.model}.pdf`);
+      res.setHeader('Content-Disposition', `${disposition}; filename="${filename}"`);
+      res.setHeader('Content-Length', pdfBuffer.length);
       res.send(pdfBuffer);
     } catch (error) {
       console.error('Error generating sale invoice PDF:', error);

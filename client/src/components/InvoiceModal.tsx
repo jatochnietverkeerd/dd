@@ -29,7 +29,7 @@ export default function InvoiceModal({ isOpen, onClose, vehicle, purchase, sale,
 
   const handleDownload = async () => {
     try {
-      const response = await fetch(`/api/admin/invoices/${invoiceType}/${vehicle.id}/pdf?token=${token}`, {
+      const response = await fetch(`/api/admin/invoices/${invoiceType}/${vehicle.id}/pdf?token=${token}&download=true`, {
         method: 'GET'
       });
       
@@ -63,17 +63,8 @@ export default function InvoiceModal({ isOpen, onClose, vehicle, purchase, sale,
 
   const handlePrint = async () => {
     try {
-      const response = await fetch(`/api/admin/invoices/${invoiceType}/${vehicle.id}/pdf?token=${token}`, {
-        method: 'GET'
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to load PDF');
-      }
-      
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const printWindow = window.open(url, '_blank');
+      const printUrl = `/api/admin/invoices/${invoiceType}/${vehicle.id}/pdf?token=${token}`;
+      const printWindow = window.open(printUrl, '_blank');
       
       if (printWindow) {
         printWindow.onload = () => {
@@ -97,17 +88,8 @@ export default function InvoiceModal({ isOpen, onClose, vehicle, purchase, sale,
 
   const handlePreview = async () => {
     try {
-      const response = await fetch(`/api/admin/invoices/${invoiceType}/${vehicle.id}/pdf?token=${token}`, {
-        method: 'GET'
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to load PDF');
-      }
-      
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      window.open(url, '_blank');
+      const previewUrl = `/api/admin/invoices/${invoiceType}/${vehicle.id}/pdf?token=${token}`;
+      window.open(previewUrl, '_blank');
       
       toast({
         title: "Factuur geopend",
