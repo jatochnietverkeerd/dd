@@ -17,12 +17,12 @@ html {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #d4af37;
+  background: #d9c89e;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #b8941f;
+  background: #c7b485;
 }
 
 /* Luxury micro-interactions */
@@ -49,7 +49,7 @@ html {
 
 .luxury-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 32px rgba(212, 175, 55, 0.3);
+  box-shadow: 0 8px 32px rgba(217, 200, 158, 0.3);
 }
 
 .luxury-button:active {
@@ -132,7 +132,7 @@ html {
   --card-foreground: hsl(0, 0%, 100%);
   --border: hsl(0, 0%, 23%);
   --input: hsl(0, 0%, 16%);
-  --primary: hsl(48, 72%, 49%);
+  --primary: hsl(43, 37%, 73%);
   --primary-foreground: hsl(0, 0%, 4%);
   --secondary: hsl(0, 0%, 16%);
   --secondary-foreground: hsl(0, 0%, 100%);
@@ -140,9 +140,9 @@ html {
   --accent-foreground: hsl(0, 0%, 100%);
   --destructive: hsl(0, 84%, 60%);
   --destructive-foreground: hsl(0, 0%, 100%);
-  --ring: hsl(48, 72%, 49%);
+  --ring: hsl(43, 37%, 73%);
   --radius: 0.5rem;
-  --luxury-gold: hsl(48, 72%, 49%);
+  --luxury-gold: hsl(43, 37%, 73%);
   --dark-primary: hsl(0, 0%, 4%);
   --dark-secondary: hsl(0, 0%, 10%);
   --dark-tertiary: hsl(0, 0%, 16%);
@@ -160,7 +160,7 @@ html {
   --card-foreground: hsl(0, 0%, 100%);
   --border: hsl(0, 0%, 23%);
   --input: hsl(0, 0%, 16%);
-  --primary: hsl(48, 72%, 49%);
+  --primary: hsl(43, 37%, 73%);
   --primary-foreground: hsl(0, 0%, 4%);
   --secondary: hsl(0, 0%, 16%);
   --secondary-foreground: hsl(0, 0%, 100%);
@@ -168,7 +168,7 @@ html {
   --accent-foreground: hsl(0, 0%, 100%);
   --destructive: hsl(0, 84%, 60%);
   --destructive-foreground: hsl(0, 0%, 100%);
-  --ring: hsl(48, 72%, 49%);
+  --ring: hsl(43, 37%, 73%);
   --radius: 0.5rem;
 }
 

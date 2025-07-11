@@ -45,21 +45,21 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<Buffer> {
     doc.rect(cardMargin + 10, cardMargin + 10, cardWidth - 20, 70)
        .fill('#f8fafc');
     
-    // Subtle accent line
+    // Pantone 7501 M accent line
     doc.rect(cardMargin + 10, cardMargin + 10, cardWidth - 20, 3)
-       .fill('#D4AF37');
+       .fill('#D9C89E');
     
     // Enhanced company logo design with car icon
     // Create a circular logo background
     doc.circle(cardMargin + 45, cardMargin + 45, 20)
-       .fill('#D4AF37');
+       .fill('#D9C89E');
     
-    // DD letters centered in the golden circle - same size as CARS
+    // DD letters centered in the pantone circle - same size as CARS
     doc.fillColor('#1a1a1a').fontSize(24).font('Helvetica-Bold')
        .text('DD', cardMargin + 32, cardMargin + 35);
     
-    // CARS in gold like website
-    doc.fillColor('#D4AF37').fontSize(24).font('Helvetica-Bold')
+    // CARS in Pantone 7501 M
+    doc.fillColor('#D9C89E').fontSize(24).font('Helvetica-Bold')
        .text('CARS', cardMargin + 75, cardMargin + 35);
     
     // Invoice type in header
@@ -239,7 +239,7 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<Buffer> {
     doc.rect(cardMargin + 10, footerY, cardWidth - 20, 45)
        .fill('#f8fafc');
     
-    doc.fillColor('#D4AF37').fontSize(9).font('Helvetica-Bold')
+    doc.fillColor('#D9C89E').fontSize(9).font('Helvetica-Bold')
        .text('Bedankt voor uw vertrouwen in DD Cars', cardMargin + 25, footerY + 12)
        .text('Premium Performance • GTI & AMG Specialists', cardMargin + 25, footerY + 25);
     
