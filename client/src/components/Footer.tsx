@@ -42,7 +42,7 @@ export default function Footer() {
               </a>
             </div>
           </div>
-          
+
           <div>
             <h4 className="text-lg font-semibold mb-4">Navigatie</h4>
             <ul className="space-y-2">
@@ -88,7 +88,7 @@ export default function Footer() {
               </li>
             </ul>
           </div>
-          
+
           <div>
             <h4 className="text-lg font-semibold mb-4">Services</h4>
             <ul className="space-y-2">
@@ -98,7 +98,7 @@ export default function Footer() {
               <li><a href="#" className="text-gray-400 hover:text-luxury-gold transition-colors duration-300">Verzekering</a></li>
             </ul>
           </div>
-          
+
           <div>
             <h4 className="text-lg font-semibold mb-4">Contact Info</h4>
             <ul className="space-y-2 text-gray-400">
@@ -117,7 +117,7 @@ export default function Footer() {
             </ul>
           </div>
         </div>
-        
+
         <div className="border-t border-dark-quaternary mt-8 pt-8 text-center text-gray-400">
           <p>&copy; 2024 DD Cars. Alle rechten voorbehouden. | Privacy Policy | Terms of Service</p>
         </div>
