@@ -61,12 +61,27 @@ export interface IStorage {
 }
 
 export class DatabaseStorage implements IStorage {
+  private initialized = false;
+  private initializationPromise: Promise<void> | null = null;
+
   constructor() {
-    this.initializeData();
+    // Don't initialize in constructor, do it lazily
+  }
+
+  private async ensureInitialized() {
+    if (this.initialized) return;
+    
+    if (!this.initializationPromise) {
+      this.initializationPromise = this.initializeData();
+    }
+    
+    await this.initializationPromise;
   }
 
   private async initializeData() {
     try {
+      console.log("Initializing database data...");
+      
       // Check if admin user exists
       const adminExists = await db.select().from(users).where(eq(users.username, "admin")).limit(1);
       if (adminExists.length === 0) {
@@ -75,6 +90,7 @@ export class DatabaseStorage implements IStorage {
           password: "admin",
           role: "admin"
         });
+        console.log("Admin user created");
       }
 
       // Check if vehicles exist
@@ -140,17 +156,24 @@ export class DatabaseStorage implements IStorage {
             metaDescription: generateMetaDescription("Mercedes-Benz", "A35 AMG", 2024, 8500, "benzine", "automaat")
           }
         ]);
+        console.log("Sample vehicles created");
       }
+      
+      this.initialized = true;
+      console.log("Database initialization completed");
     } catch (error) {
       console.error("Database initialization error:", error);
+      throw error;
     }
   }
 
   async getVehicles(): Promise<Vehicle[]> {
+    await this.ensureInitialized();
     return await db.select().from(vehicles).orderBy(desc(vehicles.id));
   }
 
   async getVehiclesByStatus(status?: string): Promise<Vehicle[]> {
+    await this.ensureInitialized();
     if (status) {
       return await db.select().from(vehicles).where(eq(vehicles.status, status)).orderBy(desc(vehicles.id));
     }
@@ -158,20 +181,24 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getFeaturedVehicles(): Promise<Vehicle[]> {
+    await this.ensureInitialized();
     return await db.select().from(vehicles).where(eq(vehicles.featured, true)).orderBy(desc(vehicles.id));
   }
 
   async getVehicleById(id: number): Promise<Vehicle | undefined> {
+    await this.ensureInitialized();
     const result = await db.select().from(vehicles).where(eq(vehicles.id, id)).limit(1);
     return result[0];
   }
 
   async getVehicleBySlug(slug: string): Promise<Vehicle | undefined> {
+    await this.ensureInitialized();
     const result = await db.select().from(vehicles).where(eq(vehicles.slug, slug)).limit(1);
     return result[0];
   }
 
   async createVehicle(insertVehicle: InsertVehicle): Promise<Vehicle> {
+    await this.ensureInitialized();
     const slug = generateSlug(insertVehicle.brand, insertVehicle.model, insertVehicle.year);
     const metaTitle = generateMetaTitle(insertVehicle.brand, insertVehicle.model, insertVehicle.year, insertVehicle.price);
     const metaDescription = generateMetaDescription(insertVehicle.brand, insertVehicle.model, insertVehicle.year, insertVehicle.mileage, insertVehicle.fuel, insertVehicle.transmission);
