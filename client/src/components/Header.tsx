@@ -34,7 +34,7 @@ export default function Header() {
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-3 scale-on-hover">
             <div className="w-10 h-10 bg-luxury-gold rounded-full flex items-center justify-center transition-transform duration-300 hover:scale-110">
-              <span className="text-dark-primary text-sm font-bold">DD</span>
+              <Car className="text-dark-primary text-sm" size={18} />
             </div>
             <span className="text-xl font-bold text-white">
               DD<span className="text-luxury-gold">Cars</span>
