@@ -14,13 +14,14 @@ export const useScrollAnimation = (threshold = 0.1) => {
       { threshold }
     );
 
-    const currentElement = elementRef.current;
-    if (currentElement) {
-      observer.observe(currentElement);
+    if (elementRef.current) {
+      observer.observe(elementRef.current);
     }
 
     return () => {
-      observer.disconnect();
+      if (elementRef.current) {
+        observer.unobserve(elementRef.current);
+      }
     };
   }, [threshold]);
 

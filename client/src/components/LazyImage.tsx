@@ -28,7 +28,7 @@ export default function LazyImage({ src, alt, className = "", onClick, onError }
   if (hasError) {
     return (
       <div className={`bg-dark-tertiary flex items-center justify-center ${className}`}>
-        <span className="text-gray-400 text-sm">Afbeelding niet beschikbaar</span>
+        <span className="text-gray-500">Afbeelding niet beschikbaar</span>
       </div>
     );
   }
