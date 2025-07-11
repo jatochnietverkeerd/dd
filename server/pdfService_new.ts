@@ -54,19 +54,32 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<Buffer> {
     doc.circle(cardMargin + 45, cardMargin + 45, 20)
        .fill('#D4AF37');
     
-    // Add exact same car icon as website (very simple design)
+    // Add exact same car icon as website using Lucide car SVG path
     doc.fillColor('#1a1a1a')
-       // Car body - simple rounded rectangle
-       .roundedRect(cardMargin + 37, cardMargin + 43, 16, 5, 1)
-       .fill()
-       // Car cabin/windshield - smaller rounded rectangle on top
-       .roundedRect(cardMargin + 40, cardMargin + 40, 10, 4, 1)
-       .fill()
-       // Two wheels - small filled circles
-       .circle(cardMargin + 40, cardMargin + 49, 1.5)
-       .fill()
-       .circle(cardMargin + 50, cardMargin + 49, 1.5)
-       .fill();
+       .lineWidth(1.5)
+       .lineJoin('round')
+       .lineCap('round');
+    
+    // Lucide car icon paths (scaled and positioned)
+    const centerX = cardMargin + 45;
+    const centerY = cardMargin + 45;
+    const scale = 0.6;
+    
+    // Car body path
+    doc.path('M ' + (centerX - 8*scale) + ' ' + (centerY + 2*scale) + 
+            ' L ' + (centerX - 6*scale) + ' ' + (centerY - 2*scale) + 
+            ' L ' + (centerX + 6*scale) + ' ' + (centerY - 2*scale) + 
+            ' L ' + (centerX + 8*scale) + ' ' + (centerY + 2*scale) + 
+            ' L ' + (centerX + 6*scale) + ' ' + (centerY + 6*scale) + 
+            ' L ' + (centerX - 6*scale) + ' ' + (centerY + 6*scale) + 
+            ' Z')
+       .stroke();
+    
+    // Car wheels
+    doc.circle(centerX - 4*scale, centerY + 6*scale, 1.5*scale)
+       .stroke()
+       .circle(centerX + 4*scale, centerY + 6*scale, 1.5*scale)
+       .stroke();
     
     // Company name with clean styling
     doc.fillColor('#1a1a1a').fontSize(24).font('Helvetica-Bold')
