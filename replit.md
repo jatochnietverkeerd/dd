@@ -309,3 +309,29 @@ The application uses a modern, type-safe architecture with excellent developer e
 - **Updated Messaging**: "Premium Performance" with "GTI & AMG Specialists" tagline
 - **Performance Focus**: Messaging aligned with affordable premium performance market
 - **Visual Consistency**: Hero imagery matches inventory focus on GTI and AMG vehicles
+
+## Enhanced Sale Form & Invoice System (July 11, 2025)
+
+### Improved Data Inheritance
+- **Automatic BPM Field Transfer**: BPM amounts automatically inherited from purchase to sale forms
+- **Smart Default Values**: Sale price suggestions based on purchase cost + 15% margin
+- **Invoice Number Generation**: Automatic invoice number generation with manual override capability
+- **Purchase Information Display**: Clear reference section showing inherited purchase data
+
+### Enhanced Invoice Design
+- **Professional Logo**: Circular DD logo with golden background and company tagline
+- **Improved Layout**: Modern card-style design with subtle borders and professional spacing
+- **Enhanced Typography**: Better font hierarchy and visual structure
+- **Premium Branding**: Consistent "Premium Performance • GTI & AMG Specialists" tagline
+
+### Website Logo Improvement
+- **Enhanced Header Logo**: Circular DD logo with "Premium Performance" tagline
+- **Consistent Branding**: Matching visual identity between website and invoices
+- **Interactive Elements**: Hover animations and improved visual feedback
+- **Professional Design**: Clean, modern appearance with luxury gold accents
+
+### Technical Improvements
+- **Schema Correction**: Fixed BPM field naming consistency across database
+- **Form Validation**: Enhanced validation with proper error handling
+- **Data Integrity**: Improved data flow between purchase and sale forms
+- **User Experience**: Better visual feedback and clear data inheritance indicators

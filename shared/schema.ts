@@ -119,7 +119,7 @@ export const sales = pgTable("sales", {
   profitInclVat: decimal("profit_incl_vat", { precision: 10, scale: 2 }).default("0.00"),
   purchaseCostPrice: decimal("purchase_cost_price", { precision: 10, scale: 2 }).default("0.00"),
   // BPM fields for sales (can be inherited from purchase or manually entered)
-  bpmAmount: decimal("bmp_amount", { precision: 10, scale: 2 }).default("0.00"),
+  bpmAmount: decimal("bpm_amount", { precision: 10, scale: 2 }).default("0.00"),
   notes: text("notes"),
   createdAt: timestamp("created_at").defaultNow(),
 });

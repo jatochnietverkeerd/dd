@@ -39,6 +39,28 @@ const saleFormSchema = z.object({
 
 type SaleFormData = z.infer<typeof saleFormSchema>;
 
+// Generate invoice number based on current date
+function generateInvoiceNumber(): string {
+  const now = new Date();
+  const year = now.getFullYear().toString().slice(-2);
+  const month = (now.getMonth() + 1).toString().padStart(2, '0');
+  const day = now.getDate().toString().padStart(2, '0');
+  const random = Math.floor(Math.random() * 100).toString().padStart(2, '0');
+  return `V${year}${month}${day}${random}`;
+}
+
+// Calculate suggested sale price based on purchase cost + margin
+function calculateSuggestedSalePrice(purchase: Purchase): number {
+  if (!purchase) return 0;
+  
+  const totalCost = Number(purchase.totalCostInclVat) || 0;
+  const margin = 0.15; // 15% margin
+  const suggestedPrice = totalCost * (1 + margin);
+  
+  // Round to nearest 50 euros for clean pricing
+  return Math.round(suggestedPrice / 50) * 50;
+}
+
 interface SimpleSaleFormProps {
   vehicle: Vehicle;
   purchase?: Purchase;
@@ -49,19 +71,20 @@ interface SimpleSaleFormProps {
 }
 
 export default function SimpleSaleForm({ vehicle, purchase, sale, isOpen, onClose, token }: SimpleSaleFormProps) {
-  const [salePrice, setSalePrice] = useState(sale?.salePrice ? Number(sale.salePrice) : 0);
+  const vatType = purchase?.vatType as VatType || "21%";
+  const suggestedSalePrice = purchase ? calculateSuggestedSalePrice(purchase) : 0;
+  
+  const [salePrice, setSalePrice] = useState(sale?.salePrice ? Number(sale.salePrice) : suggestedSalePrice);
   const [discount, setDiscount] = useState(sale?.discount ? Number(sale.discount) : 0);
   const { toast } = useToast();
   const queryClient = useQueryClient();
-
-  const vatType = purchase?.vatType as VatType || "21%";
 
   const form = useForm<SaleFormData>({
     resolver: zodResolver(saleFormSchema),
     defaultValues: {
       vehicleId: vehicle.id,
       purchaseId: purchase?.id || undefined,
-      salePrice: sale?.salePrice ? Number(sale.salePrice) : 0,
+      salePrice: sale?.salePrice ? Number(sale.salePrice) : suggestedSalePrice,
       vatType: vatType,
       salePriceInclVat: sale?.salePriceInclVat ? Number(sale.salePriceInclVat) : 0,
       customerName: sale?.customerName || "",
@@ -74,8 +97,8 @@ export default function SimpleSaleForm({ vehicle, purchase, sale, isOpen, onClos
       saleDate: sale?.saleDate ? new Date(sale.saleDate).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
       deliveryDate: sale?.deliveryDate ? new Date(sale.deliveryDate).toISOString().split('T')[0] : "",
       warrantyMonths: sale?.warrantyMonths || 12,
-      invoiceNumber: sale?.invoiceNumber || "",
-      bmpAmount: sale?.bmpAmount ? Number(sale.bmpAmount) : (purchase?.bpmAmount ? Number(purchase.bpmAmount) : 0),
+      invoiceNumber: sale?.invoiceNumber || generateInvoiceNumber(),
+      bpmAmount: sale?.bpmAmount ? Number(sale.bpmAmount) : (purchase?.bpmAmount ? Number(purchase.bpmAmount) : 0),
       notes: sale?.notes || "",
     },
   });
@@ -191,12 +214,51 @@ export default function SimpleSaleForm({ vehicle, purchase, sale, isOpen, onClos
         </DialogHeader>
         
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          {/* Purchase Information Display */}
+          {purchase && (
+            <Card className="bg-gray-800 border-gray-700">
+              <CardHeader>
+                <CardTitle className="text-yellow-500">Inkoopgegevens (ter referentie)</CardTitle>
+                <CardDescription className="text-gray-400">
+                  Deze gegevens zijn overgenomen van de inkoop en worden gebruikt voor winst berekening
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm text-gray-400">Leverancier</Label>
+                  <p className="text-white">{purchase.supplier}</p>
+                </div>
+                <div>
+                  <Label className="text-sm text-gray-400">Inkoopprijs (excl. BTW)</Label>
+                  <p className="text-white">{formatCurrency(Number(purchase.purchasePrice))}</p>
+                </div>
+                <div>
+                  <Label className="text-sm text-gray-400">Totale inkoopkosten (incl. BTW)</Label>
+                  <p className="text-white font-semibold">{formatCurrency(Number(purchase.totalCostInclVat))}</p>
+                </div>
+                <div>
+                  <Label className="text-sm text-gray-400">BTW-type</Label>
+                  <p className="text-white">{purchase.vatType === "21%" ? "21% BTW" : purchase.vatType === "marge" ? "Marge regeling" : "Geen BTW"}</p>
+                </div>
+                <div>
+                  <Label className="text-sm text-gray-400">BPM bedrag</Label>
+                  <p className="text-white">{formatCurrency(Number(purchase.bpmAmount))}</p>
+                </div>
+                <div>
+                  <Label className="text-sm text-gray-400">Voorgestelde verkoopprijs</Label>
+                  <p className="text-green-400 font-semibold">{formatCurrency(suggestedSalePrice)}</p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
           {/* Pricing Section */}
           <Card className="bg-gray-800 border-gray-700">
             <CardHeader>
               <CardTitle className="text-yellow-500">Prijsinformatie</CardTitle>
               <CardDescription className="text-gray-400">
                 BTW-type: {vatType === "21%" ? "21% BTW" : vatType === "marge" ? "Marge regeling" : "Geen BTW"}
+                {purchase && ` (overgenomen van inkoop)`}
               </CardDescription>
             </CardHeader>
             <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -263,12 +325,12 @@ export default function SimpleSaleForm({ vehicle, purchase, sale, isOpen, onClos
               </div>
 
               <div>
-                <Label htmlFor="bmpAmount">BPM bedrag</Label>
+                <Label htmlFor="bpmAmount">BPM bedrag</Label>
                 <Input
-                  id="bmpAmount"
+                  id="bpmAmount"
                   type="number"
                   step="0.01"
-                  {...form.register("bmpAmount", { valueAsNumber: true })}
+                  {...form.register("bpmAmount", { valueAsNumber: true })}
                   className="bg-gray-800 border-gray-700 text-white"
                   placeholder={purchase?.bpmAmount ? `${purchase.bpmAmount} (overgenomen van inkoop)` : "0.00"}
                 />

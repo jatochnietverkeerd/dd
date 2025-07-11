@@ -31,14 +31,19 @@ export default function Header() {
     <header className="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-dark-primary/90 backdrop-blur-md">
       <nav className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
-          {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2 scale-on-hover">
-            <div className="w-8 h-8 bg-luxury-gold rounded-full flex items-center justify-center transition-transform duration-300">
-              <Car className="text-dark-primary text-sm" size={16} />
+          {/* Enhanced Logo */}
+          <Link href="/" className="flex items-center space-x-3 scale-on-hover">
+            <div className="w-10 h-10 bg-luxury-gold rounded-full flex items-center justify-center transition-transform duration-300 hover:scale-110">
+              <span className="text-dark-primary text-sm font-bold">DD</span>
             </div>
-            <span className="text-xl font-bold text-white">
-              DD<span className="text-luxury-gold">Cars</span>
-            </span>
+            <div className="flex flex-col">
+              <span className="text-xl font-bold text-white leading-none">
+                DD<span className="text-luxury-gold">Cars</span>
+              </span>
+              <span className="text-xs text-luxury-gold/70 leading-none">
+                Premium Performance
+              </span>
+            </div>
           </Link>
           
           {/* Desktop Navigation */}

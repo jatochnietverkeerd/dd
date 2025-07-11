@@ -49,9 +49,22 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<Buffer> {
     doc.rect(cardMargin + 10, cardMargin + 10, cardWidth - 20, 3)
        .fill('#D4AF37');
     
-    // Company logo/name in header
-    doc.fillColor('#1a1a1a').fontSize(26).font('Helvetica-Bold')
-       .text('DD CARS', cardMargin + 25, cardMargin + 30);
+    // Enhanced company logo design
+    // Create a circular logo background
+    doc.circle(cardMargin + 45, cardMargin + 45, 20)
+       .fill('#D4AF37');
+    
+    // Add DD initials in the circle
+    doc.fillColor('#1a1a1a').fontSize(14).font('Helvetica-Bold')
+       .text('DD', cardMargin + 38, cardMargin + 38);
+    
+    // Company name with enhanced styling
+    doc.fillColor('#1a1a1a').fontSize(24).font('Helvetica-Bold')
+       .text('DD CARS', cardMargin + 75, cardMargin + 30);
+    
+    // Add tagline under company name
+    doc.fillColor('#6b7280').fontSize(8).font('Helvetica')
+       .text('Premium Performance • GTI & AMG Specialists', cardMargin + 75, cardMargin + 55);
     
     // Invoice type in header
     doc.fillColor('#374151').fontSize(16).font('Helvetica-Bold')
