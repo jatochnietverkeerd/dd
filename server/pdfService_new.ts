@@ -8,17 +8,6 @@ interface InvoiceData {
   purchase?: Purchase;
   sale?: Sale;
   type: 'purchase' | 'sale';
-  companyInfo: {
-    name: string;
-    address: string;
-    city: string;
-    phone: string;
-    email: string;
-    kvk: string;
-    btw: string;
-    website: string;
-    iban: string;
-  };
 }
 
 const COMPANY_INFO = {
@@ -32,8 +21,6 @@ const COMPANY_INFO = {
   website: "www.ddcars.nl",
   iban: "NL91 ABNA 0417 1643 00"
 };
-
-// PDFKit based PDF generation - no templates needed
 
 export async function generateInvoicePDF(data: InvoiceData): Promise<Buffer> {
   return new Promise((resolve, reject) => {
@@ -109,6 +96,10 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<Buffer> {
         doc.text(`Onderhoudskosten: €${data.purchase.maintenanceCost.toLocaleString('nl-NL')}`, 50, yPos);
         yPos += 15;
       }
+      if (data.purchase.cleaningCost > 0) {
+        doc.text(`Schoonmaakkosten: €${data.purchase.cleaningCost.toLocaleString('nl-NL')}`, 50, yPos);
+        yPos += 15;
+      }
     }
     
     // Total
@@ -145,7 +136,6 @@ export function createInvoiceData(
     vehicle,
     purchase,
     sale,
-    type,
-    companyInfo: COMPANY_INFO
+    type
   };
 }

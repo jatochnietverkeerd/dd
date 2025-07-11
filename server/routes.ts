@@ -8,7 +8,7 @@ import crypto from "crypto";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
-import { generateInvoicePDF, createInvoiceData } from "./pdfService";
+import { generateInvoicePDF, createInvoiceData } from "./pdfService_new";
 import { sendInvoiceEmail } from "./emailService";
 
 // Ensure uploads directory exists
