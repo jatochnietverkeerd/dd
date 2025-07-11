@@ -31,7 +31,7 @@ export async function sendInvoiceEmail(
 ): Promise<boolean> {
   try {
     const config = getEmailConfig();
-    const transporter = nodemailer.createTransporter(config);
+    const transporter = nodemailer.createTransport(config);
     
     // Generate PDF
     const invoiceData = createInvoiceData(vehicle, purchase, sale);
@@ -213,7 +213,7 @@ DD Cars
 export async function sendTestEmail(to: string): Promise<boolean> {
   try {
     const config = getEmailConfig();
-    const transporter = nodemailer.createTransporter(config);
+    const transporter = nodemailer.createTransport(config);
     
     const mailOptions = {
       from: config.auth.user,

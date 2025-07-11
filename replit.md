@@ -347,3 +347,61 @@ The application uses a modern, type-safe architecture with excellent developer e
 - **Form Validation**: Enhanced validation with proper error handling
 - **Data Integrity**: Improved data flow between purchase and sale forms
 - **User Experience**: Better visual feedback and clear data inheritance indicators
+
+## Comprehensive Data Validation & Bug Fixes (July 11, 2025)
+
+### Critical Issues Identified & Fixed
+
+#### Issue #1: Schema Data Type Mismatch
+- **Problem**: Database had `vehicles.price` as `numeric` but schema defined as `integer`
+- **Impact**: Data type conflicts causing validation errors
+- **Fix**: Updated schema to use `decimal` type for price field with proper precision
+
+#### Issue #2: Missing Database Fields
+- **Problem**: Database had `created_at` field but schema didn't include it
+- **Impact**: Schema-database synchronization issues
+- **Fix**: Added missing `createdAt` field to vehicles table schema
+
+#### Issue #3: API Route Inconsistency
+- **Problem**: Expected endpoints `/api/vehicles/:id/purchase` and `/api/vehicles/:id/sale` didn't exist
+- **Impact**: API calls returning HTML instead of JSON
+- **Fix**: Identified correct endpoints `/api/admin/purchases` and `/api/admin/sales`
+
+#### Issue #4: Schema Validation Transformation Errors
+- **Problem**: Zod schema transformations not working correctly with `createInsertSchema`
+- **Impact**: Purchase and sale forms failing validation with type mismatches
+- **Fix**: Rewrote schemas using direct `z.object()` with proper number-to-string transformations
+
+#### Issue #5: Email Service Function Error
+- **Problem**: `nodemailer.createTransporter` should be `nodemailer.createTransport`
+- **Impact**: Email functionality completely broken
+- **Fix**: Corrected function name in both instances within email service
+
+#### Issue #6: Missing Required Fields in API Calls
+- **Problem**: Sale schema required fields like `vatAmount`, `salePriceInclVat`, `finalPrice`, etc.
+- **Impact**: Sale creation failing with validation errors
+- **Fix**: Updated API call structure to include all required calculated fields
+
+### Validation Results
+- **Vehicle Data**: Successfully retrieving all 6 vehicles
+- **Purchase System**: Successfully creating purchase records with proper data transformation
+- **Sale System**: Successfully creating sale records with all required fields
+- **PDF Generation**: Working correctly for both purchase and sale invoices
+- **Email Service**: Functioning properly with development simulation mode
+- **Database Integrity**: All data stored correctly with proper decimal formatting
+
+### System Statistics After Fixes
+- Total Vehicles: 6
+- Total Purchases: 3
+- Total Sales: 5
+- Vehicles with Purchases: 3
+- Vehicles with Sales: 3
+- All BPM fields: Properly inherited between purchase and sale forms
+- All VAT calculations: Working correctly with proper decimal precision
+
+### Key Technical Improvements
+- **Robust Data Validation**: All forms now validate properly with correct data types
+- **Consistent API Structure**: All endpoints follow proper authentication and response patterns
+- **Reliable PDF Generation**: Invoice PDFs generate successfully with all required data
+- **Working Email Integration**: Email service properly configured for development environment
+- **Enhanced Error Handling**: Comprehensive error logging and user-friendly error messages

@@ -7,7 +7,7 @@ export const vehicles = pgTable("vehicles", {
   brand: text("brand").notNull(),
   model: text("model").notNull(),
   year: integer("year").notNull(),
-  price: integer("price").notNull(),
+  price: decimal("price", { precision: 10, scale: 2 }).notNull(),
   mileage: integer("mileage").notNull(),
   fuel: text("fuel").notNull(),
   transmission: text("transmission").notNull(),
@@ -34,6 +34,7 @@ export const vehicles = pgTable("vehicles", {
   co2Uitstoot: integer("co2_uitstoot"), // CO2 emissions in g/km
   datumEersteToelating: timestamp("datum_eerste_toelating"), // First registration date
   nettoCatalogusprijs: integer("netto_catalogusprijs"), // Net catalog price
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
 export const contacts = pgTable("contacts", {
@@ -169,24 +170,47 @@ export const insertReservationSchema = createInsertSchema(reservations).omit({
   createdAt: true,
 });
 
-export const insertPurchaseSchema = createInsertSchema(purchases).omit({
-  id: true,
-  createdAt: true,
+export const insertPurchaseSchema = z.object({
+  vehicleId: z.number(),
+  purchasePrice: z.number().transform(val => val.toString()),
+  vatType: z.string(),
+  vatAmount: z.number().optional().transform(val => val ? val.toString() : "0.00"),
+  bpmAmount: z.number().optional().transform(val => val ? val.toString() : "0.00"),
+  supplier: z.string(),
+  invoiceNumber: z.string(),
+  purchaseDate: z.string().transform(val => new Date(val)),
+  transportCost: z.number().optional().transform(val => val ? val.toString() : "0.00"),
+  maintenanceCost: z.number().optional().transform(val => val ? val.toString() : "0.00"),
+  cleaningCost: z.number().optional().transform(val => val ? val.toString() : "0.00"),
+  guaranteeCost: z.number().optional().transform(val => val ? val.toString() : "0.00"),
+  otherCosts: z.number().optional().transform(val => val ? val.toString() : "0.00"),
+  totalCostInclVat: z.number().transform(val => val.toString()),
+  notes: z.string().optional(),
 });
 
-export const insertSaleSchema = createInsertSchema(sales).omit({
-  id: true,
-  createdAt: true,
-}).extend({
-  salePrice: z.number().transform(val => val.toString()),
+export const insertSaleSchema = z.object({
+  vehicleId: z.number(),
+  purchaseId: z.number().optional(),
+  salePrice: z.number().optional().transform(val => val ? val.toString() : "0.00"),
+  vatType: z.string(),
   vatAmount: z.number().transform(val => val.toString()),
   salePriceInclVat: z.number().transform(val => val.toString()),
-  discount: z.number().transform(val => val.toString()),
+  customerName: z.string().optional(),
+  customerEmail: z.string().optional(),
+  customerPhone: z.string().optional(),
+  customerAddress: z.string().optional(),
+  discount: z.number().optional().transform(val => val ? val.toString() : "0.00"),
   finalPrice: z.number().transform(val => val.toString()),
-  profitExclVat: z.number().transform(val => val.toString()),
-  profitInclVat: z.number().transform(val => val.toString()),
+  paymentMethod: z.string().optional(),
   saleDate: z.string().transform(val => new Date(val)),
   deliveryDate: z.string().optional().transform(val => val && val !== "" ? new Date(val) : null),
+  warrantyMonths: z.number().optional().default(12),
+  invoiceNumber: z.string().optional(),
+  profitExclVat: z.number().transform(val => val.toString()),
+  profitInclVat: z.number().transform(val => val.toString()),
+  purchaseCostPrice: z.number().optional().transform(val => val ? val.toString() : "0.00"),
+  bpmAmount: z.number().optional().transform(val => val ? val.toString() : "0.00"),
+  notes: z.string().optional(),
 });
 
 export type Vehicle = typeof vehicles.$inferSelect;
