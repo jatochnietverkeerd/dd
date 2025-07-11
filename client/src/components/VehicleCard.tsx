@@ -39,18 +39,18 @@ export default function VehicleCard({ vehicle }: VehicleCardProps) {
         />
       </div>
       <CardContent className="p-6">
-        <h3 className="text-xl font-semibold mb-2 text-white">{vehicle.brand}</h3>
-        <p className="text-gray-400 mb-4">{vehicle.model}</p>
+        <h3 className="text-xl font-semibold mb-2" style={{color: '#D9C89E'}}>{vehicle.brand}</h3>
+        <p className="mb-4" style={{color: '#D9C89E'}}>{vehicle.model}</p>
         <div className="flex justify-between items-center mb-4">
           <span className="font-bold text-lg" style={{color: '#D9C89E'}}>{formatPrice(vehicle.price)}</span>
-          <span className="text-gray-500">{vehicle.year}</span>
+          <span style={{color: '#D9C89E'}}>{vehicle.year}</span>
         </div>
-        <div className="grid grid-cols-2 gap-4 text-sm text-gray-400 mb-4">
-          <span className="flex items-center">
+        <div className="grid grid-cols-2 gap-4 text-sm mb-4">
+          <span className="flex items-center" style={{color: '#D9C89E'}}>
             <Gauge size={14} className="mr-1" />
             {formatMileage(vehicle.mileage)} km
           </span>
-          <span className="flex items-center">
+          <span className="flex items-center" style={{color: '#D9C89E'}}>
             <Fuel size={14} className="mr-1" />
             {vehicle.fuel}
           </span>

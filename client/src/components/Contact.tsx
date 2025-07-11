@@ -73,7 +73,7 @@ export default function Contact() {
           ref={titleRef}
           className={`text-center mb-16 transition-all duration-700 ${titleFadeClass}`}
         >
-          <h2 className="text-4xl font-light mb-4">Neem <span className="font-bold" style={{color: '#D9C89E'}}>Contact</span> Op</h2>
+          <h2 className="text-4xl font-light mb-4"><span style={{color: '#D9C89E'}}>Neem</span> <span className="font-bold" style={{color: '#D9C89E'}}>Contact</span> <span style={{color: '#D9C89E'}}>Op</span></h2>
           <p className="max-w-2xl mx-auto" style={{color: '#D9C89E'}}>Heeft u vragen of wilt u meer informatie over een van onze voertuigen? Neem vandaag nog contact met ons op.</p>
         </div>
         

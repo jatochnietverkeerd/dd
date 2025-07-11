@@ -15,7 +15,7 @@ export default function About() {
             ref={textRef}
             className={`transition-all duration-700 ${textFadeClass}`}
           >
-            <h2 className="text-4xl font-light mb-6">Over <span className="font-bold" style={{color: '#D9C89E'}}>DD Cars</span></h2>
+            <h2 className="text-4xl font-light mb-6"><span style={{color: '#D9C89E'}}>Over</span> <span className="font-bold" style={{color: '#D9C89E'}}>DD Cars</span></h2>
             <p className="mb-6 leading-relaxed" style={{color: '#D9C89E'}}>
               DD Cars is gespecialiseerd in de verkoop van premium en exclusieve occasions. Met meer dan 15 jaar ervaring in de automotive sector, bieden wij alleen de beste voertuigen aan onze klanten.
             </p>

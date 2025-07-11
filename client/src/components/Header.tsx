@@ -43,24 +43,26 @@ export default function Header() {
           
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <Link href="/" className="text-white transition-all duration-300 relative group hover:text-[#D9C89E]">
+            <Link href="/" className="transition-all duration-300 relative group" style={{color: '#D9C89E'}}>
               <span className="relative z-10">Home</span>
               <div className="absolute -bottom-1 left-0 w-0 h-0.5 transition-all duration-300 group-hover:w-full" style={{backgroundColor: '#D9C89E'}}></div>
             </Link>
-            <Link href="/aanbod" className="text-white transition-all duration-300 relative group hover:text-[#D9C89E]">
+            <Link href="/aanbod" className="transition-all duration-300 relative group" style={{color: '#D9C89E'}}>
               <span className="relative z-10">Aanbod</span>
               <div className="absolute -bottom-1 left-0 w-0 h-0.5 transition-all duration-300 group-hover:w-full" style={{backgroundColor: '#D9C89E'}}></div>
             </Link>
             <Link 
               href="/over-ons" 
-              className="text-white transition-all duration-300 relative group hover:text-[#D9C89E]"
+              className="transition-all duration-300 relative group"
+              style={{color: '#D9C89E'}}
             >
               <span className="relative z-10">Over Ons</span>
               <div className="absolute -bottom-1 left-0 w-0 h-0.5 transition-all duration-300 group-hover:w-full" style={{backgroundColor: '#D9C89E'}}></div>
             </Link>
             <button
               onClick={() => scrollToSection('contact')}
-              className="text-white transition-all duration-300 relative group hover:text-[#D9C89E]"
+              className="transition-all duration-300 relative group"
+              style={{color: '#D9C89E'}}
             >
               <span className="relative z-10">Contact</span>
               <div className="absolute -bottom-1 left-0 w-0 h-0.5 transition-all duration-300 group-hover:w-full" style={{backgroundColor: '#D9C89E'}}></div>
@@ -85,27 +87,31 @@ export default function Header() {
           <Link 
             href="/" 
             onClick={closeMobileMenu}
-            className="text-2xl text-white transition-colors duration-300 hover:text-[#D9C89E]"
+            className="text-2xl transition-colors duration-300"
+            style={{color: '#D9C89E'}}
           >
             Home
           </Link>
           <Link 
             href="/aanbod" 
             onClick={closeMobileMenu}
-            className="text-2xl text-white transition-colors duration-300 hover:text-[#D9C89E]"
+            className="text-2xl transition-colors duration-300"
+            style={{color: '#D9C89E'}}
           >
             Aanbod
           </Link>
           <Link 
             href="/over-ons" 
             onClick={closeMobileMenu}
-            className="text-2xl text-white transition-colors duration-300 hover:text-[#D9C89E]"
+            className="text-2xl transition-colors duration-300"
+            style={{color: '#D9C89E'}}
           >
             Over Ons
           </Link>
           <button
             onClick={() => scrollToSection('contact')}
-            className="text-2xl text-white transition-colors duration-300 hover:text-[#D9C89E]"
+            className="text-2xl transition-colors duration-300"
+            style={{color: '#D9C89E'}}
           >
             Contact
           </button>
