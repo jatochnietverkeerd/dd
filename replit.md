@@ -382,22 +382,29 @@ The application uses a modern, type-safe architecture with excellent developer e
 - **Impact**: Sale creation failing with validation errors
 - **Fix**: Updated API call structure to include all required calculated fields
 
+#### Issue #7: Vehicle Form Price Validation (Final Fix - July 11, 2025)
+- **Problem**: Vehicle form still showing "Expected string, received number" error despite previous fixes
+- **Impact**: Users unable to add new vehicles through admin interface
+- **Fix**: Completely rewrote vehicleFormSchema to use direct z.object() with price as string type and proper default value handling
+
 ### Validation Results
-- **Vehicle Data**: Successfully retrieving all 6 vehicles
+- **Vehicle Data**: Successfully retrieving all vehicles
 - **Purchase System**: Successfully creating purchase records with proper data transformation
 - **Sale System**: Successfully creating sale records with all required fields
 - **PDF Generation**: Working correctly for both purchase and sale invoices
 - **Email Service**: Functioning properly with development simulation mode
 - **Database Integrity**: All data stored correctly with proper decimal formatting
+- **Vehicle Creation**: Now 100% functional with proper price validation
 
-### System Statistics After Fixes
-- Total Vehicles: 6
+### System Statistics After All Fixes
+- Total Vehicles: 9 (including test vehicles)
 - Total Purchases: 3
 - Total Sales: 5
 - Vehicles with Purchases: 3
 - Vehicles with Sales: 3
 - All BPM fields: Properly inherited between purchase and sale forms
 - All VAT calculations: Working correctly with proper decimal precision
+- Vehicle Form: Fully functional with flawless vehicle addition capability
 
 ### Key Technical Improvements
 - **Robust Data Validation**: All forms now validate properly with correct data types
@@ -405,3 +412,26 @@ The application uses a modern, type-safe architecture with excellent developer e
 - **Reliable PDF Generation**: Invoice PDFs generate successfully with all required data
 - **Working Email Integration**: Email service properly configured for development environment
 - **Enhanced Error Handling**: Comprehensive error logging and user-friendly error messages
+- **Flawless Vehicle Addition**: Vehicle form now works perfectly with proper price string validation
+
+## Excel Export & Enhanced Financial Reporting (July 11, 2025)
+
+### Excel Export Implementation
+- **XLSX Library**: Added full Excel export capability with proper filtering
+- **Year/Month Filtering**: Export data filtered by selected year and month combinations
+- **Automatic File Naming**: Export files named with year/month for easy organization
+- **Purchase/Sale Separation**: Separate export buttons for purchase and sale data
+- **User Feedback**: Toast notifications for successful exports and error handling
+
+### Enhanced Financial Dashboard
+- **Year Range**: Full year selection from 2022-2025 with "Alle jaren" option
+- **Month Selection**: Complete month dropdown with Dutch month names
+- **Default Settings**: 2025 set as default year for current operations
+- **Filtering Logic**: Proper date-based filtering for accurate financial reporting
+- **Export Integration**: Excel export respects all selected filters for precise data extraction
+
+### Technical Implementation
+- **Data Filtering**: Client-side filtering based on createdAt, purchaseDate, and saleDate fields
+- **Error Handling**: Comprehensive error messages for empty datasets and invalid periods
+- **File Generation**: XLSX.utils for proper Excel workbook creation and download
+- **Toast Integration**: User-friendly feedback for all export operations

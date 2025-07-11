@@ -17,31 +17,19 @@ import type { Vehicle } from "@shared/schema";
 import { z } from "zod";
 import ImageUploader from "./ImageUploader";
 
-const vehicleFormSchema = insertVehicleSchema.extend({
+const vehicleFormSchema = z.object({
+  brand: z.string().min(1, "Merk is verplicht"),
+  model: z.string().min(1, "Model is verplicht"),
+  year: z.number().min(1900, "Bouwjaar moet na 1900 zijn"),
+  price: z.string().min(1, "Prijs is verplicht"),
+  mileage: z.number().min(0, "Kilometerstand moet positief zijn"),
+  fuel: z.string().min(1, "Brandstof is verplicht"),
+  transmission: z.string().min(1, "Transmissie is verplicht"),
+  color: z.string().min(1, "Kleur is verplicht"),
+  description: z.string().min(1, "Beschrijving is verplicht"),
+  featured: z.boolean().default(false),
+  status: z.string().default("beschikbaar"),
   images: z.array(z.string()).optional(),
-}).omit({ 
-  slug: true,
-  metaTitle: true,
-  metaDescription: true,
-  availableDate: true,
-  available: true,
-  // Remove all purchase-related fields
-  purchasePrice: true,
-  purchaseVatType: true,
-  bpmAmount: true,
-  supplier: true,
-  invoiceNumber: true,
-  purchaseDate: true,
-  transportCost: true,
-  maintenanceCost: true,
-  cleaningCost: true,
-  guaranteeCost: true,
-  otherCosts: true,
-  totalCostInclVat: true,
-  notes: true,
-  co2Uitstoot: true,
-  datumEersteToelating: true,
-  nettoCatalogusprijs: true,
 });
 
 type VehicleFormData = z.infer<typeof vehicleFormSchema>;
@@ -64,7 +52,7 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
       brand: vehicle?.brand || "",
       model: vehicle?.model || "",
       year: vehicle?.year || new Date().getFullYear(),
-      price: vehicle?.price || 0,
+      price: vehicle?.price ? vehicle.price.toString() : "",
       mileage: vehicle?.mileage || 0,
       fuel: vehicle?.fuel || "",
       transmission: vehicle?.transmission || "",
@@ -84,7 +72,7 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
         brand: vehicle?.brand || "",
         model: vehicle?.model || "",
         year: vehicle?.year || new Date().getFullYear(),
-        price: vehicle?.price || 0,
+        price: vehicle?.price ? vehicle.price.toString() : "",
         mileage: vehicle?.mileage || 0,
         fuel: vehicle?.fuel || "",
         transmission: vehicle?.transmission || "",

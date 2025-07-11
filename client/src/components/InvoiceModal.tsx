@@ -148,7 +148,7 @@ export default function InvoiceModal({ isOpen, onClose, vehicle, purchase, sale,
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[600px] bg-gray-900 border-gray-800" aria-describedby="invoice-modal-description">
+      <DialogContent className="sm:max-w-[600px] bg-gray-900 border-gray-800">
         <DialogHeader>
           <DialogTitle className="text-white text-xl">
             {purchase ? 'Inkoop' : 'Verkoop'} Factuur
