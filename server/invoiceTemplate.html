@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Helvetica', 'Arial', sans-serif;
+            font-size: 12px;
+            line-height: 1.5;
+            color: #2d3748;
+            background: white;
+        }
+        
+        .container {
+            max-width: 210mm;
+            margin: 0 auto;
+            padding: 20mm;
+            min-height: 297mm;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #d4af37;
+        }
+        
+        .company-info {
+            flex: 1;
+        }
+        
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #d4af37, #f7d794);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+        
+        .logo-text {
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .company-name {
+            font-size: 28px;
+            font-weight: bold;
+            color: #d4af37;
+            margin-bottom: 8px;
+        }
+        
+        .company-tagline {
+            font-size: 11px;
+            color: #666;
+            font-style: italic;
+            margin-bottom: 15px;
+        }
+        
+        .company-details {
+            font-size: 11px;
+            color: #4a5568;
+            line-height: 1.6;
+        }
+        
+        .invoice-info {
+            text-align: right;
+            flex: 1;
+        }
+        
+        .invoice-title {
+            font-size: 32px;
+            font-weight: bold;
+            color: #2d3748;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .invoice-number {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .invoice-date {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .client-info {
+            margin-bottom: 30px;
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #d4af37;
+        }
+        
+        .client-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #2d3748;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .client-details {
+            font-size: 12px;
+            color: #4a5568;
+            line-height: 1.6;
+        }
+        
+        .vehicle-section {
+            background: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border: 2px solid #e2e8f0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .vehicle-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2d3748;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 10px;
+        }
+        
+        .vehicle-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .vehicle-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        
+        .vehicle-label {
+            font-weight: 600;
+            color: #4a5568;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        
+        .vehicle-value {
+            color: #2d3748;
+            font-weight: 500;
+            font-size: 12px;
+        }
+        
+        .costs-section {
+            margin-bottom: 30px;
+        }
+        
+        .costs-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .costs-table th {
+            background: linear-gradient(135deg, #d4af37, #f7d794);
+            color: white;
+            padding: 15px 20px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .costs-table td {
+            padding: 12px 20px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 12px;
+        }
+        
+        .cost-description {
+            font-weight: 500;
+            color: #2d3748;
+        }
+        
+        .cost-amount {
+            text-align: right;
+            font-weight: 600;
+            color: #2d3748;
+        }
+        
+        .cost-vat {
+            text-align: center;
+            color: #4a5568;
+            font-size: 11px;
+        }
+        
+        .subtotal-row {
+            background: #f8fafc;
+            font-weight: 600;
+        }
+        
+        .total-row {
+            background: linear-gradient(135deg, #d4af37, #f7d794);
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        .vat-info {
+            background: #fff8e1;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid #ffa726;
+        }
+        
+        .vat-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #e65100;
+            margin-bottom: 10px;
+        }
+        
+        .vat-text {
+            font-size: 11px;
+            color: #bf360c;
+            line-height: 1.6;
+        }
+        
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+            font-size: 10px;
+            color: #718096;
+            text-align: center;
+        }
+        
+        .payment-info {
+            background: #f0f8ff;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid #3182ce;
+        }
+        
+        .payment-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #2c5282;
+            margin-bottom: 10px;
+        }
+        
+        .payment-details {
+            font-size: 11px;
+            color: #2d3748;
+            line-height: 1.6;
+        }
+        
+        .legal-section {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .legal-title {
+            font-size: 12px;
+            font-weight: bold;
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+        
+        .legal-text {
+            font-size: 9px;
+            color: #4a5568;
+            line-height: 1.5;
+        }
+        
+        .notes {
+            background: #fff9e6;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #d4af37;
+            margin-bottom: 20px;
+        }
+        
+        .notes-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #333;
+        }
+        
+        @media print {
+            .container {
+                padding: 0;
+            }
+            
+            .costs-table {
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="company-info">
+                <div class="logo">
+                    <div class="logo-text">DD</div>
+                </div>
+                <div class="company-name">{{companyInfo.name}}</div>
+                <div class="company-tagline">Premium Automotive Solutions</div>
+                <div class="company-details">
+                    {{companyInfo.address}}<br>
+                    {{companyInfo.city}}<br>
+                    Tel: {{companyInfo.phone}}<br>
+                    Email: {{companyInfo.email}}<br>
+                    Web: {{companyInfo.website}}<br>
+                    KvK: {{companyInfo.kvk}} | BTW: {{companyInfo.btw}}
+                </div>
+            </div>
+            <div class="invoice-info">
+                <div class="invoice-title">{{#if purchase}}INKOOP{{else}}VERKOOP{{/if}}</div>
+                <div class="invoice-number">{{invoiceNumber}}</div>
+                <div class="invoice-date">{{date}}</div>
+            </div>
+        </div>
+
+        <!-- Customer Info -->
+        {{#if sale}}
+        <div class="client-info">
+            <div class="client-title">Klant Informatie</div>
+            <div class="client-details">
+                <strong>{{sale.customerName}}</strong><br>
+                {{sale.customerAddress}}<br>
+                Email: {{sale.customerEmail}}<br>
+                Telefoon: {{sale.customerPhone}}
+            </div>
+        </div>
+        {{/if}}
+
+        {{#if purchase}}
+        <div class="client-info">
+            <div class="client-title">Leverancier Informatie</div>
+            <div class="client-details">
+                <strong>{{purchase.supplier}}</strong><br>
+                {{#if purchase.invoiceNumber}}Factuurnummer: {{purchase.invoiceNumber}}<br>{{/if}}
+                {{#if purchase.purchaseDate}}Datum: {{purchase.purchaseDate}}{{/if}}
+            </div>
+        </div>
+        {{/if}}
+
+        <!-- Vehicle Info -->
+        <div class="vehicle-section">
+            <div class="vehicle-title">Voertuig Specificaties</div>
+            <div class="vehicle-grid">
+                <div class="vehicle-item">
+                    <span class="vehicle-label">Merk & Model:</span>
+                    <span class="vehicle-value">{{vehicle.brand}} {{vehicle.model}}</span>
+                </div>
+                <div class="vehicle-item">
+                    <span class="vehicle-label">Bouwjaar:</span>
+                    <span class="vehicle-value">{{vehicle.year}}</span>
+                </div>
+                <div class="vehicle-item">
+                    <span class="vehicle-label">Kilometerstand:</span>
+                    <span class="vehicle-value">{{vehicle.mileage}} km</span>
+                </div>
+                <div class="vehicle-item">
+                    <span class="vehicle-label">Brandstof:</span>
+                    <span class="vehicle-value">{{vehicle.fuel}}</span>
+                </div>
+                <div class="vehicle-item">
+                    <span class="vehicle-label">Transmissie:</span>
+                    <span class="vehicle-value">{{vehicle.transmission}}</span>
+                </div>
+                <div class="vehicle-item">
+                    <span class="vehicle-label">Kleur:</span>
+                    <span class="vehicle-value">{{vehicle.color}}</span>
+                </div>
+                {{#if vehicle.chassisNumber}}
+                <div class="vehicle-item">
+                    <span class="vehicle-label">Chassisnummer:</span>
+                    <span class="vehicle-value">{{vehicle.chassisNumber}}</span>
+                </div>
+                {{/if}}
+                {{#if vehicle.power}}
+                <div class="vehicle-item">
+                    <span class="vehicle-label">Vermogen:</span>
+                    <span class="vehicle-value">{{vehicle.power}} PK</span>
+                </div>
+                {{/if}}
+                {{#if vehicle.co2Uitstoot}}
+                <div class="vehicle-item">
+                    <span class="vehicle-label">CO2 Uitstoot:</span>
+                    <span class="vehicle-value">{{vehicle.co2Uitstoot}} g/km</span>
+                </div>
+                {{/if}}
+                {{#if vehicle.datumEersteToelating}}
+                <div class="vehicle-item">
+                    <span class="vehicle-label">Eerste Toelating:</span>
+                    <span class="vehicle-value">{{vehicle.datumEersteToelating}}</span>
+                </div>
+                {{/if}}
+                {{#if vehicle.nettoCatalogusprijs}}
+                <div class="vehicle-item">
+                    <span class="vehicle-label">Catalogusprijs:</span>
+                    <span class="vehicle-value">€ {{vehicle.nettoCatalogusprijs}}</span>
+                </div>
+                {{/if}}
+            </div>
+        </div>
+
+        <!-- Costs Table -->
+        <div class="costs-section">
+            <table class="costs-table">
+                <thead>
+                    <tr>
+                        <th>Omschrijving</th>
+                        <th>BTW Type</th>
+                        <th>Bedrag</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#if purchase}}
+                    <tr>
+                        <td class="cost-description">Aankoopprijs (excl. BTW)</td>
+                        <td class="cost-vat">{{purchase.vatType}}</td>
+                        <td class="cost-amount">€ {{purchase.purchasePrice}}</td>
+                    </tr>
+                    {{#if purchase.bpmAmount}}
+                    <tr>
+                        <td class="cost-description">BPM (Belasting Personenauto's)</td>
+                        <td class="cost-vat">-</td>
+                        <td class="cost-amount">€ {{purchase.bpmAmount}}</td>
+                    </tr>
+                    {{/if}}
+                    {{#if purchase.transportCost}}
+                    <tr>
+                        <td class="cost-description">Transport & Logistiek</td>
+                        <td class="cost-vat">21%</td>
+                        <td class="cost-amount">€ {{purchase.transportCost}}</td>
+                    </tr>
+                    {{/if}}
+                    {{#if purchase.maintenanceCost}}
+                    <tr>
+                        <td class="cost-description">Onderhoud & Reparatie</td>
+                        <td class="cost-vat">21%</td>
+                        <td class="cost-amount">€ {{purchase.maintenanceCost}}</td>
+                    </tr>
+                    {{/if}}
+                    {{#if purchase.cleaningCost}}
+                    <tr>
+                        <td class="cost-description">Reiniging & Detailing</td>
+                        <td class="cost-vat">21%</td>
+                        <td class="cost-amount">€ {{purchase.cleaningCost}}</td>
+                    </tr>
+                    {{/if}}
+                    {{#if purchase.guaranteeCost}}
+                    <tr>
+                        <td class="cost-description">Garantie & Verzekering</td>
+                        <td class="cost-vat">21%</td>
+                        <td class="cost-amount">€ {{purchase.guaranteeCost}}</td>
+                    </tr>
+                    {{/if}}
+                    {{#if purchase.otherCosts}}
+                    <tr>
+                        <td class="cost-description">Overige kosten</td>
+                        <td class="cost-vat">21%</td>
+                        <td class="cost-amount">€ {{purchase.otherCosts}}</td>
+                    </tr>
+                    {{/if}}
+                    {{#if purchase.vatAmount}}
+                    <tr class="subtotal-row">
+                        <td class="cost-description">BTW</td>
+                        <td class="cost-vat">{{purchase.vatType}}</td>
+                        <td class="cost-amount">€ {{purchase.vatAmount}}</td>
+                    </tr>
+                    {{/if}}
+                    <tr class="total-row">
+                        <td class="cost-description">Totaal Inkoop (incl. BTW)</td>
+                        <td class="cost-vat">-</td>
+                        <td class="cost-amount">€ {{purchase.totalCostInclVat}}</td>
+                    </tr>
+                    {{/if}}
+                    
+                    {{#if sale}}
+                    <tr>
+                        <td class="cost-description">Verkoopprijs (excl. BTW)</td>
+                        <td class="cost-vat">{{sale.vatType}}</td>
+                        <td class="cost-amount">€ {{sale.salePrice}}</td>
+                    </tr>
+                    {{#if sale.discount}}
+                    <tr>
+                        <td class="cost-description">Korting</td>
+                        <td class="cost-vat">-</td>
+                        <td class="cost-amount">-€ {{sale.discount}}</td>
+                    </tr>
+                    {{/if}}
+                    {{#if sale.vatAmount}}
+                    <tr class="subtotal-row">
+                        <td class="cost-description">BTW</td>
+                        <td class="cost-vat">{{sale.vatType}}</td>
+                        <td class="cost-amount">€ {{sale.vatAmount}}</td>
+                    </tr>
+                    {{/if}}
+                    <tr class="total-row">
+                        <td class="cost-description">Totaal te betalen</td>
+                        <td class="cost-vat">-</td>
+                        <td class="cost-amount">€ {{sale.finalPrice}}</td>
+                    </tr>
+                    {{/if}}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- VAT Information -->
+        <div class="vat-info">
+            <div class="vat-title">BTW & Fiscale Informatie</div>
+            <div class="vat-text">
+                {{#if purchase}}
+                {{#eq purchase.vatType "marge"}}
+                <strong>Margeregeling:</strong> Deze inkoop valt onder de margeregeling voor gebruikte goederen. Er wordt geen BTW apart in rekening gebracht volgens artikel 28 van de BTW-wet.
+                {{else}}
+                {{#eq purchase.vatType "21%"}}
+                <strong>BTW Plichtig:</strong> Deze inkoop is onderworpen aan 21% BTW conform Nederlandse wetgeving artikel 9 van de BTW-wet.
+                {{else}}
+                <strong>Geen BTW:</strong> Voor deze inkoop is geen BTW van toepassing conform vrijstellingsregeling.
+                {{/eq}}
+                {{/eq}}
+                {{/if}}
+                {{#if sale}}
+                {{#eq sale.vatType "marge"}}
+                <strong>Margeregeling:</strong> Deze verkoop valt onder de margeregeling voor gebruikte goederen. Er wordt geen BTW apart in rekening gebracht volgens artikel 28 van de BTW-wet.
+                {{else}}
+                {{#eq sale.vatType "21%"}}
+                <strong>BTW Plichtig:</strong> Deze verkoop is onderworpen aan 21% BTW conform Nederlandse wetgeving artikel 9 van de BTW-wet.
+                {{else}}
+                <strong>Geen BTW:</strong> Voor deze verkoop is geen BTW van toepassing conform vrijstellingsregeling.
+                {{/eq}}
+                {{/eq}}
+                {{/if}}
+            </div>
+        </div>
+
+        <!-- Payment Information -->
+        {{#if sale}}
+        <div class="payment-info">
+            <div class="payment-title">Betaal Informatie</div>
+            <div class="payment-details">
+                <strong>Rekeningnummer:</strong> {{companyInfo.iban}}<br>
+                <strong>Ten name van:</strong> {{companyInfo.name}}<br>
+                <strong>Betalingstermijn:</strong> 14 dagen na factuurdatum<br>
+                <strong>Betaalmethode:</strong> {{sale.paymentMethod}}<br>
+                <strong>Referentie:</strong> {{invoiceNumber}}
+            </div>
+        </div>
+        {{/if}}
+
+        <!-- Legal Section -->
+        <div class="legal-section">
+            <div class="legal-title">Juridische Bepalingen & Garantie</div>
+            <div class="legal-text">
+                <strong>Algemene Voorwaarden:</strong> Op deze overeenkomst zijn de algemene voorwaarden van DD Cars van toepassing zoals gedeponeerd bij de Kamer van Koophandel onder nummer {{companyInfo.kvk}}. 
+                <strong>Geschillen:</strong> Alle geschillen worden voorgelegd aan de bevoegde rechter te Amsterdam. 
+                {{#if sale}}
+                <strong>Garantie:</strong> Op dit voertuig wordt {{sale.warrantyMonths}} maanden garantie verleend conform onze garantievoorwaarden. 
+                <strong>Eigendomsvoorbehoud:</strong> Het eigendom van het voertuig gaat pas over na volledige betaling van de factuursom.
+                {{/if}}
+                {{#if purchase}}
+                <strong>Leveringsvoorwaarden:</strong> Levering geschiedt franco bedrijf tenzij anders overeengekomen.
+                {{/if}}
+            </div>
+        </div>
+
+        <!-- Notes Section -->
+        {{#if purchase.notes}}
+        <div class="notes">
+            <div class="notes-title">Opmerkingen Inkoop</div>
+            <div>{{purchase.notes}}</div>
+        </div>
+        {{/if}}
+
+        {{#if sale.notes}}
+        <div class="notes">
+            <div class="notes-title">Opmerkingen Verkoop</div>
+            <div>{{sale.notes}}</div>
+        </div>
+        {{/if}}
+        
+        <!-- Footer -->
+        <div class="footer">
+            <p>DD Cars - Premium Automotive Solutions | {{companyInfo.website}} | KvK: {{companyInfo.kvk}} | BTW: {{companyInfo.btw}}</p>
+            <p>Alle rechten voorbehouden - Deze factuur is automatisch gegenereerd</p>
+        </div>
+    </div>
+</body>
+</html>
