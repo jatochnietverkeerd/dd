@@ -42,7 +42,13 @@ const upload = multer({
 
 // Admin authentication middleware
 async function authenticateAdmin(req: any, res: any, next: any) {
-  const token = req.headers.authorization?.replace('Bearer ', '');
+  // Check for token in authorization header first
+  let token = req.headers.authorization?.replace('Bearer ', '');
+  
+  // If no token in header, check query params (for PDF downloads)
+  if (!token && req.query.token) {
+    token = req.query.token;
+  }
   
   if (!token) {
     return res.status(401).json({ message: "No token provided" });

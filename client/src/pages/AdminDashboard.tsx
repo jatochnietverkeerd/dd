@@ -810,7 +810,12 @@ export default function AdminDashboard() {
                                 <Button
                                   size="sm"
                                   variant="outline"
-                                  onClick={() => window.open(`/api/admin/invoices/purchase/${purchase.vehicleId}/pdf`, '_blank')}
+                                  onClick={() => {
+                                    const token = localStorage.getItem('adminToken');
+                                    if (token) {
+                                      window.open(`/api/admin/invoices/purchase/${purchase.vehicleId}/pdf?token=${token}`, '_blank');
+                                    }
+                                  }}
                                   className="border-gray-700 text-white hover:bg-gray-800"
                                 >
                                   <Download className="w-4 h-4 mr-2" />
@@ -931,7 +936,12 @@ export default function AdminDashboard() {
                                 <Button
                                   size="sm"
                                   variant="outline"
-                                  onClick={() => window.open(`/api/admin/invoices/sale/${sale.vehicleId}/pdf`, '_blank')}
+                                  onClick={() => {
+                                    const token = localStorage.getItem('adminToken');
+                                    if (token) {
+                                      window.open(`/api/admin/invoices/sale/${sale.vehicleId}/pdf?token=${token}`, '_blank');
+                                    }
+                                  }}
                                   className="border-gray-700 text-white hover:bg-gray-800"
                                 >
                                   <Download className="w-4 h-4 mr-2" />
