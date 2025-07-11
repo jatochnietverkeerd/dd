@@ -33,6 +33,7 @@ const saleFormSchema = z.object({
   deliveryDate: z.string().optional().transform(val => val && val !== "" ? new Date(val) : null),
   warrantyMonths: z.number().default(12),
   invoiceNumber: z.string().optional(),
+  bpmAmount: z.number().min(0, "BPM bedrag kan niet negatief zijn").default(0),
   notes: z.string().optional(),
 });
 
@@ -74,6 +75,7 @@ export default function SimpleSaleForm({ vehicle, purchase, sale, isOpen, onClos
       deliveryDate: sale?.deliveryDate ? new Date(sale.deliveryDate).toISOString().split('T')[0] : "",
       warrantyMonths: sale?.warrantyMonths || 12,
       invoiceNumber: sale?.invoiceNumber || "",
+      bmpAmount: sale?.bmpAmount ? Number(sale.bmpAmount) : (purchase?.bpmAmount ? Number(purchase.bpmAmount) : 0),
       notes: sale?.notes || "",
     },
   });
@@ -136,6 +138,7 @@ export default function SimpleSaleForm({ vehicle, purchase, sale, isOpen, onClos
         deliveryDate: data.deliveryDate && data.deliveryDate !== "" ? new Date(data.deliveryDate).toISOString() : null,
         warrantyMonths: data.warrantyMonths,
         invoiceNumber: data.invoiceNumber || null,
+        bmpAmount: data.bmpAmount,
         notes: data.notes || null,
         profitExclVat: finalCalculation.profitExclVat,
         profitInclVat: finalCalculation.profitInclVat,
@@ -256,6 +259,18 @@ export default function SimpleSaleForm({ vehicle, purchase, sale, isOpen, onClos
                   value={calculatedSale ? calculatedSale.finalPrice : ""}
                   className="bg-gray-700 border-gray-600 text-gray-300"
                   disabled
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="bmpAmount">BPM bedrag</Label>
+                <Input
+                  id="bmpAmount"
+                  type="number"
+                  step="0.01"
+                  {...form.register("bmpAmount", { valueAsNumber: true })}
+                  className="bg-gray-800 border-gray-700 text-white"
+                  placeholder={purchase?.bpmAmount ? `${purchase.bpmAmount} (overgenomen van inkoop)` : "0.00"}
                 />
               </div>
             </CardContent>

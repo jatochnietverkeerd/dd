@@ -280,6 +280,28 @@ The application uses a modern, type-safe architecture with excellent developer e
 - **Email Integration**: Working email functionality with validation and delivery confirmation
 - **Premium Branding**: "DD CARS" header with "Premium Performance • GTI & AMG Specialists" tagline
 
+## Modern Invoice Design Update (July 11, 2025)
+
+### Visual Improvements
+- **Card-style Layout**: Elegant card design with subtle borders instead of harsh black headers
+- **Modern Typography**: Professional font sizing and spacing throughout
+- **Subtle Color Scheme**: Light gray backgrounds (#f8fafc) with tasteful accents
+- **Golden Accent Line**: Premium gold accent line (#D4AF37) for brand consistency
+- **Responsive Margins**: Properly spaced margins and padding for professional appearance
+
+### BPM Integration Enhancement
+- **Cross-form BPM Support**: BPM amounts can now be transferred from purchase to sale forms
+- **Automatic BPM Inheritance**: Sale forms automatically inherit BPM amounts from linked purchases
+- **Manual BPM Override**: Users can manually adjust BPM amounts in sale forms when needed
+- **Invoice BPM Display**: BPM amounts properly displayed in both vehicle details and financial sections
+- **Database Schema Update**: Added BPM support to sales table for complete tracking
+
+### Technical Architecture
+- **PDFKit Optimization**: Improved PDF generation with modern card-style layout
+- **Accessibility Compliance**: Added proper ARIA labels and descriptions for screen readers
+- **Database Consistency**: Synchronized BPM fields across purchase and sale entities
+- **Form Validation**: Enhanced form validation with BPM field support and proper error handling
+
 ## Visual Updates (July 10, 2025)
 
 ### Hero Section Redesign
