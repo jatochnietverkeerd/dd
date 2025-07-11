@@ -36,14 +36,9 @@ export default function Header() {
             <div className="w-10 h-10 bg-luxury-gold rounded-full flex items-center justify-center transition-transform duration-300 hover:scale-110">
               <Car className="text-dark-primary text-sm" size={18} />
             </div>
-            <div className="flex flex-col">
-              <span className="text-xl font-bold text-white leading-none">
-                DD<span className="text-luxury-gold">Cars</span>
-              </span>
-              <span className="text-xs text-luxury-gold/70 leading-none">
-                Premium Performance
-              </span>
-            </div>
+            <span className="text-xl font-bold text-white">
+              DD<span className="text-luxury-gold">Cars</span>
+            </span>
           </Link>
           
           {/* Desktop Navigation */}

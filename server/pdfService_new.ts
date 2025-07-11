@@ -69,13 +69,9 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<Buffer> {
        .circle(cardMargin + 52, cardMargin + 50, 2)
        .fill();
     
-    // Company name with enhanced styling
+    // Company name with clean styling
     doc.fillColor('#1a1a1a').fontSize(24).font('Helvetica-Bold')
-       .text('DD CARS', cardMargin + 75, cardMargin + 30);
-    
-    // Add tagline under company name
-    doc.fillColor('#6b7280').fontSize(8).font('Helvetica')
-       .text('Premium Performance • GTI & AMG Specialists', cardMargin + 75, cardMargin + 55);
+       .text('DD CARS', cardMargin + 75, cardMargin + 35);
     
     // Invoice type in header
     doc.fillColor('#374151').fontSize(16).font('Helvetica-Bold')
