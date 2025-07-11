@@ -49,14 +49,25 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<Buffer> {
     doc.rect(cardMargin + 10, cardMargin + 10, cardWidth - 20, 3)
        .fill('#D4AF37');
     
-    // Enhanced company logo design
+    // Enhanced company logo design with car icon
     // Create a circular logo background
     doc.circle(cardMargin + 45, cardMargin + 45, 20)
        .fill('#D4AF37');
     
-    // Add DD initials in the circle
-    doc.fillColor('#1a1a1a').fontSize(14).font('Helvetica-Bold')
-       .text('DD', cardMargin + 38, cardMargin + 38);
+    // Add simple car icon representation in the circle
+    // Draw a simple car shape
+    doc.fillColor('#1a1a1a')
+       // Car body (rectangle)
+       .rect(cardMargin + 35, cardMargin + 40, 20, 8)
+       .fill()
+       // Car roof (smaller rectangle)
+       .rect(cardMargin + 38, cardMargin + 36, 14, 6)
+       .fill()
+       // Car wheels (circles)
+       .circle(cardMargin + 38, cardMargin + 50, 2)
+       .fill()
+       .circle(cardMargin + 52, cardMargin + 50, 2)
+       .fill();
     
     // Company name with enhanced styling
     doc.fillColor('#1a1a1a').fontSize(24).font('Helvetica-Bold')
