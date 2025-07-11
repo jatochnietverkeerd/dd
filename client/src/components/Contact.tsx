@@ -145,7 +145,10 @@ export default function Contact() {
                     value={formData.firstName}
                     onChange={handleChange}
                     required
-                    className="bg-dark-tertiary border-dark-quaternary focus:border-luxury-gold text-white placeholder:text-gray-400"
+                    className="bg-dark-tertiary border-dark-quaternary text-white placeholder:text-gray-400"
+                    style={{"--tw-ring-color": "#D9C89E"}}
+                    onFocus={(e) => e.target.style.borderColor = '#D9C89E'}
+                    onBlur={(e) => e.target.style.borderColor = ''}
                   />
                   <Input
                     name="lastName"
@@ -153,7 +156,10 @@ export default function Contact() {
                     value={formData.lastName}
                     onChange={handleChange}
                     required
-                    className="bg-dark-tertiary border-dark-quaternary focus:border-luxury-gold text-white placeholder:text-gray-400"
+                    className="bg-dark-tertiary border-dark-quaternary text-white placeholder:text-gray-400"
+                    style={{"--tw-ring-color": "#D9C89E"}}
+                    onFocus={(e) => e.target.style.borderColor = '#D9C89E'}
+                    onBlur={(e) => e.target.style.borderColor = ''}
                   />
                 </div>
                 <Input
@@ -163,7 +169,10 @@ export default function Contact() {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="bg-dark-tertiary border-dark-quaternary focus:border-luxury-gold text-white placeholder:text-gray-400"
+                  className="bg-dark-tertiary border-dark-quaternary text-white placeholder:text-gray-400"
+                  style={{"--tw-ring-color": "#D9C89E"}}
+                  onFocus={(e) => e.target.style.borderColor = '#D9C89E'}
+                  onBlur={(e) => e.target.style.borderColor = ''}
                 />
                 <Input
                   name="phone"
@@ -171,7 +180,10 @@ export default function Contact() {
                   placeholder="Telefoonnummer"
                   value={formData.phone}
                   onChange={handleChange}
-                  className="bg-dark-tertiary border-dark-quaternary focus:border-luxury-gold text-white placeholder:text-gray-400"
+                  className="bg-dark-tertiary border-dark-quaternary text-white placeholder:text-gray-400"
+                  style={{"--tw-ring-color": "#D9C89E"}}
+                  onFocus={(e) => e.target.style.borderColor = '#D9C89E'}
+                  onBlur={(e) => e.target.style.borderColor = ''}
                 />
                 <Textarea
                   name="message"
@@ -180,12 +192,16 @@ export default function Contact() {
                   value={formData.message}
                   onChange={handleChange}
                   required
-                  className="bg-dark-tertiary border-dark-quaternary focus:border-luxury-gold text-white placeholder:text-gray-400 resize-none"
+                  className="bg-dark-tertiary border-dark-quaternary text-white placeholder:text-gray-400 resize-none"
+                  style={{"--tw-ring-color": "#D9C89E"}}
+                  onFocus={(e) => e.target.style.borderColor = '#D9C89E'}
+                  onBlur={(e) => e.target.style.borderColor = ''}
                 />
                 <Button 
                   type="submit"
                   disabled={contactMutation.isPending}
-                  className="luxury-button w-full bg-luxury-gold text-dark-primary hover:bg-white font-semibold"
+                  className="luxury-button w-full font-semibold hover:bg-white"
+                  style={{backgroundColor: '#D9C89E', color: '#1a1a1a'}}
                 >
                   {contactMutation.isPending ? "Bezig met verzenden..." : "Verstuur Bericht"}
                 </Button>

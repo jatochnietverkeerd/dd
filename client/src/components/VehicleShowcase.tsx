@@ -91,7 +91,16 @@ export default function VehicleShowcase() {
           <Link href="/aanbod">
             <Button 
               variant="outline"
-              className="luxury-button border-luxury-gold text-luxury-gold px-8 py-3 rounded-full font-semibold hover:bg-luxury-gold hover:text-dark-primary"
+              className="luxury-button px-8 py-3 rounded-full font-semibold"
+              style={{borderColor: '#D9C89E', color: '#D9C89E'}}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#D9C89E';
+                e.currentTarget.style.color = '#1a1a1a';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+                e.currentTarget.style.color = '#D9C89E';
+              }}
             >
               Bekijk Alle Voertuigen ({allVehicles?.length || 0})
             </Button>

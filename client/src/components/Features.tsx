@@ -10,7 +10,7 @@ function FeatureCard({ feature, index }: { feature: any; index: number }) {
       className={`text-center group transition-all duration-700 scale-on-hover ${fadeInClass}`}
       style={{ transitionDelay: `${index * 100}ms` }}
     >
-      <div className="w-16 h-16 bg-luxury-gold rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+      <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300" style={{backgroundColor: '#D9C89E'}}>
         <feature.icon className="text-dark-primary" size={24} />
       </div>
       <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>

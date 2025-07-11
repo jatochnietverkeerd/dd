@@ -42,7 +42,7 @@ export default function VehicleCard({ vehicle }: VehicleCardProps) {
         <h3 className="text-xl font-semibold mb-2 text-white">{vehicle.brand}</h3>
         <p className="text-gray-400 mb-4">{vehicle.model}</p>
         <div className="flex justify-between items-center mb-4">
-          <span className="text-luxury-gold font-bold text-lg">{formatPrice(vehicle.price)}</span>
+          <span className="font-bold text-lg" style={{color: '#D9C89E'}}>{formatPrice(vehicle.price)}</span>
           <span className="text-gray-500">{vehicle.year}</span>
         </div>
         <div className="grid grid-cols-2 gap-4 text-sm text-gray-400 mb-4">
@@ -56,7 +56,7 @@ export default function VehicleCard({ vehicle }: VehicleCardProps) {
           </span>
         </div>
         <Link href={`/auto/${vehicle.slug}`}>
-          <Button className="luxury-button w-full bg-luxury-gold text-dark-primary hover:bg-white rounded-full font-semibold">
+          <Button className="luxury-button w-full rounded-full font-semibold hover:bg-white" style={{backgroundColor: '#D9C89E', color: '#1a1a1a'}}>
             Meer Details
           </Button>
         </Link>
