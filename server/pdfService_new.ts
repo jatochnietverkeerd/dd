@@ -54,38 +54,17 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<Buffer> {
     doc.circle(cardMargin + 45, cardMargin + 45, 20)
        .fill('#D4AF37');
     
-    // Exact Lucide Car icon - simplified but accurate representation
-    doc.fillColor('#1a1a1a')
-       .lineWidth(1.5)
-       .lineJoin('round')
-       .lineCap('round');
+    // Simple DD letters in the golden circle for invoice
+    doc.fillColor('#1a1a1a').fontSize(14).font('Helvetica-Bold')
+       .text('DD', cardMargin + 38, cardMargin + 38);
     
-    const centerX = cardMargin + 45;
-    const centerY = cardMargin + 45;
-    const scale = 0.7;
-    
-    // Main car body (simplified from Lucide SVG path)
-    doc.moveTo(centerX - 8*scale, centerY + 2*scale)
-       .lineTo(centerX - 6*scale, centerY - 1*scale)
-       .lineTo(centerX + 6*scale, centerY - 1*scale)
-       .lineTo(centerX + 8*scale, centerY + 2*scale)
-       .closePath()
-       .stroke();
-    
-    // Car wheels (exact positions from Lucide SVG)
-    doc.circle(centerX - 5*scale, centerY + 2*scale, 2*scale)
-       .stroke();
-    doc.circle(centerX + 5*scale, centerY + 2*scale, 2*scale)
-       .stroke();
-    
-    // Connection between wheels
-    doc.moveTo(centerX - 3*scale, centerY + 2*scale)
-       .lineTo(centerX + 3*scale, centerY + 2*scale)
-       .stroke();
-    
-    // Company name with clean styling
+    // Company name with same styling as website
     doc.fillColor('#1a1a1a').fontSize(24).font('Helvetica-Bold')
-       .text('DD CARS', cardMargin + 75, cardMargin + 35);
+       .text('DD', cardMargin + 75, cardMargin + 35);
+    
+    // CARS in gold like website
+    doc.fillColor('#D4AF37').fontSize(24).font('Helvetica-Bold')
+       .text('CARS', cardMargin + 115, cardMargin + 35);
     
     // Invoice type in header
     doc.fillColor('#374151').fontSize(16).font('Helvetica-Bold')
