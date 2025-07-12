@@ -20,10 +20,15 @@ export default function Footer() {
         <div className="grid md:grid-cols-4 gap-8">
           <div>
             <div className="flex items-center mb-4">
-              <div className="text-xl font-bold">
-                <span style={{color: '#D9C89E'}}>DD</span>
-                <span className="text-white ml-1">CARS</span>
-              </div>
+              <img 
+                src="/assets/logo_dd_1752326110259.png" 
+                alt="DD Cars Logo" 
+                className="h-6 w-auto"
+                style={{
+                  mixBlendMode: 'screen',
+                  filter: 'brightness(3) contrast(1)',
+                }}
+              />
             </div>
             <p className="text-gray-400 mb-4">
               Premium occasions voor de veeleisende automobilist. Kwaliteit, service en betrouwbaarheid staan bij ons centraal.

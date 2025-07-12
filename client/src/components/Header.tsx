@@ -33,10 +33,15 @@ export default function Header() {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center group">
-            <div className="text-2xl font-bold transition-transform duration-300 group-hover:scale-105">
-              <span style={{color: '#D9C89E'}}>DD</span>
-              <span className="text-white ml-1">CARS</span>
-            </div>
+            <img 
+              src="/assets/logo_dd_1752326110259.png" 
+              alt="DD Cars Logo" 
+              className="h-8 w-auto transition-transform duration-300 group-hover:scale-105"
+              style={{
+                mixBlendMode: 'screen',
+                filter: 'brightness(3) contrast(1)',
+              }}
+            />
           </Link>
           
           {/* Desktop Navigation */}
