@@ -19,15 +19,11 @@ export default function Footer() {
       <div className="container mx-auto px-4">
         <div className="grid md:grid-cols-4 gap-8">
           <div>
-            <div className="flex items-center mb-4">
+            <div className="flex items-center space-x-2 mb-4">
               <img 
-                src="/assets/logo_dd_1752326110259.png" 
+                src="/assets/dd-cars-logo.svg" 
                 alt="DD Cars Logo" 
-                className="h-6 w-auto"
-                style={{
-                  mixBlendMode: 'screen',
-                  filter: 'brightness(3) contrast(1)',
-                }}
+                className="h-8 w-auto"
               />
             </div>
             <p className="text-gray-400 mb-4">
