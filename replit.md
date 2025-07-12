@@ -472,3 +472,48 @@ The application uses a modern, type-safe architecture with excellent developer e
 - **Email Integration**: Invoice email delivery working in development mode
 - **Database Operations**: All CRUD operations functioning properly
 - **Admin Access**: Secure admin authentication with updated credentials
+
+## HTTPS Security Fix (July 12, 2025)
+
+### "Not Secure" Warning Fix
+The "Not Secure" warning in browsers occurs when:
+1. **Mixed Content**: HTTP resources loaded on HTTPS pages
+2. **Missing Security Headers**: Missing security headers like HSTS, CSP, etc.
+3. **Insecure Protocols**: Using HTTP instead of HTTPS
+
+### Security Measures Implemented
+- **Meta CSP Header**: Added `upgrade-insecure-requests` to force HTTPS
+- **Referrer Policy**: Set strict referrer policy for enhanced privacy
+- **Security Headers**: Added comprehensive security headers including:
+  - `Strict-Transport-Security`: Force HTTPS for 1 year
+  - `X-Content-Type-Options`: Prevent MIME type sniffing
+  - `X-Frame-Options`: Prevent clickjacking
+  - `X-XSS-Protection`: Enable XSS filtering
+  - `Content-Security-Policy`: Comprehensive CSP policy
+  - `Referrer-Policy`: Control referrer information
+
+### Production Security Headers
+When deployed to production (NODE_ENV=production):
+- **HTTPS Redirect**: All HTTP requests automatically redirect to HTTPS
+- **HSTS**: Strict Transport Security enforces HTTPS for all future requests
+- **CSP**: Content Security Policy allows only trusted sources
+- **Frame Protection**: Prevents the site from being embedded in frames
+
+### Development vs Production
+- **Development**: Security headers added but may not be visible in local testing
+- **Production**: Full security headers active, HTTPS enforcement enabled
+- **Replit Deployment**: Automatically provides TLS/SSL certificates
+
+### Fix Steps for "Not Secure" Warning
+1. ✅ **Added security meta tags** to index.html
+2. ✅ **Implemented server-side security headers**
+3. ✅ **Added HTTPS redirect for production**
+4. ✅ **Created comprehensive CSP policy**
+5. **Deploy to production** - Replit provides automatic HTTPS
+
+### Note for Production Deployment
+Once deployed to production with Replit Deployments, the "Not Secure" warning will be resolved as:
+- Replit provides automatic TLS/SSL certificates
+- All security headers will be active
+- HTTPS will be enforced for all requests
+- The site will show as "Secure" in browsers
