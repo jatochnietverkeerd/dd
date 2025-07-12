@@ -33,12 +33,11 @@ export default function Header() {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-3 scale-on-hover">
-            <div className="w-10 h-10 rounded-full flex items-center justify-center transition-transform duration-300 hover:scale-110" style={{backgroundColor: '#D9C89E'}}>
-              <span className="text-black font-bold text-sm" style={{fontFamily: 'Playfair Display, serif'}}>DD</span>
-            </div>
-            <span className="text-xl font-bold" style={{color: '#D9C89E', fontFamily: 'Playfair Display, serif'}}>
-              Cars
-            </span>
+            <img 
+              src="/assets/logo_dd_1752326110259.png" 
+              alt="DD Cars Logo" 
+              className="h-10 w-auto transition-transform duration-300 hover:scale-110"
+            />
           </Link>
           
           {/* Desktop Navigation */}
