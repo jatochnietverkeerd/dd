@@ -32,12 +32,11 @@ export default function Header() {
       <nav className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center">
-            <img 
-              src="/assets/logo_dd_1752326110259.png" 
-              alt="DD Cars Logo" 
-              className="h-12 w-auto transition-transform duration-300 hover:scale-105"
-            />
+          <Link href="/" className="flex items-center group">
+            <div className="text-2xl font-bold transition-transform duration-300 group-hover:scale-105">
+              <span style={{color: '#D9C89E'}}>DD</span>
+              <span className="text-white ml-1">CARS</span>
+            </div>
           </Link>
           
           {/* Desktop Navigation */}
