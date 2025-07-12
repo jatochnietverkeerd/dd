@@ -8,11 +8,11 @@
   </defs>
   
   <!-- First D -->
-  <text x="15" y="45" font-family="Arial, sans-serif" font-size="40" font-weight="bold" fill="url(#goldGradient)">D</text>
+  <text x="20" y="45" font-family="Arial, sans-serif" font-size="40" font-weight="bold" fill="url(#goldGradient)">D</text>
   
   <!-- Second D -->
-  <text x="40" y="45" font-family="Arial, sans-serif" font-size="40" font-weight="bold" fill="url(#goldGradient)">D</text>
+  <text x="45" y="45" font-family="Arial, sans-serif" font-size="40" font-weight="bold" fill="url(#goldGradient)">D</text>
   
   <!-- CARS text -->
-  <text x="25" y="70" font-family="Arial, sans-serif" font-size="14" font-weight="normal" letter-spacing="2" fill="url(#goldGradient)">CARS</text>
+  <text x="30" y="70" font-family="Arial, sans-serif" font-size="14" font-weight="normal" letter-spacing="2" fill="url(#goldGradient)">CARS</text>
 </svg>
