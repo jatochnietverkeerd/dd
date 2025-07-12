@@ -18,6 +18,13 @@
           !location.hostname.includes('replit.co')) {
         location.replace('https:' + window.location.href.substring(window.location.protocol.length));
       }
+      
+      // Register service worker for additional HTTPS enforcement
+      if ('serviceWorker' in navigator && location.protocol === 'https:') {
+        navigator.serviceWorker.register('/sw.js').catch(function(err) {
+          console.log('Service Worker registration failed:', err);
+        });
+      }
     </script>
     
     <!-- SEO Meta Tags -->

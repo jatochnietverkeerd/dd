@@ -89,11 +89,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         !host.includes('127.0.0.1') &&
         !host.includes('replit.dev') &&
         !host.includes('replit.co')) {
-      return res.redirect(301, `https://${host}${req.url}`);
+      // Clean host without port for proper HTTPS redirect
+      const cleanHost = host.replace(/:\d+$/, '');
+      return res.redirect(301, `https://${cleanHost}${req.url}`);
     }
     
     // Security headers
-    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
     res.setHeader('X-Content-Type-Options', 'nosniff');
     res.setHeader('X-Frame-Options', 'DENY');
     res.setHeader('X-XSS-Protection', '1; mode=block');
@@ -109,10 +111,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       "object-src 'none'; " +
       "base-uri 'self'; " +
       "form-action 'self'; " +
-      "frame-ancestors 'none';"
+      "frame-ancestors 'none'; " +
+      "upgrade-insecure-requests;"
     );
     
     next();
+  });
+
+  // Serve service worker
+  app.get('/sw.js', (req, res) => {
+    res.setHeader('Content-Type', 'application/javascript');
+    res.sendFile(path.join(process.cwd(), 'client/public/sw.js'));
   });
 
   // Serve uploaded images

@@ -513,9 +513,23 @@ When deployed to production (NODE_ENV=production):
 6. ✅ **Client-side HTTPS redirect** - JavaScript fallback for immediate redirect
 7. **Deploy to production** - Replit provides automatic HTTPS
 
+### Enhanced HTTPS Security (Final Update - July 12, 2025)
+- **Fixed Port Issue**: Cleaned redirect URL to prevent `:443` port specification
+- **Enhanced HSTS**: Added `preload` directive for maximum security
+- **Service Worker**: Added service worker for client-side HTTPS enforcement
+- **CSP Enhancement**: Added `upgrade-insecure-requests` to CSP policy
+- **Triple-Layer Protection**: Server redirect + Client redirect + Service worker
+
 ### Note for Production Deployment
 Once deployed to production with Replit Deployments, the "Not Secure" warning will be resolved as:
 - Replit provides automatic TLS/SSL certificates
 - All security headers will be active
 - HTTPS will be enforced for all requests
 - The site will show as "Secure" in browsers
+- Service worker will cache HTTPS enforcement for offline scenarios
+
+### Testing Results
+- HTTP to HTTPS redirect: ✅ Working (301 redirect)
+- HTTPS site loading: ✅ Working (HTTP/2 200)
+- Security headers: ✅ Active (CSP, HSTS, etc.)
+- Service worker: ✅ Implemented for additional protection
