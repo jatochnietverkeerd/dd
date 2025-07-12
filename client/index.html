@@ -8,6 +8,18 @@
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     
+    <!-- Client-side HTTPS enforcement -->
+    <script>
+      // Force HTTPS redirect if not on localhost
+      if (location.protocol !== 'https:' && 
+          !location.hostname.includes('localhost') && 
+          !location.hostname.includes('127.0.0.1') &&
+          !location.hostname.includes('replit.dev') &&
+          !location.hostname.includes('replit.co')) {
+        location.replace('https:' + window.location.href.substring(window.location.protocol.length));
+      }
+    </script>
+    
     <!-- SEO Meta Tags -->
     <meta name="description" content="DD Cars - Premium occasions dealer in Nederland. Exclusieve selectie van luxe auto's: BMW, Mercedes, Audi en meer. Professionele service en kwaliteitsgarantie." />
     <meta name="keywords" content="premium auto's, luxe occasions, BMW, Mercedes, Audi, auto dealer Nederland, exclusieve auto's, DD Cars" />

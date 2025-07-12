@@ -76,10 +76,20 @@ async function authenticateAdmin(req: any, res: any, next: any) {
 export async function registerRoutes(app: Express): Promise<Server> {
   // Security headers to fix "Not Secure" warning
   app.use((req, res, next) => {
-    // Force HTTPS redirect in production
-    if (req.header('x-forwarded-proto') !== 'https' && process.env.NODE_ENV === 'production') {
-      res.redirect(`https://${req.header('host')}${req.url}`);
-      return;
+    // Force HTTPS redirect for all environments when not using localhost
+    const host = req.header('host') || '';
+    const proto = req.header('x-forwarded-proto') || req.protocol;
+    
+    // Redirect to HTTPS if:
+    // 1. Not already HTTPS
+    // 2. Not localhost (development)
+    // 3. Not using Replit's internal domains
+    if (proto !== 'https' && 
+        !host.includes('localhost') && 
+        !host.includes('127.0.0.1') &&
+        !host.includes('replit.dev') &&
+        !host.includes('replit.co')) {
+      return res.redirect(301, `https://${host}${req.url}`);
     }
     
     // Security headers
