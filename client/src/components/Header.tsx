@@ -34,7 +34,7 @@ export default function Header() {
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-3 scale-on-hover">
             <img 
-              src="/assets/logo_dd_1752326110259.png" 
+              src="/assets/dd-cars-logo.svg" 
               alt="DD Cars Logo" 
               className="h-10 w-auto transition-transform duration-300 hover:scale-110"
             />
