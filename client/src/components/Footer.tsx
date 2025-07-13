@@ -21,9 +21,9 @@ export default function Footer() {
           <div>
             <div className="flex items-center space-x-2 mb-4">
               <img 
-                src="/assets/dd-cars-logo.svg" 
+                src="/assets/dd-cars-logo-new.svg" 
                 alt="DD Cars Logo" 
-                className="h-8 w-auto"
+                className="h-10 w-auto"
               />
             </div>
             <p className="text-gray-400 mb-4">
