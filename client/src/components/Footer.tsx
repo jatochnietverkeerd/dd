@@ -23,7 +23,7 @@ export default function Footer() {
             <div className="flex items-center space-x-2 mb-4">
               <Logo className="h-10" />
             </div>
-            <p className="text-gray-400 mb-4">
+            <p className="mb-4" style={{color: '#D9C89E'}}>
               Premium occasions voor de veeleisende automobilist. Kwaliteit, service en betrouwbaarheid staan bij ons centraal.
             </p>
             <div className="flex space-x-4">
@@ -40,12 +40,13 @@ export default function Footer() {
           </div>
           
           <div>
-            <h4 className="text-lg font-semibold mb-4">Navigatie</h4>
+            <h4 className="text-lg font-semibold mb-4" style={{color: '#D9C89E'}}>Navigatie</h4>
             <ul className="space-y-2">
               <li>
                 <Link 
                   href="/"
-                  className="text-gray-400 hover:text-luxury-gold transition-colors duration-300"
+                  className="transition-colors duration-300 hover:opacity-80"
+                  style={{color: '#D9C89E'}}
                 >
                   Home
                 </Link>
@@ -53,7 +54,8 @@ export default function Footer() {
               <li>
                 <Link 
                   href="/aanbod"
-                  className="text-gray-400 hover:text-luxury-gold transition-colors duration-300"
+                  className="transition-colors duration-300 hover:opacity-80"
+                  style={{color: '#D9C89E'}}
                 >
                   Aanbod
                 </Link>
@@ -61,7 +63,8 @@ export default function Footer() {
               <li>
                 <Link 
                   href="/over-ons"
-                  className="text-gray-400 hover:text-luxury-gold transition-colors duration-300"
+                  className="transition-colors duration-300 hover:opacity-80"
+                  style={{color: '#D9C89E'}}
                 >
                   Over Ons
                 </Link>
@@ -69,7 +72,8 @@ export default function Footer() {
               <li>
                 <button
                   onClick={() => scrollToSection('contact')}
-                  className="text-gray-400 hover:text-luxury-gold transition-colors duration-300"
+                  className="transition-colors duration-300 hover:opacity-80"
+                  style={{color: '#D9C89E'}}
                 >
                   Contact
                 </button>
@@ -77,7 +81,8 @@ export default function Footer() {
               <li>
                 <Link 
                   href="/admin/login"
-                  className="text-gray-400 hover:text-luxury-gold transition-colors duration-300 text-sm"
+                  className="transition-colors duration-300 hover:opacity-80 text-sm"
+                  style={{color: '#D9C89E'}}
                 >
                   Admin
                 </Link>
@@ -86,18 +91,18 @@ export default function Footer() {
           </div>
           
           <div>
-            <h4 className="text-lg font-semibold mb-4">Services</h4>
+            <h4 className="text-lg font-semibold mb-4" style={{color: '#D9C89E'}}>Services</h4>
             <ul className="space-y-2">
-              <li><a href="#" className="text-gray-400 hover:text-luxury-gold transition-colors duration-300">Verkoop</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-luxury-gold transition-colors duration-300">Inkoop</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-luxury-gold transition-colors duration-300">Financiering</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-luxury-gold transition-colors duration-300">Verzekering</a></li>
+              <li><a href="#" className="transition-colors duration-300 hover:opacity-80" style={{color: '#D9C89E'}}>Verkoop</a></li>
+              <li><a href="#" className="transition-colors duration-300 hover:opacity-80" style={{color: '#D9C89E'}}>Inkoop</a></li>
+              <li><a href="#" className="transition-colors duration-300 hover:opacity-80" style={{color: '#D9C89E'}}>Financiering</a></li>
+              <li><a href="#" className="transition-colors duration-300 hover:opacity-80" style={{color: '#D9C89E'}}>Verzekering</a></li>
             </ul>
           </div>
           
           <div>
-            <h4 className="text-lg font-semibold mb-4">Contact Info</h4>
-            <ul className="space-y-2 text-gray-400">
+            <h4 className="text-lg font-semibold mb-4" style={{color: '#D9C89E'}}>Contact Info</h4>
+            <ul className="space-y-2" style={{color: '#D9C89E'}}>
               <li className="flex items-center">
                 <MapPin size={16} className="mr-2" />
                 Hoofdstraat 123, Amsterdam
@@ -114,7 +119,7 @@ export default function Footer() {
           </div>
         </div>
         
-        <div className="border-t border-dark-quaternary mt-8 pt-8 text-center text-gray-400">
+        <div className="border-t border-dark-quaternary mt-8 pt-8 text-center" style={{color: '#D9C89E'}}>
           <p>&copy; 2024 DD Cars. Alle rechten voorbehouden. | Privacy Policy | Terms of Service</p>
         </div>
       </div>
