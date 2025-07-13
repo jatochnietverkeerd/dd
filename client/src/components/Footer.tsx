@@ -43,16 +43,12 @@ export default function Footer() {
                 </svg>
               </a>
               {/* Marktplaats */}
-              <a href="#" className="transition-colors duration-300 hover:opacity-80" style={{color: '#D9C89E'}}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.568 8.16c-.48.96-1.44 1.68-2.64 1.68-.72 0-1.32-.24-1.68-.72-.36-.48-.48-1.08-.48-1.68 0-.84.36-1.56.96-2.04.6-.48 1.32-.72 2.16-.72.96 0 1.68.36 2.16.96.48.6.72 1.32.72 2.16 0 .48-.12.84-.24 1.2zm-11.04.24c0 .84-.36 1.56-.96 2.04-.6.48-1.32.72-2.16.72-.96 0-1.68-.36-2.16-.96-.48-.6-.72-1.32-.72-2.16 0-.48.12-.84.24-1.2.48-.96 1.44-1.68 2.64-1.68.72 0 1.32.24 1.68.72.36.48.48 1.08.48 1.68zm5.52 7.44c-1.44 0-2.64-.6-3.36-1.68-.72-1.08-1.08-2.4-1.08-3.96 0-1.56.36-2.88 1.08-3.96.72-1.08 1.92-1.68 3.36-1.68s2.64.6 3.36 1.68c.72 1.08 1.08 2.4 1.08 3.96 0 1.56-.36 2.88-1.08 3.96-.72 1.08-1.92 1.68-3.36 1.68z"/>
-                </svg>
+              <a href="#" className="transition-colors duration-300 hover:opacity-80 text-sm font-medium" style={{color: '#D9C89E'}}>
+                Marktplaats
               </a>
               {/* AutoScout24 */}
-              <a href="#" className="transition-colors duration-300 hover:opacity-80" style={{color: '#D9C89E'}}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                </svg>
+              <a href="#" className="transition-colors duration-300 hover:opacity-80 text-sm font-medium" style={{color: '#D9C89E'}}>
+                AutoScout24
               </a>
             </div>
           </div>
