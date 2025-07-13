@@ -1,23 +1,9 @@
 <svg width="250" height="150" viewBox="0 0 250 150" xmlns="http://www.w3.org/2000/svg">
-  <!-- 
-    This is the SVG version of the DD Cars logo.
-    - You can save this code as a file named "logo.svg".
-    - The `viewBox` attribute defines the coordinate system of the SVG.
-    - The `text` elements create the "DD" and "CARS" parts of the logo.
-    - The styling (font, color, size) is applied directly within the SVG.
-    - The color #d4af37 is used for the gold text.
-  -->
-  <defs>
-    <style>
-      @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@700&display=swap');
-    </style>
-  </defs>
-
-  <g style="font-family: 'Cormorant Garamond', serif; fill: #d4af37; text-anchor: middle;">
+  <g style="font-family: 'Cormorant Garamond', serif, Georgia, 'Times New Roman', serif; fill: #d4af37; text-anchor: middle;">
     <!-- "DD" Text -->
-    <text x="50%" y="85" style="font-size: 80px; font-weight: 700;">DD</text>
+    <text x="125" y="85" style="font-size: 80px; font-weight: 700;">DD</text>
     
     <!-- "CARS" Text -->
-    <text x="50%" y="125" style="font-size: 20px; letter-spacing: 0.9em; text-transform: uppercase;">CARS</text>
+    <text x="125" y="125" style="font-size: 20px; letter-spacing: 0.9em; text-transform: uppercase;">CARS</text>
   </g>
 </svg>
