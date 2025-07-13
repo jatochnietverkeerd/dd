@@ -11,7 +11,7 @@ export function Logo({ className = "h-12" }: LogoProps) {
         className="text-center"
         style={{
           fontFamily: '"Cormorant Garamond", serif',
-          color: '#d4af37'
+          color: '#D9C89E'
         }}
       >
         <div 
