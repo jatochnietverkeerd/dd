@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { Menu, X, Car } from "lucide-react";
+import { Logo } from "./Logo";
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -33,11 +34,7 @@ export default function Header() {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-3 scale-on-hover">
-            <img 
-              src="/assets/dd-cars-logo-new.svg" 
-              alt="DD Cars Logo" 
-              className="h-12 w-auto transition-transform duration-300 hover:scale-110"
-            />
+            <Logo className="h-12 transition-transform duration-300 hover:scale-110" />
           </Link>
           
           {/* Desktop Navigation */}

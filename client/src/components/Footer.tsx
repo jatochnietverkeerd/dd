@@ -1,5 +1,6 @@
 import { Car, Facebook, Instagram, Linkedin, MapPin, Phone, Mail } from "lucide-react";
 import { Link } from "wouter";
+import { Logo } from "./Logo";
 
 export default function Footer() {
   const scrollToSection = (sectionId: string) => {
@@ -20,11 +21,7 @@ export default function Footer() {
         <div className="grid md:grid-cols-4 gap-8">
           <div>
             <div className="flex items-center space-x-2 mb-4">
-              <img 
-                src="/assets/dd-cars-logo-new.svg" 
-                alt="DD Cars Logo" 
-                className="h-10 w-auto"
-              />
+              <Logo className="h-10" />
             </div>
             <p className="text-gray-400 mb-4">
               Premium occasions voor de veeleisende automobilist. Kwaliteit, service en betrouwbaarheid staan bij ons centraal.
