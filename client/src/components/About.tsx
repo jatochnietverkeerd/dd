@@ -1,6 +1,6 @@
 import { useFadeInOnScroll } from "@/hooks/useScrollAnimation";
 import LazyImage from "@/components/LazyImage";
-import audiImage from "@assets/Gemini_Generated_Image_twjb5dtwjb5dtwjb_1752160052633.png";
+import customImage from "@assets/over_ons_hero_image.webp";
 
 export default function About() {
   const { elementRef: textRef, fadeInClass: textFadeClass } = useFadeInOnScroll(0.2);
@@ -41,8 +41,8 @@ export default function About() {
             className={`relative transition-all duration-700 delay-300 ${imageFadeClass}`}
           >
             <LazyImage
-              src={audiImage}
-              alt="Premium Audi Performance Vehicle - DD Cars"
+              src={customImage}
+              alt="DD Cars - Premium Auto Dealership"
               className="rounded-lg shadow-2xl w-full h-auto scale-on-hover"
             />
           </div>
