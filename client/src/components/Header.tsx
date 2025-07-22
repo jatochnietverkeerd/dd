@@ -69,10 +69,11 @@ export default function Header() {
             </button>
           </div>
           
-          {/* Mobile Menu Button */}
+          {/* Mobile Menu Button - Positioned to the right */}
           <button
             onClick={toggleMobileMenu}
-            className="md:hidden text-white transition-all duration-300 scale-on-hover hover:text-[#D9C89E]"
+            className="md:hidden transition-all duration-300 scale-on-hover absolute right-0"
+            style={{color: '#D9C89E'}}
           >
             {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
