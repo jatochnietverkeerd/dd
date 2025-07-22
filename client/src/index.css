@@ -1,12 +1,64 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap');
+/* Font loading optimization - moved to HTML head for better performance */
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Smooth scroll behavior */
+/* Performance optimizations */
 html {
   scroll-behavior: smooth;
+  font-display: swap;
+}
+
+/* Critical CSS for above-the-fold content */
+body {
+  font-family: 'Cormorant Garamond', serif;
+  background-color: #0f172a;
+  color: #f8fafc;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+}
+
+/* Optimize animations for performance */
+* {
+  will-change: auto;
+}
+
+.luxury-button,
+.image-zoom,
+.scale-on-hover {
+  contain: layout style paint;
+}
+
+/* Optimize images for better performance */
+img {
+  content-visibility: auto;
+  contain-intrinsic-size: 300px 200px;
+}
+
+/* Critical above-the-fold styles */
+.hero-container {
+  content-visibility: auto;
+  contain-intrinsic-size: 100vw 100vh;
+}
+
+/* Reduce layout shifts */
+.vehicle-grid {
+  contain: layout style;
+}
+
+/* Optimize repaints */
+.fade-in-up,
+.fade-in-left,
+.fade-in-right {
+  will-change: transform, opacity;
+}
+
+.fade-in-up.visible,
+.fade-in-left.visible,
+.fade-in-right.visible {
+  will-change: auto;
 }
 
 /* Custom scrollbar for webkit browsers */

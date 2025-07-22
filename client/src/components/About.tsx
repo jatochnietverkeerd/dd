@@ -41,9 +41,11 @@ export default function About() {
             className={`relative transition-all duration-700 delay-300 ${imageFadeClass}`}
           >
             <LazyImage
-              src={audiImage}
+              src="https://images.unsplash.com/photo-1544636331-e26879cd4d9b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600&q=75"
               alt="Premium Audi Performance Vehicle - DD Cars"
               className="rounded-lg shadow-2xl w-full h-auto scale-on-hover"
+              width={800}
+              height={600}
             />
           </div>
         </div>

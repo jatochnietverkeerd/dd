@@ -21,17 +21,18 @@ export default function Hero() {
   };
 
   return (
-    <section id="home" className="relative h-screen overflow-hidden">
+    <section id="home" className="relative h-screen overflow-hidden hero-container">
       {/* Hero background with luxury sports car */}
       <div className="absolute inset-0 bg-gradient-to-r from-dark-primary via-dark-primary/70 to-transparent z-10"></div>
       <div className="absolute inset-0">
         <LazyImage
-          src={heroImage}
+          src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080&q=75"
           alt="Premium Volkswagen GTI Voertuigen - DD Cars"
           className="w-full h-full object-cover object-center image-zoom"
+          priority={true}
           onError={(e: any) => {
             console.error('Hero image failed to load:', e);
-            e.target.src = "https://images.unsplash.com/photo-1503376780353-7e6692767b70?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080&q=80";
+            e.target.src = "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080&q=75";
           }}
         />
       </div>
