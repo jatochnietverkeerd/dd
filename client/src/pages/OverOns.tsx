@@ -81,7 +81,7 @@ export default function OverOns() {
       {/* Hero Section */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-dark-primary via-dark-secondary to-dark-primary"></div>
-        <div className="absolute inset-0 bg-[url('/api/placeholder/1920/1080')] bg-cover bg-center opacity-20"></div>
+        <div className="absolute inset-0 bg-[url('/assets/over_ons_hero_image.webp')] bg-cover bg-center opacity-20"></div>
         
         <div className="relative z-10 text-center max-w-4xl px-4">
           <h1 className="text-5xl md:text-7xl font-light mb-6 leading-tight">
