@@ -29,7 +29,7 @@ export default function Header() {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-dark-primary/90 backdrop-blur-md">
+    <header className="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-slate-900/90 backdrop-blur-md">
       <nav className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-center relative">
           {/* Left Navigation Items */}
@@ -45,8 +45,8 @@ export default function Header() {
           </div>
 
           {/* Centered Logo */}
-          <Link href="/" className="flex items-center space-x-3 scale-on-hover">
-            <Logo className="h-12 transition-transform duration-300 hover:scale-110" />
+          <Link href="/" className="flex items-center space-x-3">
+            <Logo className="h-12" />
           </Link>
 
           {/* Right Navigation Items */}

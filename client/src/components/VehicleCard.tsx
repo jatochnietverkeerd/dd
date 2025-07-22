@@ -24,7 +24,7 @@ export default function VehicleCard({ vehicle }: VehicleCardProps) {
   };
 
   return (
-    <Card className="bg-dark-secondary border-dark-quaternary rounded-lg overflow-hidden">
+    <Card className="bg-slate-900 border-slate-700 rounded-lg overflow-hidden">
       <div className="relative overflow-hidden">
         <img
           src={vehicle.images?.[0] || "https://images.unsplash.com/photo-1555215695-3004980ad54e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600"}
@@ -54,7 +54,7 @@ export default function VehicleCard({ vehicle }: VehicleCardProps) {
           </span>
         </div>
         <Link href={`/auto/${vehicle.slug}`}>
-          <Button className="luxury-button w-full rounded-full font-semibold hover:bg-white" style={{backgroundColor: '#D9C89E', color: '#1a1a1a'}}>
+          <Button className="w-full rounded-full font-semibold transition-colors" style={{backgroundColor: '#D9C89E', color: '#1a1a1a'}}>
             Meer Details
           </Button>
         </Link>

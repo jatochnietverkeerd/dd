@@ -18,7 +18,7 @@ export default function Hero() {
   return (
     <section id="home" className="relative h-screen overflow-hidden">
       {/* Hero background - optimized for performance */}
-      <div className="absolute inset-0 bg-gradient-to-r from-dark-primary via-dark-primary/70 to-transparent z-10"></div>
+      <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/70 to-transparent z-10"></div>
       <div className="absolute inset-0">
         <img
           src={heroImage}

@@ -3,7 +3,7 @@ import customImage from "@assets/over_ons_hero_image.webp";
 export default function About() {
 
   return (
-    <section id="over-ons" className="py-20 bg-dark-secondary">
+    <section id="over-ons" className="py-20 bg-slate-800">
       <div className="container mx-auto px-4">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div>
