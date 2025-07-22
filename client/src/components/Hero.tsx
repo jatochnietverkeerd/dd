@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { useFadeInOnScroll } from "@/hooks/useScrollAnimation";
 import LazyImage from "@/components/LazyImage";
-import heroImage from "@assets/Gemini_Generated_Image_v45jgtv45jgtv45j_1752158919058.png";
+import heroImage from "@assets/hero_image_DD_1753178216280.webp";
 
 export default function Hero() {
   const { elementRef: titleRef, fadeInClass: titleFadeClass } = useFadeInOnScroll(0.2);
