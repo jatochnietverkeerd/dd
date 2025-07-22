@@ -88,7 +88,7 @@ export default function OverOns() {
             Ons <span className="text-luxury-gold font-bold">Verhaal</span>
           </h1>
           <p className="text-xl md:text-2xl text-gray-300 mb-8 leading-relaxed">
-            Waar passie voor exclusieve auto's samenvalt met jarenlange ervaring en onwankelbare betrouwbaarheid
+            Waar passie voor betrouwbare Volkswagen auto's samenvalt met jarenlange ervaring en eerlijke prijzen
           </p>
           <div className="w-20 h-1 bg-luxury-gold mx-auto"></div>
         </div>
@@ -100,9 +100,8 @@ export default function OverOns() {
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-4xl font-light mb-8">Onze <span className="text-luxury-gold font-bold">Missie</span></h2>
             <p className="text-xl text-gray-300 leading-relaxed mb-12">
-              Bij DD Cars geloven we dat de perfecte auto meer is dan alleen vervoer. Het is een verlengstuk van je persoonlijkheid, 
-              een statement van je smaak en een investering in kwaliteit. Onze missie is om elke klant te verbinden met het voertuig 
-              dat perfect past bij hun leven, dromen en ambities.
+              Bij DD Cars geloven we dat een betrouwbare auto essentieel is voor het dagelijks leven. Onze missie is om elke klant te helpen 
+              met het vinden van een kwalitatieve, betaalbare Volkswagen occasion uit de periode 2014-2024 die perfect past bij hun budget en behoeften.
             </p>
             <div className="grid md:grid-cols-2 gap-8 text-left">
               <div className="p-6 bg-dark-primary rounded-lg border border-dark-quaternary">

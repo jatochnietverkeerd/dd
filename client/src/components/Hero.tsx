@@ -42,15 +42,15 @@ export default function Hero() {
             ref={titleRef}
             className={`text-5xl md:text-6xl font-light mb-6 leading-tight transition-all duration-700 ${titleFadeClass}`}
           >
-            <span style={{color: '#D9C89E'}}>Premium</span> <span className="font-bold" style={{color: '#D9C89E'}}>Occasions</span><br />
-            <span className="text-3xl md:text-4xl" style={{color: '#D9C89E'}}>Exclusief & Uitzonderlijk</span>
+            <span style={{color: '#D9C89E'}}>Betrouwbare</span> <span className="font-bold" style={{color: '#D9C89E'}}>Volkswagen</span><br />
+            <span className="text-3xl md:text-4xl" style={{color: '#D9C89E'}}>Occasions 2014-2024</span>
           </h1>
           <p 
             ref={textRef}
             className={`text-xl mb-8 leading-relaxed transition-all duration-700 delay-200 ${textFadeClass}`}
             style={{color: '#D9C89E'}}
           >
-            Ontdek onze collectie van premium voertuigen. Elke auto is zorgvuldig geselecteerd en gecontroleerd voor de meest veeleisende automobilist.
+            Ontdek ons aanbod van betrouwbare Volkswagen occasions. Van praktische Polo's tot sportieve Golf GTI's - alle auto's zijn zorgvuldig gecontroleerd en betaalbaar geprijsd.
           </p>
           <div 
             ref={buttonRef}
