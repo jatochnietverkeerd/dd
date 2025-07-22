@@ -17,10 +17,10 @@ export default function About() {
           >
             <h2 className="text-4xl font-light mb-6"><span style={{color: '#D9C89E'}}>Over</span> <span className="font-bold" style={{color: '#D9C89E'}}>DD Cars</span></h2>
             <p className="mb-6 leading-relaxed" style={{color: '#D9C89E'}}>
-              DD Cars is gespecialiseerd in betrouwbare occasions van Volkswagen. Met meer dan 15 jaar ervaring in de automotive sector, helpen wij klanten bij het vinden van kwalitatieve tweedehands auto's uit de periode 2014-2024.
+              DD Cars is gespecialiseerd in betrouwbare occasions van verschillende merken. Met meer dan 15 jaar ervaring in de automotive sector, helpen wij klanten bij het vinden van kwalitatieve tweedehands auto's uit de periode 2014-2024.
             </p>
             <p className="mb-8 leading-relaxed" style={{color: '#D9C89E'}}>
-              Van praktische Polo's tot sportieve Golf GTI's - wij bieden betaalbare en goed onderhouden voertuigen. Ons doel is om iedere klant een betrouwbare auto te leveren met een eerlijke prijs-kwaliteitverhouding.
+              Van praktische Opel's tot sportieve Audi's - wij bieden betaalbare en goed onderhouden voertuigen. Ons doel is om iedere klant een betrouwbare auto te leveren met een eerlijke prijs-kwaliteitverhouding.
             </p>
             <div 
               ref={statsRef}
