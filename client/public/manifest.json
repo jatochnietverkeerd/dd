@@ -10,9 +10,20 @@
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "/favicon.ico",
-      "sizes": "32x32",
-      "type": "image/x-icon"
+      "src": "/dd-cars-logo.jpeg",
+      "sizes": "any",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "/dd-cars-logo.jpeg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/dd-cars-logo.jpeg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
     }
   ],
   "categories": ["automotive", "business"],
