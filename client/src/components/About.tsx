@@ -1,6 +1,6 @@
 import { useFadeInOnScroll } from "@/hooks/useScrollAnimation";
 import LazyImage from "@/components/LazyImage";
-import audiImage from "@assets/Gemini_Generated_Image_twjb5dtwjb5dtwjb_1752160052633.png";
+
 
 export default function About() {
   const { elementRef: textRef, fadeInClass: textFadeClass } = useFadeInOnScroll(0.2);
