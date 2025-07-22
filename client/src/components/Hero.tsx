@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { useFadeInOnScroll } from "@/hooks/useScrollAnimation";
 import LazyImage from "@/components/LazyImage";
-// Using direct URL instead of import to avoid bundling issues
+import heroImage from "@assets/Gemini_Generated_Image_v45jgtv45jgtv45j_1752158919058.png";
 
 export default function Hero() {
   const { elementRef: titleRef, fadeInClass: titleFadeClass } = useFadeInOnScroll(0.2);
@@ -21,19 +21,16 @@ export default function Hero() {
   };
 
   return (
-    <section id="home" className="relative h-screen overflow-hidden hero-container">
+    <section id="home" className="relative h-screen overflow-hidden">
       {/* Hero background with luxury sports car */}
       <div className="absolute inset-0 bg-gradient-to-r from-dark-primary via-dark-primary/70 to-transparent z-10"></div>
       <div className="absolute inset-0">
         <LazyImage
-          src="https://images.unsplash.com/photo-1551632811-561732d1e306?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080&q=80"
-          alt="Premium Volkswagen GTI Performance Cars - DD Cars"
+          src={heroImage}
+          alt="Premium Volkswagen GTI Voertuigen - DD Cars"
           className="w-full h-full object-cover object-center image-zoom"
-          priority={true}
-          width={1920}
-          height={1080}
           onError={(e: any) => {
-            console.error('Hero image failed to load, trying fallback');
+            console.error('Hero image failed to load:', e);
             e.target.src = "https://images.unsplash.com/photo-1503376780353-7e6692767b70?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080&q=80";
           }}
         />

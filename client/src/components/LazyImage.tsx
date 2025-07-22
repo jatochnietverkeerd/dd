@@ -7,12 +7,9 @@ interface LazyImageProps {
   className?: string;
   onClick?: () => void;
   onError?: (e: any) => void;
-  priority?: boolean;
-  width?: number;
-  height?: number;
 }
 
-export default function LazyImage({ src, alt, className = "", onClick, onError, priority = false, width, height }: LazyImageProps) {
+export default function LazyImage({ src, alt, className = "", onClick, onError }: LazyImageProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
 
@@ -48,10 +45,7 @@ export default function LazyImage({ src, alt, className = "", onClick, onError, 
         onLoad={handleLoad}
         onError={handleError}
         onClick={onClick}
-        loading={priority ? "eager" : "lazy"}
-        decoding="async"
-        width={width}
-        height={height}
+        loading="lazy"
       />
     </div>
   );

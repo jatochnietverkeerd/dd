@@ -26,7 +26,7 @@ export default function VehicleShowcase() {
             <h2 className="text-4xl font-light mb-4">Ons <span className="font-bold" style={{color: '#D9C89E'}}>Aanbod</span></h2>
             <p className="max-w-2xl mx-auto" style={{color: '#D9C89E'}}>Ontdek onze zorgvuldig geselecteerde collectie van premium occasions.</p>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 vehicle-grid">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {Array.from({ length: 3 }, (_, i) => (
               <div key={i} className="bg-dark-secondary rounded-lg overflow-hidden">
                 <Skeleton className="w-full h-48 bg-dark-tertiary" />
@@ -58,7 +58,7 @@ export default function VehicleShowcase() {
           <p className="max-w-2xl mx-auto" style={{color: '#D9C89E'}}>Ontdek onze zorgvuldig geselecteerde collectie van premium occasions. Elk voertuig vertelt zijn eigen verhaal van luxe en prestaties.</p>
         </div>
         
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 vehicle-grid">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {(() => {
             // Show featured vehicles first, then fill with recent non-featured vehicles if needed
             const featured = featuredVehicles || [];
