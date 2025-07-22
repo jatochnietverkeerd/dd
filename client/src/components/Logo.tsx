@@ -6,37 +6,39 @@ interface LogoProps {
 
 export function Logo({ className = "h-12" }: LogoProps) {
   return (
-    <div className={`${className} flex flex-col items-center justify-center`}>
-      <div 
-        className="text-center"
+    <svg 
+      xmlns="http://www.w3.org/2000/svg" 
+      viewBox="0 0 200 100" 
+      className={`${className}`}
+      style={{ maxWidth: '120px', height: 'auto' }}
+    >
+      <text 
+        x="100" 
+        y="55" 
+        textAnchor="middle"
         style={{
-          color: '#C5B358'
+          fontFamily: 'serif',
+          fontSize: '50px',
+          fill: '#C5B358',
+          fontWeight: 'bold'
         }}
       >
-        <div 
-          className="font-bold leading-none"
-          style={{
-            fontSize: '2.5rem',
-            fontWeight: 700,
-            lineHeight: 1,
-            fontFamily: 'serif'
-          }}
-        >
-          DD
-        </div>
-        <div 
-          className="uppercase mt-1"
-          style={{
-            fontSize: '0.6rem',
-            letterSpacing: '0.9em',
-            marginLeft: '0.9em',
-            fontWeight: 400,
-            textTransform: 'uppercase'
-          }}
-        >
-          CARS
-        </div>
-      </div>
-    </div>
+        DD
+      </text>
+      <text 
+        x="100" 
+        y="80" 
+        textAnchor="middle"
+        style={{
+          fontFamily: 'sans-serif',
+          fontSize: '18px',
+          fill: '#C5B358',
+          letterSpacing: '6px',
+          fontWeight: 'normal'
+        }}
+      >
+        CARS
+      </text>
+    </svg>
   );
 }
