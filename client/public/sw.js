@@ -1,11 +1,13 @@
-// Service Worker for caching and performance
-const CACHE_NAME = 'ddcars-v1';
+// Service Worker for aggressive caching and performance
+const CACHE_NAME = 'ddcars-v2';
 const urlsToCache = [
   '/',
   '/src/main.tsx',
   '/src/index.css',
   '/assets/hero_image_DD_1753178216280.webp',
-  '/assets/over_ons_hero_image.webp'
+  '/assets/over_ons_hero_image.webp',
+  '/favicon.svg',
+  '/manifest.json'
 ];
 
 self.addEventListener('install', function(event) {
@@ -18,11 +20,35 @@ self.addEventListener('install', function(event) {
 });
 
 self.addEventListener('fetch', function(event) {
+  // Skip non-GET requests
+  if (event.request.method !== 'GET') return;
+  
   event.respondWith(
     caches.match(event.request)
       .then(function(response) {
-        // Return cached version or fetch from network
-        return response || fetch(event.request);
+        if (response) {
+          return response;
+        }
+        
+        // Clone the request for network fetch
+        const fetchRequest = event.request.clone();
+        
+        return fetch(fetchRequest).then(function(response) {
+          // Check if valid response
+          if (!response || response.status !== 200 || response.type !== 'basic') {
+            return response;
+          }
+          
+          // Clone response for caching
+          const responseToCache = response.clone();
+          
+          caches.open(CACHE_NAME)
+            .then(function(cache) {
+              cache.put(event.request, responseToCache);
+            });
+          
+          return response;
+        });
       })
   );
 });
