@@ -31,14 +31,14 @@ export default function Header() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-dark-primary/90 backdrop-blur-md">
       <nav className="container mx-auto px-4 py-4">
-        <div className="flex items-center justify-center relative">
-          {/* Centered Logo */}
+        <div className="flex items-center justify-between">
+          {/* Logo on the left */}
           <Link href="/" className="flex items-center space-x-3 scale-on-hover">
             <Logo className="h-12 transition-transform duration-300 hover:scale-110" />
           </Link>
           
-          {/* Desktop Navigation - Positioned absolutely to the right */}
-          <div className="hidden md:flex items-center space-x-8 absolute right-0">
+          {/* Desktop Navigation - Centered with more space */}
+          <div className="hidden md:flex items-center space-x-12 flex-1 justify-center">
             <Link href="/" className="transition-all duration-300 relative group" style={{color: '#D9C89E'}}>
               <span className="relative z-10">Home</span>
               <div className="absolute -bottom-1 left-0 w-0 h-0.5 transition-all duration-300 group-hover:w-full" style={{backgroundColor: '#D9C89E'}}></div>
@@ -65,10 +65,10 @@ export default function Header() {
             </button>
           </div>
           
-          {/* Mobile Menu Button - Positioned absolutely to the right */}
+          {/* Mobile Menu Button */}
           <button
             onClick={toggleMobileMenu}
-            className="md:hidden text-white transition-all duration-300 scale-on-hover hover:text-[#D9C89E] absolute right-0"
+            className="md:hidden text-white transition-all duration-300 scale-on-hover hover:text-[#D9C89E]"
           >
             {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
