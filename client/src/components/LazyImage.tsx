@@ -50,7 +50,6 @@ export default function LazyImage({ src, alt, className = "", onClick, onError, 
         onClick={onClick}
         loading={priority ? "eager" : "lazy"}
         decoding="async"
-
         width={width}
         height={height}
       />

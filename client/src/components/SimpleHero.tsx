@@ -1,9 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { useFadeInOnScroll } from "@/hooks/useScrollAnimation";
-import LazyImage from "@/components/LazyImage";
-// Using direct URL instead of import to avoid bundling issues
 
-export default function Hero() {
+export default function SimpleHero() {
   const { elementRef: titleRef, fadeInClass: titleFadeClass } = useFadeInOnScroll(0.2);
   const { elementRef: textRef, fadeInClass: textFadeClass } = useFadeInOnScroll(0.2);
   const { elementRef: buttonRef, fadeInClass: buttonFadeClass } = useFadeInOnScroll(0.2);
@@ -25,17 +23,13 @@ export default function Hero() {
       {/* Hero background with luxury sports car */}
       <div className="absolute inset-0 bg-gradient-to-r from-dark-primary via-dark-primary/70 to-transparent z-10"></div>
       <div className="absolute inset-0">
-        <LazyImage
+        <img
           src="https://images.unsplash.com/photo-1551632811-561732d1e306?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080&q=80"
           alt="Premium Volkswagen GTI Performance Cars - DD Cars"
-          className="w-full h-full object-cover object-center image-zoom"
-          priority={true}
+          className="w-full h-full object-cover object-center"
+          loading="eager"
           width={1920}
           height={1080}
-          onError={(e: any) => {
-            console.error('Hero image failed to load, trying fallback');
-            e.target.src = "https://images.unsplash.com/photo-1503376780353-7e6692767b70?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080&q=80";
-          }}
         />
       </div>
 
@@ -71,16 +65,8 @@ export default function Hero() {
               variant="outline"
               className="luxury-button px-8 py-3 rounded-full font-semibold"
               style={{borderColor: '#D9C89E', color: '#D9C89E'}}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#D9C89E';
-                e.currentTarget.style.color = '#1a1a1a';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'transparent';
-                e.currentTarget.style.color = '#D9C89E';
-              }}
             >
-              Contact Opnemen
+              Contact
             </Button>
           </div>
         </div>
