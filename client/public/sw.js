@@ -27,9 +27,12 @@ self.addEventListener('fetch', function(event) {
   );
 });
 
-// Force HTTPS
+// Force HTTPS only in production
 self.addEventListener('fetch', function(event) {
-  if (event.request.url.startsWith('http:')) {
+  // Only redirect to HTTPS if we're not on localhost/Replit development
+  if (event.request.url.startsWith('http:') && 
+      !event.request.url.includes('localhost') && 
+      !event.request.url.includes('replit.dev')) {
     event.respondWith(
       Response.redirect(event.request.url.replace('http:', 'https:'), 301)
     );

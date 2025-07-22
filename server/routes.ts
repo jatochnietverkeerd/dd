@@ -74,46 +74,50 @@ async function authenticateAdmin(req: any, res: any, next: any) {
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Security headers to fix "Not Secure" warning
+  // Security headers - development friendly
   app.use((req, res, next) => {
-    // Force HTTPS redirect for all environments when not using localhost
     const host = req.header('host') || '';
-    const proto = req.header('x-forwarded-proto') || req.protocol;
+    const isDevelopment = host.includes('localhost') || 
+                          host.includes('127.0.0.1') ||
+                          host.includes('replit.dev') ||
+                          host.includes('replit.co') ||
+                          process.env.NODE_ENV === 'development';
     
-    // Redirect to HTTPS if:
-    // 1. Not already HTTPS
-    // 2. Not localhost (development)
-    // 3. Not using Replit's internal domains
-    if (proto !== 'https' && 
-        !host.includes('localhost') && 
-        !host.includes('127.0.0.1') &&
-        !host.includes('replit.dev') &&
-        !host.includes('replit.co')) {
-      // Clean host without port for proper HTTPS redirect
-      const cleanHost = host.replace(/:\d+$/, '');
-      return res.redirect(301, `https://${cleanHost}${req.url}`);
+    // Only apply strict security headers in production
+    if (!isDevelopment) {
+      // Security headers for production only
+      res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
+      res.setHeader('X-Content-Type-Options', 'nosniff');
+      res.setHeader('X-Frame-Options', 'DENY');
+      res.setHeader('X-XSS-Protection', '1; mode=block');
+      res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+      res.setHeader('Content-Security-Policy', 
+        "default-src 'self'; " +
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://replit.com; " +
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
+        "font-src 'self' https://fonts.gstatic.com; " +
+        "img-src 'self' data: https: blob:; " +
+        "connect-src 'self' https: wss:; " +
+        "media-src 'self' https:; " +
+        "object-src 'none'; " +
+        "base-uri 'self'; " +
+        "form-action 'self'; " +
+        "frame-ancestors 'none'; " +
+        "upgrade-insecure-requests;"
+      );
+    } else {
+      // Development-friendly headers
+      res.setHeader('X-Content-Type-Options', 'nosniff');
+      res.setHeader('Content-Security-Policy', 
+        "default-src 'self' 'unsafe-inline' 'unsafe-eval'; " +
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://replit.com; " +
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
+        "font-src 'self' https://fonts.gstatic.com; " +
+        "img-src 'self' data: https: blob:; " +
+        "connect-src 'self' http: https: ws: wss:; " +
+        "media-src 'self' https:;"
+      );
     }
-    
-    // Security headers
-    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
-    res.setHeader('X-Content-Type-Options', 'nosniff');
-    res.setHeader('X-Frame-Options', 'DENY');
-    res.setHeader('X-XSS-Protection', '1; mode=block');
-    res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
-    res.setHeader('Content-Security-Policy', 
-      "default-src 'self'; " +
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://replit.com; " +
-      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
-      "font-src 'self' https://fonts.gstatic.com; " +
-      "img-src 'self' data: https: blob:; " +
-      "connect-src 'self' https: wss:; " +
-      "media-src 'self' https:; " +
-      "object-src 'none'; " +
-      "base-uri 'self'; " +
-      "form-action 'self'; " +
-      "frame-ancestors 'none'; " +
-      "upgrade-insecure-requests;"
-    );
     
     next();
   });
