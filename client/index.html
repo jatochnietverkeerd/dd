@@ -3,6 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    
+    <!-- PWA and Performance -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#D9C89E">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="DD Cars">
     
     <!-- Security: Force HTTPS -->
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
@@ -28,31 +36,51 @@
     </script>
     
     <!-- SEO Meta Tags -->
-    <meta name="description" content="DD Cars - Premium occasions dealer in Nederland. Exclusieve selectie van luxe auto's: BMW, Mercedes, Audi en meer. Professionele service en kwaliteitsgarantie." />
-    <meta name="keywords" content="premium auto's, luxe occasions, BMW, Mercedes, Audi, auto dealer Nederland, exclusieve auto's, DD Cars" />
+    <meta name="description" content="DD Cars - Betrouwbare occasions van verschillende merken. Kwalitatieve tweedehands auto's: BMW, Mercedes, Audi, Opel en meer. Betaalbaar en goed onderhouden." />
+    <meta name="keywords" content="betrouwbare auto's, occasions, BMW, Mercedes, Audi, Opel, auto dealer Nederland, tweedehands auto's, DD Cars, betaalbaar" />
     <meta name="author" content="DD Cars" />
     <meta name="robots" content="index, follow" />
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://ddcars.nl/" />
-    <meta property="og:title" content="DD Cars - Premium Occasions Dealer" />
-    <meta property="og:description" content="Ontdek onze exclusieve collectie van premium occasions. Luxe auto's van BMW, Mercedes, Audi en meer. Professionele service en kwaliteitsgarantie." />
+    <meta property="og:title" content="DD Cars - Betrouwbare Occasions Dealer" />
+    <meta property="og:description" content="Ontdek ons aanbod van betrouwbare occasions. Kwalitatieve auto's van verschillende merken, betaalbaar geprijsd en zorgvuldig gecontroleerd." />
     <meta property="og:image" content="https://ddcars.nl/og-image.jpg" />
     <meta property="og:locale" content="nl_NL" />
     
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:url" content="https://ddcars.nl/" />
-    <meta property="twitter:title" content="DD Cars - Premium Occasions Dealer" />
-    <meta property="twitter:description" content="Ontdek onze exclusieve collectie van premium occasions. Luxe auto's van BMW, Mercedes, Audi en meer." />
+    <meta property="twitter:title" content="DD Cars - Betrouwbare Occasions Dealer" />
+    <meta property="twitter:description" content="Betrouwbare occasions van verschillende merken. Kwalitatieve auto's, betaalbaar geprijsd en zorgvuldig gecontroleerd." />
     <meta property="twitter:image" content="https://ddcars.nl/og-image.jpg" />
     
     <!-- Performance & Prefetch -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;700&display=swap" rel="stylesheet"></noscript>
     <link rel="dns-prefetch" href="https://images.unsplash.com">
+    <link rel="preload" href="/src/main.tsx" as="script">
+    <link rel="preload" href="/src/index.css" as="style">
+    <link rel="preload" href="/assets/hero_image_DD_1753178216280.webp" as="image">
+    <link rel="prefetch" href="/assets/over_ons_hero_image.webp">
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+    
+    <!-- Critical CSS for above-the-fold content -->
+    <style>
+      /* Critical above-the-fold styles */
+      body { margin: 0; font-family: system-ui, -apple-system, sans-serif; background: #0f172a; color: #ffffff; }
+      .container { max-width: 1200px; margin: 0 auto; padding: 0 1rem; }
+      .hero-section { height: 100vh; position: relative; overflow: hidden; }
+      .hero-gradient { position: absolute; inset: 0; background: linear-gradient(to right, #0f172a, rgba(15, 23, 42, 0.7), transparent); z-index: 10; }
+      .hero-content { position: relative; z-index: 20; height: 100%; display: flex; align-items: center; }
+      .hero-title { font-size: 3.5rem; font-weight: 300; line-height: 1.2; color: #D9C89E; }
+      .hero-subtitle { font-size: 2rem; color: #D9C89E; }
+      @media (max-width: 768px) { .hero-title { font-size: 2.5rem; } .hero-subtitle { font-size: 1.5rem; } }
+    </style>
     
     <!-- Structured Data -->
     <script type="application/ld+json">
@@ -60,7 +88,7 @@
       "@context": "https://schema.org",
       "@type": "CarDealer",
       "name": "DD Cars",
-      "description": "Premium occasions dealer gespecialiseerd in luxe auto's",
+      "description": "Betrouwbare occasions dealer gespecialiseerd in kwalitatieve tweedehands auto's",
       "url": "https://ddcars.nl",
       "logo": "https://ddcars.nl/logo.png",
       "telephone": "+31 20 123 4567",
@@ -73,16 +101,16 @@
         "addressCountry": "NL"
       },
       "openingHours": "Mo-Fr 09:00-18:00, Sa 10:00-17:00",
-      "priceRange": "€€€€",
+      "priceRange": "€€€",
       "hasOfferCatalog": {
         "@type": "OfferCatalog",
-        "name": "Premium Occasions",
+        "name": "Betrouwbare Occasions",
         "itemListElement": [
           {
             "@type": "Offer",
             "itemOffered": {
               "@type": "Car",
-              "name": "Premium Occasions"
+              "name": "Betrouwbare Occasions"
             }
           }
         ]
@@ -90,7 +118,7 @@
     }
     </script>
     
-    <title>DD Cars - Premium Occasions Dealer Nederland</title>
+    <title>DD Cars - Betrouwbare Occasions Dealer Nederland</title>
   </head>
   <body>
     <div id="root"></div>

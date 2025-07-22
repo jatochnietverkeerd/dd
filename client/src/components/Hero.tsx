@@ -27,7 +27,7 @@ export default function Hero() {
       <div className="absolute inset-0">
         <LazyImage
           src={heroImage}
-          alt="Premium Volkswagen GTI Voertuigen - DD Cars"
+          alt="Betrouwbare Occasions - DD Cars"
           className="w-full h-full object-cover object-center image-zoom"
           onError={(e: any) => {
             console.error('Hero image failed to load:', e);

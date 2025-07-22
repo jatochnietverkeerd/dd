@@ -46,7 +46,10 @@ export default function LazyImage({ src, alt, className = "", onClick, onError }
         onError={handleError}
         onClick={onClick}
         loading="lazy"
-
+        decoding="async"
+        fetchPriority="low"
+        width="auto"
+        height="auto"
       />
     </div>
   );

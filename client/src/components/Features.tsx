@@ -29,12 +29,12 @@ export default function Features() {
     {
       icon: Handshake,
       title: "Persoonlijke Service",
-      description: "Onze experts helpen u bij het vinden van uw perfecte droomauto."
+      description: "Onze experts helpen u bij het vinden van de juiste auto voor uw budget."
     },
     {
       icon: Star,
-      title: "Premium Selectie",
-      description: "Exclusieve collectie van premium en luxe voertuigen."
+      title: "Betrouwbare Selectie",
+      description: "Zorgvuldig geselecteerde occasions van verschillende merken."
     }
   ];
 

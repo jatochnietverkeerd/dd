@@ -1,0 +1,35 @@
+{
+  "name": "DD Cars - Betrouwbare Occasions",
+  "short_name": "DD Cars",
+  "description": "Betrouwbare occasions van verschillende merken - DD Cars",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#D9C89E",
+  "lang": "nl",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "32x32",
+      "type": "image/x-icon"
+    }
+  ],
+  "categories": ["automotive", "business"],
+  "shortcuts": [
+    {
+      "name": "Bekijk Aanbod",
+      "short_name": "Aanbod",
+      "description": "Bekijk ons volledige aanbod aan occasions",
+      "url": "/#aanbod",
+      "icons": []
+    },
+    {
+      "name": "Contact",
+      "short_name": "Contact",
+      "description": "Neem contact met ons op",
+      "url": "/#contact",
+      "icons": []
+    }
+  ]
+}
