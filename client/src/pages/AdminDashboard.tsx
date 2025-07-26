@@ -192,25 +192,44 @@ export default function AdminDashboard() {
   });
 
   const deleteVehicleMutation = useMutation({
-    mutationFn: async (vehicleId: number) => {
-      return await apiRequest(`/api/admin/vehicles/${vehicleId}`, {
+    mutationFn: async ({ vehicleId, force = false }: { vehicleId: number, force?: boolean }) => {
+      return await apiRequest(`/api/admin/vehicles/${vehicleId}${force ? '?force=true' : ''}`, {
         method: "DELETE",
         headers: authHeaders,
       });
     },
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/vehicles"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/purchases"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/sales"] });
       toast({
         title: "Voertuig verwijderd",
-        description: "Het voertuig is succesvol verwijderd.",
+        description: variables.force 
+          ? "Het voertuig en alle gerelateerde data zijn verwijderd."
+          : "Het voertuig is succesvol verwijderd.",
       });
     },
-    onError: () => {
-      toast({
-        title: "Fout",
-        description: "Er is een fout opgetreden bij het verwijderen van het voertuig.",
-        variant: "destructive",
-      });
+    onError: (error: any) => {
+      if (error.status === 409 && error.data?.canForceDelete) {
+        // Show confirmation dialog for force delete
+        const shouldForceDelete = window.confirm(
+          `${error.data.details}\n\nWil je het voertuig EN alle gerelateerde data definitief verwijderen?\n\nDit kan niet ongedaan gemaakt worden!`
+        );
+        
+        if (shouldForceDelete) {
+          // Extract vehicleId from the error context or store it
+          const vehicleId = parseInt(window.location.hash?.split('delete-')[1] || '0');
+          if (vehicleId) {
+            deleteVehicleMutation.mutate({ vehicleId, force: true });
+          }
+        }
+      } else {
+        toast({
+          title: "Fout bij verwijderen",
+          description: error.data?.message || "Er is een fout opgetreden bij het verwijderen van het voertuig.",
+          variant: "destructive",
+        });
+      }
     },
   });
 
@@ -329,7 +348,11 @@ export default function AdminDashboard() {
 
   const handleDeleteVehicle = (vehicleId: number) => {
     if (confirm("Weet je zeker dat je dit voertuig wilt verwijderen?")) {
-      deleteVehicleMutation.mutate(vehicleId);
+      // Store vehicleId for potential force delete
+      window.location.hash = `delete-${vehicleId}`;
+      deleteVehicleMutation.mutate({ vehicleId });
+      // Clear hash after a short delay
+      setTimeout(() => { window.location.hash = ''; }, 100);
     }
   };
 

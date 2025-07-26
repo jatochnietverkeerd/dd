@@ -492,13 +492,29 @@ Sitemap: ${baseUrl}/sitemap.xml`;
         return res.status(400).json({ message: "Invalid vehicle ID" });
       }
 
-      const deleted = await storage.deleteVehicle(id);
-      if (!deleted) {
-        return res.status(404).json({ message: "Vehicle not found" });
+      const force = req.query.force === 'true';
+      const result = await storage.deleteVehicle(id, force);
+      
+      if (!result.success) {
+        if (result.error === 'RELATED_DATA_EXISTS') {
+          return res.status(409).json({ 
+            message: "Vehicle cannot be deleted - related data exists",
+            details: `Vehicle heeft ${result.relatedData?.purchases || 0} aankoop(en), ${result.relatedData?.sales || 0} verkoop/verkopen en ${result.relatedData?.reservations || 0} reservering(en)`,
+            relatedData: result.relatedData,
+            canForceDelete: true
+          });
+        } else if (result.error === 'DATABASE_ERROR') {
+          return res.status(500).json({ message: "Database error occurred" });
+        } else {
+          return res.status(404).json({ message: "Vehicle not found" });
+        }
       }
 
-      res.json({ message: "Vehicle deleted successfully" });
+      res.json({ 
+        message: force ? "Vehicle and all related data deleted successfully" : "Vehicle deleted successfully" 
+      });
     } catch (error) {
+      console.error('Delete vehicle route error:', error);
       res.status(500).json({ message: "Failed to delete vehicle" });
     }
   });

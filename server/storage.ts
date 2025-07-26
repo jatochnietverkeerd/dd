@@ -12,7 +12,7 @@ export interface IStorage {
   getVehicleBySlug(slug: string): Promise<Vehicle | undefined>;
   createVehicle(vehicle: InsertVehicle): Promise<Vehicle>;
   updateVehicle(id: number, vehicle: Partial<InsertVehicle>): Promise<Vehicle | undefined>;
-  deleteVehicle(id: number): Promise<boolean>;
+  deleteVehicle(id: number, force?: boolean): Promise<{ success: boolean, error?: string, relatedData?: any }>;
   
   // Contact operations
   createContact(contact: InsertContact): Promise<Contact>;
@@ -172,7 +172,7 @@ export class DatabaseStorage implements IStorage {
     
     // Generate a unique slug
     const slug = await generateUniqueSlug(insertVehicle.brand, insertVehicle.model, Number(insertVehicle.year), checkSlugExists);
-    const metaTitle = generateMetaTitle(insertVehicle.brand, insertVehicle.model, Number(insertVehicle.year), insertVehicle.price);
+    const metaTitle = generateMetaTitle(insertVehicle.brand, insertVehicle.model, Number(insertVehicle.year), parseFloat(insertVehicle.price));
     const metaDescription = generateMetaDescription(insertVehicle.brand, insertVehicle.model, Number(insertVehicle.year), insertVehicle.mileage, insertVehicle.fuel, insertVehicle.transmission);
 
     const [vehicle] = await db.insert(vehicles).values({
@@ -192,9 +192,53 @@ export class DatabaseStorage implements IStorage {
     return vehicle;
   }
 
-  async deleteVehicle(id: number): Promise<boolean> {
-    const result = await db.delete(vehicles).where(eq(vehicles.id, id));
-    return (result.rowCount || 0) > 0;
+  async deleteVehicle(id: number, force: boolean = false): Promise<{ success: boolean, error?: string, relatedData?: any }> {
+    try {
+      // Check for related data first
+      const relatedPurchases = await db.select().from(purchases).where(eq(purchases.vehicleId, id));
+      const relatedSales = await db.select().from(sales).where(eq(sales.vehicleId, id));
+      const relatedReservations = await db.select().from(reservations).where(eq(reservations.vehicleId, id));
+      
+      const hasRelatedData = relatedPurchases.length > 0 || relatedSales.length > 0 || relatedReservations.length > 0;
+      
+      if (hasRelatedData && !force) {
+        return {
+          success: false,
+          error: 'RELATED_DATA_EXISTS',
+          relatedData: {
+            purchases: relatedPurchases.length,
+            sales: relatedSales.length,
+            reservations: relatedReservations.length
+          }
+        };
+      }
+      
+      // If force delete, remove related data first
+      if (force && hasRelatedData) {
+        // Delete in correct order (sales -> purchases -> reservations -> vehicle)
+        if (relatedSales.length > 0) {
+          await db.delete(sales).where(eq(sales.vehicleId, id));
+        }
+        if (relatedPurchases.length > 0) {
+          await db.delete(purchases).where(eq(purchases.vehicleId, id));
+        }
+        if (relatedReservations.length > 0) {
+          await db.delete(reservations).where(eq(reservations.vehicleId, id));
+        }
+      }
+      
+      // Delete the vehicle
+      const result = await db.delete(vehicles).where(eq(vehicles.id, id));
+      const success = (result.rowCount || 0) > 0;
+      
+      return { success };
+    } catch (error) {
+      console.error('Delete vehicle error:', error);
+      return {
+        success: false,
+        error: 'DATABASE_ERROR'
+      };
+    }
   }
 
   async createContact(insertContact: InsertContact): Promise<Contact> {
