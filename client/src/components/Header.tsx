@@ -80,69 +80,73 @@ export default function Header() {
         </div>
       </nav>
       
-      {/* Mobile Navigation - Full Screen Overlay */}
+      {/* Mobile Navigation Overlay */}
       {isMobileMenuOpen && (
-        <div className="md:hidden fixed inset-0 bg-dark-primary z-[9999] flex flex-col">
-          {/* Header with close button */}
-          <div className="flex justify-between items-center p-6 border-b border-gray-700">
-            <h2 className="text-xl font-semibold" style={{color: '#D9C89E'}}>Menu</h2>
-            <button
-              onClick={closeMobileMenu}
-              className="p-2 hover:bg-gray-800 rounded-lg transition-colors"
-              style={{color: '#D9C89E'}}
-            >
-              <X size={24} />
-            </button>
-          </div>
+        <div className="md:hidden fixed inset-0 z-[9999]">
+          {/* Dark overlay background */}
+          <div 
+            className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+            onClick={closeMobileMenu}
+          ></div>
           
-          {/* Menu Content */}
-          <div className="flex-1 overflow-y-auto p-6">
-            {/* Logo Section */}
-            <div className="text-center mb-8">
-              <Logo className="h-12 mx-auto mb-3" />
-              <p className="text-sm opacity-75" style={{color: '#D9C89E'}}>Betrouwbare Occasions</p>
+          {/* Menu Panel */}
+          <div className="relative bg-white h-full w-full max-w-sm ml-auto shadow-2xl flex flex-col">
+            {/* Header */}
+            <div className="flex justify-between items-center p-6 border-b border-gray-200 bg-gray-50">
+              <h2 className="text-xl font-semibold text-gray-800">Menu</h2>
+              <button
+                onClick={closeMobileMenu}
+                className="p-2 hover:bg-gray-200 rounded-lg transition-colors text-gray-600"
+              >
+                <X size={24} />
+              </button>
             </div>
             
-            {/* Navigation Links */}
-            <div className="space-y-4">
-              <Link 
-                href="/" 
-                onClick={closeMobileMenu}
-                className="flex items-center gap-3 w-full p-4 rounded-xl bg-gray-800/50 hover:bg-gray-700/50 transition-colors"
-                style={{color: '#D9C89E'}}
-              >
-                <span className="text-2xl">🏠</span>
-                <span className="text-lg">Home</span>
-              </Link>
+            {/* Content */}
+            <div className="flex-1 p-6 bg-white">
+              {/* Logo Section */}
+              <div className="text-center mb-8">
+                <Logo className="h-12 mx-auto mb-3" />
+                <p className="text-sm text-gray-600">DD Cars - Betrouwbare Occasions</p>
+              </div>
               
-              <Link 
-                href="/aanbod" 
-                onClick={closeMobileMenu}
-                className="flex items-center gap-3 w-full p-4 rounded-xl bg-gray-800/50 hover:bg-gray-700/50 transition-colors"
-                style={{color: '#D9C89E'}}
-              >
-                <span className="text-2xl">🚗</span>
-                <span className="text-lg">Aanbod</span>
-              </Link>
-              
-              <Link 
-                href="/over-ons" 
-                onClick={closeMobileMenu}
-                className="flex items-center gap-3 w-full p-4 rounded-xl bg-gray-800/50 hover:bg-gray-700/50 transition-colors"
-                style={{color: '#D9C89E'}}
-              >
-                <span className="text-2xl">👥</span>
-                <span className="text-lg">Over Ons</span>
-              </Link>
-              
-              <button
-                onClick={() => scrollToSection('contact')}
-                className="flex items-center gap-3 w-full p-4 rounded-xl bg-gray-800/50 hover:bg-gray-700/50 transition-colors text-left"
-                style={{color: '#D9C89E'}}
-              >
-                <span className="text-2xl">📞</span>
-                <span className="text-lg">Contact</span>
-              </button>
+              {/* Navigation Links */}
+              <div className="space-y-3">
+                <Link 
+                  href="/" 
+                  onClick={closeMobileMenu}
+                  className="flex items-center gap-4 w-full p-4 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors text-gray-800"
+                >
+                  <span className="text-2xl">🏠</span>
+                  <span className="text-lg font-medium">Home</span>
+                </Link>
+                
+                <Link 
+                  href="/aanbod" 
+                  onClick={closeMobileMenu}
+                  className="flex items-center gap-4 w-full p-4 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors text-gray-800"
+                >
+                  <span className="text-2xl">🚗</span>
+                  <span className="text-lg font-medium">Aanbod</span>
+                </Link>
+                
+                <Link 
+                  href="/over-ons" 
+                  onClick={closeMobileMenu}
+                  className="flex items-center gap-4 w-full p-4 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors text-gray-800"
+                >
+                  <span className="text-2xl">👥</span>
+                  <span className="text-lg font-medium">Over Ons</span>
+                </Link>
+                
+                <button
+                  onClick={() => scrollToSection('contact')}
+                  className="flex items-center gap-4 w-full p-4 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors text-left text-gray-800"
+                >
+                  <span className="text-2xl">📞</span>
+                  <span className="text-lg font-medium">Contact</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
