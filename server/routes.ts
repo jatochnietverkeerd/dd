@@ -9,7 +9,7 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 import { generateInvoicePDF, createInvoiceData } from "./pdfService_new";
-import { sendInvoiceEmail } from "./emailService";
+import { sendInvoiceEmail, sendContactFormEmail } from "./emailService";
 import * as cheerio from 'cheerio';
 
 // Ensure uploads directory exists
@@ -282,6 +282,22 @@ Sitemap: ${baseUrl}/sitemap.xml`;
     try {
       const validatedData = insertContactSchema.parse(req.body);
       const contact = await storage.createContact(validatedData);
+      
+      // Send email notification to DD Cars
+      try {
+        await sendContactFormEmail({
+          firstName: validatedData.firstName,
+          lastName: validatedData.lastName,
+          email: validatedData.email,
+          phone: validatedData.phone,
+          message: validatedData.message
+        });
+        console.log('✅ Contact form email sent successfully');
+      } catch (emailError) {
+        console.error('❌ Failed to send contact form email:', emailError);
+        // Continue with response even if email fails
+      }
+      
       res.status(201).json(contact);
     } catch (error) {
       if (error instanceof z.ZodError) {

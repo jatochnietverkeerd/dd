@@ -210,6 +210,85 @@ DD Cars
   }
 }
 
+// Send contact form email to DD Cars
+export async function sendContactFormEmail(
+  contactData: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone: string;
+    message: string;
+  }
+): Promise<boolean> {
+  try {
+    const config = getEmailConfig();
+    const transporter = nodemailer.createTransport(config);
+    
+    const mailOptions = {
+      from: config.auth.user,
+      to: 'DD.Cars@hotmail.nl',
+      subject: `Nieuw Contact Formulier - ${contactData.firstName} ${contactData.lastName}`,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <div style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); color: white; padding: 30px; border-radius: 10px; margin-bottom: 20px;">
+            <h1 style="color: #d9c89e; margin: 0; font-size: 28px;">DD Cars</h1>
+            <p style="margin: 10px 0 0 0; opacity: 0.9;">Nieuw Contact Formulier</p>
+          </div>
+          
+          <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            <h2 style="color: #333; margin-top: 0;">Contact Details</h2>
+            
+            <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #d9c89e;">
+              <div style="margin-bottom: 15px;"><strong>Naam:</strong> ${contactData.firstName} ${contactData.lastName}</div>
+              <div style="margin-bottom: 15px;"><strong>Email:</strong> <a href="mailto:${contactData.email}" style="color: #d9c89e;">${contactData.email}</a></div>
+              <div style="margin-bottom: 15px;"><strong>Telefoon:</strong> <a href="tel:${contactData.phone}" style="color: #d9c89e;">${contactData.phone}</a></div>
+            </div>
+            
+            <h3 style="color: #333;">Bericht:</h3>
+            <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; border-left: 4px solid #d9c89e;">
+              <p style="margin: 0; line-height: 1.6;">${contactData.message.replace(/\n/g, '<br>')}</p>
+            </div>
+            
+            <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee;">
+            
+            <p style="color: #666; font-size: 14px; margin-bottom: 5px;">Met vriendelijke groet,</p>
+            <p style="color: #d9c89e; font-weight: bold; margin: 0;">DD Cars Website</p>
+          </div>
+        </div>
+      `,
+      text: `
+Nieuw Contact Formulier - DD Cars
+
+Naam: ${contactData.firstName} ${contactData.lastName}
+Email: ${contactData.email}
+Telefoon: ${contactData.phone}
+
+Bericht:
+${contactData.message}
+
+---
+DD Cars Website
+      `
+    };
+    
+    // In development, simulate sending
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`📧 Simulating contact form email to DD.Cars@hotmail.nl`);
+      console.log(`From: ${contactData.firstName} ${contactData.lastName} (${contactData.email})`);
+      console.log(`Message: ${contactData.message}`);
+      return true;
+    }
+    
+    await transporter.sendMail(mailOptions);
+    console.log(`✅ Contact form email sent successfully to DD.Cars@hotmail.nl`);
+    return true;
+    
+  } catch (error) {
+    console.error('❌ Error sending contact form email:', error);
+    return false;
+  }
+}
+
 export async function sendTestEmail(to: string): Promise<boolean> {
   try {
     const config = getEmailConfig();
