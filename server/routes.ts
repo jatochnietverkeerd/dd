@@ -1,7 +1,6 @@
 import type { Express } from "express";
 import express from "express";
 import { createServer, type Server } from "http";
-import { GoogleGenAI } from "@google/genai";
 import { storage } from "./storage";
 import { insertContactSchema, insertVehicleSchema, insertReservationSchema, insertPurchaseSchema, insertSaleSchema } from "@shared/schema";
 import { z } from "zod";
@@ -1082,32 +1081,14 @@ Een uitstekende keuze voor wie zoekt naar kwaliteit, prestaties en betrouwbaarhe
         const nextText = $(elem).next().text().trim();
         const fullText = $(elem).text().trim();
         
-        // Enhanced mileage extraction with proper Dutch number formatting
-        if (text.includes('kilometerstand') || text.includes('km-stand') || text.includes('kilometers') || text.includes('mileage')) {
-          console.log('🚗 Found mileage field:', text, '→', nextText);
-          
-          // Enhanced patterns for Dutch number formatting (123.456 km or 123456 km)
-          const patterns = [
-            /(\d{1,3}(?:\.\d{3})*)\s*km/i,  // 123.456 km (Dutch thousands separator)
-            /(\d{4,6})\s*km/i,              // 123456 km (no separator)
-            /(\d{1,3}(?:\.\d{3})*)/i,       // Just the number part
-            /(\d{4,6})/i                    // Just the number (4-6 digits)
-          ];
-          
-          for (const pattern of patterns) {
-            const kmMatch = nextText.match(pattern);
-            if (kmMatch) {
-              // Handle Dutch formatting: remove dots (thousands separator), keep number
-              const mileageStr = kmMatch[1].replace(/\./g, '');
-              const mileageNum = parseInt(mileageStr);
-              console.log('🚗 Pattern matched:', pattern, 'raw:', kmMatch[1], 'cleaned:', mileageStr, 'parsed:', mileageNum);
-              
-              // Reasonable range for car mileage
-              if (mileageNum >= 1000 && mileageNum <= 500000) {
-                carData.mileage = mileageNum;
-                console.log('✅ Set mileage to:', carData.mileage);
-                break;
-              }
+        // Better mileage extraction
+        if (text.includes('kilometerstand') || text.includes('km-stand') || text.includes('kilometers')) {
+          const kmMatch = nextText.match(/([\d.,]+)\s*km/i) || nextText.match(/([\d.,]+)/);
+          if (kmMatch) {
+            const mileageStr = kmMatch[1].replace(/[.,]/g, '');
+            const mileageNum = parseInt(mileageStr);
+            if (mileageNum > 0 && mileageNum < 2000000) { // Reasonable range
+              carData.mileage = mileageNum;
             }
           }
         }
@@ -1148,38 +1129,26 @@ Een uitstekende keuze voor wie zoekt naar kwaliteit, prestaties en betrouwbaarhe
       // Alternative extraction from page content with enhanced patterns
       const fullText = $('body').text();
       
-      // Enhanced fallback mileage extraction if not found
-      if (!carData.mileage || carData.mileage <= 1000) {
-        console.log('🔍 Fallback mileage extraction, current mileage:', carData.mileage);
+      // Multiple patterns for mileage extraction if not found
+      if (!carData.mileage || carData.mileage <= 10) {
         const mileagePatterns = [
-          /kilometerstand[:\s]*(\d{1,3}(?:\.\d{3})+)\s*km/gi,          // "Kilometerstand: 123.456 km"
-          /km-stand[:\s]*(\d{1,3}(?:\.\d{3})+)\s*km/gi,               // "Km-stand: 123.456 km"  
-          /(\d{1,3}(?:\.\d{3})+)\s*km\b/gi,                           // "123.456 km" anywhere
-          /(\d{4,6})\s*km\b/gi,                                       // "123456 km" without dots
-          /kilometerstand[:\s]*(\d{4,6})\b/gi,                        // "Kilometerstand 123456"
-          /(\d{1,3}(?:\.\d{3})+)\s*kilometer/gi                       // "123.456 kilometer"
+          /(\d{1,3}(?:[.,]\d{3})*)\s*km(?:\s|$)/gi,
+          /kilometerstand:?\s*(\d{1,3}(?:[.,]\d{3})*)/gi,
+          /km-stand:?\s*(\d{1,3}(?:[.,]\d{3})*)/gi,
+          /(\d{1,3}(?:[.,]\d{3})*)\s*kilometers?/gi
         ];
         
         for (const pattern of mileagePatterns) {
-          const matches = Array.from(fullText.matchAll(pattern));
-          for (const match of matches) {
-            console.log('🔍 Found pattern match:', match[0], 'captured:', match[1]);
-            if (match[1]) {
-              // Handle Dutch formatting: remove dots (thousands separator), keep number
-              const mileageStr = match[1].replace(/\./g, '');
-              const mileageNum = parseInt(mileageStr);
-              console.log('🔍 Fallback extraction - raw:', match[1], 'cleaned:', mileageStr, 'parsed:', mileageNum);
-              
-              // Reasonable range for car mileage
-              if (mileageNum >= 1000 && mileageNum <= 500000) {
+          const match = fullText.match(pattern);
+          if (match) {
+            const mileageStr = match[0].match(/(\d{1,3}(?:[.,]\d{3})*)/);
+            if (mileageStr) {
+              const mileageNum = parseInt(mileageStr[1].replace(/[.,]/g, ''));
+              if (mileageNum > 10 && mileageNum < 2000000) {
                 carData.mileage = mileageNum;
-                console.log('✅ Fallback set mileage to:', carData.mileage);
                 break;
               }
             }
-          }
-          if (carData.mileage && carData.mileage > 1000) {
-            break; // Exit outer loop if we found a good mileage
           }
         }
       }
@@ -1206,20 +1175,58 @@ Een uitstekende keuze voor wie zoekt naar kwaliteit, prestaties en betrouwbaarhe
         carData.price = priceMatch[1].replace(/[.,]/g, '');
       }
 
-      // Extract original description from Marktplaats
+      // Generate structured description like RDW data
+      carData.description = generateMarktplaatsDescription(carData, title);
+      
+      // Extract original description as backup
       const originalDescription = $('.mp-listing-description').text().trim() || $('.description').text().trim() || $('[class*="description"]').text().trim();
-      carData.description = originalDescription || `${carData.brand} ${carData.model} ${carData.year} - Geïmporteerd van Marktplaats advertentie`;
+      if (originalDescription && originalDescription.length > carData.description.length) {
+        carData.description += `\n\n**Originele beschrijving:**\n${originalDescription}`;
+      }
 
-      // Additional color extraction from page content if still not found
-      if (!carData.color) {
-        const colorKeywords = ['zwart', 'wit', 'grijs', 'blauw', 'rood', 'groen', 'zilver', 'goud', 'geel', 'oranje', 'beige', 'bruin', 'paars'];
-        const pageText = fullText.toLowerCase();
+      // Extract specifications from the page
+      $('.mp-listing-features li, .listing-features li, .spec-table-item').each((i, elem) => {
+        const text = $(elem).text().toLowerCase();
+        const fullText = $(elem).text();
+        
+        // Extract year
+        const yearMatch = fullText.match(/(\d{4})/);
+        if (yearMatch && parseInt(yearMatch[1]) >= 1980 && parseInt(yearMatch[1]) <= new Date().getFullYear()) {
+          carData.year = parseInt(yearMatch[1]);
+        }
+        
+        // Extract mileage
+        const mileageMatch = fullText.match(/([\d.,]+)\s*km/i);
+        if (mileageMatch) {
+          carData.mileage = parseInt(mileageMatch[1].replace(/[.,]/g, ''));
+        }
+        
+        // Extract fuel type
+        if (text.includes('benzine') || text.includes('gasoline')) {
+          carData.fuel = 'Benzine';
+        } else if (text.includes('diesel')) {
+          carData.fuel = 'Diesel';
+        } else if (text.includes('elektrisch') || text.includes('electric')) {
+          carData.fuel = 'Elektrisch';
+        } else if (text.includes('hybride') || text.includes('hybrid')) {
+          carData.fuel = 'Hybride';
+        }
+        
+        // Extract transmission
+        if (text.includes('handgeschakeld') || text.includes('manual')) {
+          carData.transmission = 'Handgeschakeld';
+        } else if (text.includes('automaat') || text.includes('automatic')) {
+          carData.transmission = 'Automaat';
+        }
+        
+        // Extract color
+        const colorKeywords = ['zwart', 'wit', 'grijs', 'blauw', 'rood', 'groen', 'zilver', 'goud', 'geel', 'oranje'];
         colorKeywords.forEach(color => {
-          if (pageText.includes(color) && !carData.color) {
+          if (text.includes(color)) {
             carData.color = color.charAt(0).toUpperCase() + color.slice(1);
           }
         });
-      }
+      });
 
       // Extract images
       const images: string[] = [];
@@ -1315,59 +1322,6 @@ Een interessante auto geïmporteerd van Marktplaats. Alle details onder voorbeho
 
 *Alle informatie onder voorbehoud van typefouten. Wijzigingen en verkoop voorbehouden.*`;
   }
-
-  // AI Description Restructure Endpoint
-  app.post('/api/admin/restructure-description', authenticateAdmin, async (req, res) => {
-    try {
-      const { description, vehicleData } = req.body;
-      
-      if (!description) {
-        return res.status(400).json({ error: 'Description is required' });
-      }
-
-      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "" });
-      
-      const prompt = `Restructureer deze autoverkoop beschrijving naar een professionele Nederlandse format voor DD Cars. Gebruik deze voertuiggegevens: ${vehicleData ? JSON.stringify(vehicleData) : 'geen extra gegevens'}.
-
-Originele beschrijving:
-${description}
-
-Maak een professionele beschrijving in deze structuur:
-**[Merk] [Model] [Jaar]**
-
-**Voertuig specificaties:**
-• [Brandstof, transmissie, kilometerstand, kleur etc.]
-
-**Uitrusting & Opties:**
-• [Alle genoemde opties en uitrusting]
-
-**Conditie:**
-• [Onderhoudsstatus, APK, etc.]
-
-**DD Cars Garantie:**
-• Professionele inspectie uitgevoerd
-• Transparante historie en documentatie  
-• Betrouwbare en kwalitatieve service
-
-[Korte aantrekkelijke slotzin]
-
-*Alle informatie onder voorbehoud van typefouten. Wijzigingen en verkoop voorbehouden.*
-
-Antwoord alleen met de nieuwe beschrijving, geen extra tekst.`;
-
-      const response = await ai.models.generateContent({
-        model: "gemini-2.5-flash",
-        contents: prompt,
-      });
-
-      const restructuredDescription = response.text || "Kon beschrijving niet herstructureren";
-      
-      res.json({ description: restructuredDescription });
-    } catch (error) {
-      console.error('AI restructure error:', error);
-      res.status(500).json({ error: 'Failed to restructure description' });
-    }
-  });
 
   const httpServer = createServer(app);
   return httpServer;

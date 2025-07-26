@@ -51,17 +51,14 @@ export default function ImageUploader({
   const { toast } = useToast();
 
   const updateParent = useCallback((newImages: ImageFile[]) => {
-    const uploadedImages = newImages.filter(img => img.isUploaded);
-    const urls = uploadedImages.map(img => img.url);
+    const urls = newImages
+      .filter(img => img.isUploaded)
+      .map(img => img.url);
     console.log('📸 ImageUploader updateParent called with URLs:', urls);
-    console.log('📸 ImageUploader total images:', newImages.length, 'uploaded:', uploadedImages.length);
+    console.log('📸 ImageUploader total images:', newImages.length, 'uploaded:', newImages.filter(img => img.isUploaded).length);
     console.log('📸 ImageUploader calling onImagesChange callback...');
-    
-    // Add a small delay to ensure state is fully synchronized
-    setTimeout(() => {
-      onImagesChange(urls);
-      console.log('📸 ImageUploader onImagesChange callback completed with URLs:', urls);
-    }, 50);
+    onImagesChange(urls);
+    console.log('📸 ImageUploader onImagesChange callback completed');
   }, [onImagesChange]);
 
   const uploadImage = async (file: File): Promise<string> => {
