@@ -98,13 +98,9 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
         images: vehicleImages,
       });
       
-      // Only reset images when opening with a different vehicle or creating new vehicle
-      if (!vehicle || vehicle.id !== images.length) {
-        console.log('🎯 VehicleForm resetting images state to:', vehicleImages);
-        setImages(vehicleImages);
-      } else {
-        console.log('🎯 VehicleForm keeping current images state:', images);
-      }
+      // Always reset images when form opens - this ensures clean state
+      console.log('🎯 VehicleForm resetting images state to:', vehicleImages);
+      setImages(vehicleImages);
     }
   }, [vehicle, isOpen, form]);
 
@@ -116,10 +112,11 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
         body: data,
       });
     },
-    onSuccess: () => {
+    onSuccess: (createdVehicle) => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/vehicles"] });
       queryClient.invalidateQueries({ queryKey: ["/api/vehicles"] });
       queryClient.invalidateQueries({ queryKey: ["/api/vehicles/featured"] });
+      console.log('✅ Vehicle created successfully with images:', createdVehicle.images);
       toast({
         title: "Voertuig toegevoegd",
         description: "Het voertuig is succesvol toegevoegd.",
@@ -149,6 +146,7 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
       queryClient.invalidateQueries({ queryKey: ["/api/admin/vehicles"] });
       queryClient.invalidateQueries({ queryKey: ["/api/vehicles"] });
       queryClient.invalidateQueries({ queryKey: ["/api/vehicles/featured"] });
+      console.log('✅ Vehicle updated successfully with images:', result.images);
       
       // Check if we need to show sale form
       if (result.requireSaleForm) {
@@ -306,8 +304,8 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
       available: true,
       // Convert price to string to match schema
       price: String(data.price),
-      // Remove undefined values to prevent validation issues
-      ...Object.fromEntries(Object.entries(data).filter(([_, v]) => v !== undefined && v !== null && v !== "")),
+      // Remove undefined values to prevent validation issues (but preserve images)
+      ...Object.fromEntries(Object.entries(data).filter(([key, v]) => key === 'images' || (v !== undefined && v !== null && v !== ""))),
     };
     
     console.log('🚀 FINAL FORM DATA WITH IMAGES:', formDataWithImages);

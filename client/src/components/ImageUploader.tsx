@@ -124,7 +124,12 @@ export default function ImageUploader({
       });
     }
 
-    setImages(prev => [...prev, ...newImages]);
+    // First add images to state showing as uploading
+    setImages(prev => {
+      const updated = [...prev, ...newImages];
+      console.log('📸 Added new images to upload queue:', newImages.length, 'total images now:', updated.length);
+      return updated;
+    });
 
     // Upload images one by one to avoid race conditions
     for (const imageFile of newImages) {
@@ -137,6 +142,7 @@ export default function ImageUploader({
               ? { ...img, url, isUploaded: true }
               : img
           );
+          console.log('📸 Image upload completed, updated images:', updated.map(img => ({id: img.id, url: img.url, uploaded: img.isUploaded})));
           // Call parent update for each successful upload
           updateParent(updated);
           return updated;
