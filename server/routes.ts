@@ -1081,14 +1081,17 @@ Een uitstekende keuze voor wie zoekt naar kwaliteit, prestaties en betrouwbaarhe
         const nextText = $(elem).next().text().trim();
         const fullText = $(elem).text().trim();
         
-        // Better mileage extraction
+        // Better mileage extraction with debugging
         if (text.includes('kilometerstand') || text.includes('km-stand') || text.includes('kilometers')) {
+          console.log('🚗 Found mileage field:', text, '→', nextText);
           const kmMatch = nextText.match(/([\d.,]+)\s*km/i) || nextText.match(/([\d.,]+)/);
           if (kmMatch) {
             const mileageStr = kmMatch[1].replace(/[.,]/g, '');
             const mileageNum = parseInt(mileageStr);
+            console.log('🚗 Extracted mileage:', mileageStr, '→', mileageNum);
             if (mileageNum > 0 && mileageNum < 2000000) { // Reasonable range
               carData.mileage = mileageNum;
+              console.log('✅ Set mileage to:', carData.mileage);
             }
           }
         }
@@ -1131,6 +1134,7 @@ Een uitstekende keuze voor wie zoekt naar kwaliteit, prestaties en betrouwbaarhe
       
       // Multiple patterns for mileage extraction if not found
       if (!carData.mileage || carData.mileage <= 10) {
+        console.log('🔍 Fallback mileage extraction, current mileage:', carData.mileage);
         const mileagePatterns = [
           /(\d{1,3}(?:[.,]\d{3})*)\s*km(?:\s|$)/gi,
           /kilometerstand:?\s*(\d{1,3}(?:[.,]\d{3})*)/gi,
@@ -1141,11 +1145,14 @@ Een uitstekende keuze voor wie zoekt naar kwaliteit, prestaties en betrouwbaarhe
         for (const pattern of mileagePatterns) {
           const match = fullText.match(pattern);
           if (match) {
+            console.log('🔍 Found pattern match:', match[0]);
             const mileageStr = match[0].match(/(\d{1,3}(?:[.,]\d{3})*)/);
             if (mileageStr) {
               const mileageNum = parseInt(mileageStr[1].replace(/[.,]/g, ''));
+              console.log('🔍 Extracted fallback mileage:', mileageStr[1], '→', mileageNum);
               if (mileageNum > 10 && mileageNum < 2000000) {
                 carData.mileage = mileageNum;
+                console.log('✅ Set fallback mileage to:', carData.mileage);
                 break;
               }
             }
@@ -1184,49 +1191,16 @@ Een uitstekende keuze voor wie zoekt naar kwaliteit, prestaties en betrouwbaarhe
         carData.description += `\n\n**Originele beschrijving:**\n${originalDescription}`;
       }
 
-      // Extract specifications from the page
-      $('.mp-listing-features li, .listing-features li, .spec-table-item').each((i, elem) => {
-        const text = $(elem).text().toLowerCase();
-        const fullText = $(elem).text();
-        
-        // Extract year
-        const yearMatch = fullText.match(/(\d{4})/);
-        if (yearMatch && parseInt(yearMatch[1]) >= 1980 && parseInt(yearMatch[1]) <= new Date().getFullYear()) {
-          carData.year = parseInt(yearMatch[1]);
-        }
-        
-        // Extract mileage
-        const mileageMatch = fullText.match(/([\d.,]+)\s*km/i);
-        if (mileageMatch) {
-          carData.mileage = parseInt(mileageMatch[1].replace(/[.,]/g, ''));
-        }
-        
-        // Extract fuel type
-        if (text.includes('benzine') || text.includes('gasoline')) {
-          carData.fuel = 'Benzine';
-        } else if (text.includes('diesel')) {
-          carData.fuel = 'Diesel';
-        } else if (text.includes('elektrisch') || text.includes('electric')) {
-          carData.fuel = 'Elektrisch';
-        } else if (text.includes('hybride') || text.includes('hybrid')) {
-          carData.fuel = 'Hybride';
-        }
-        
-        // Extract transmission
-        if (text.includes('handgeschakeld') || text.includes('manual')) {
-          carData.transmission = 'Handgeschakeld';
-        } else if (text.includes('automaat') || text.includes('automatic')) {
-          carData.transmission = 'Automaat';
-        }
-        
-        // Extract color
-        const colorKeywords = ['zwart', 'wit', 'grijs', 'blauw', 'rood', 'groen', 'zilver', 'goud', 'geel', 'oranje'];
+      // Additional color extraction from page content if still not found
+      if (!carData.color) {
+        const colorKeywords = ['zwart', 'wit', 'grijs', 'blauw', 'rood', 'groen', 'zilver', 'goud', 'geel', 'oranje', 'beige', 'bruin', 'paars'];
+        const pageText = fullText.toLowerCase();
         colorKeywords.forEach(color => {
-          if (text.includes(color)) {
+          if (pageText.includes(color) && !carData.color) {
             carData.color = color.charAt(0).toUpperCase() + color.slice(1);
           }
         });
-      });
+      }
 
       // Extract images
       const images: string[] = [];
