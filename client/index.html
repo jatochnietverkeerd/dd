@@ -18,23 +18,23 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="DD Cars">
     
-    <!-- Security: Force HTTPS -->
-    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <!-- Security: Development-friendly -->
     <meta name="referrer" content="strict-origin-when-cross-origin">
     
-    <!-- Client-side HTTPS enforcement -->
+    <!-- Client-side HTTPS enforcement (production only) -->
     <script>
-      // Force HTTPS redirect if not on localhost
-      if (location.protocol !== 'https:' && 
-          !location.hostname.includes('localhost') && 
-          !location.hostname.includes('127.0.0.1') &&
-          !location.hostname.includes('replit.dev') &&
-          !location.hostname.includes('replit.co')) {
+      // Only force HTTPS in production environments
+      const isProduction = !location.hostname.includes('localhost') && 
+                          !location.hostname.includes('127.0.0.1') &&
+                          !location.hostname.includes('replit.dev') &&
+                          !location.hostname.includes('replit.co');
+                          
+      if (isProduction && location.protocol !== 'https:') {
         location.replace('https:' + window.location.href.substring(window.location.protocol.length));
       }
       
-      // Register service worker for additional HTTPS enforcement
-      if ('serviceWorker' in navigator && location.protocol === 'https:') {
+      // Register service worker only in production with HTTPS
+      if ('serviceWorker' in navigator && location.protocol === 'https:' && isProduction) {
         navigator.serviceWorker.register('/sw.js').catch(function(err) {
           console.log('Service Worker registration failed:', err);
         });
