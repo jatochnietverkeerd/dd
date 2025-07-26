@@ -80,62 +80,53 @@ export default function Header() {
         </div>
       </nav>
       
-      {/* Hamburger Mobile Menu - Side panel from right */}
+      {/* Simple Black Menu Panel from Right */}
       {isMobileMenuOpen && (
-        <div className="md:hidden fixed inset-0 z-50">
-          {/* Dark smokey backdrop */}
-          <div 
-            className="absolute inset-0 bg-black/70 backdrop-blur-sm"
-            onClick={closeMobileMenu}
-          ></div>
+        <div className="md:hidden fixed top-[80px] right-4 w-48 bg-black rounded-lg shadow-2xl z-50 animate-in slide-in-from-right duration-300">
+          {/* Close button */}
+          <div className="flex justify-end p-3">
+            <button
+              onClick={closeMobileMenu}
+              className="p-1 hover:bg-gray-800 rounded transition-colors"
+              style={{color: '#D9C89E'}}
+            >
+              <X size={20} />
+            </button>
+          </div>
           
-          {/* Menu panel from right */}
-          <div className="absolute top-0 right-0 h-full w-64 bg-dark-primary rounded-l-2xl shadow-2xl transform transition-transform duration-300 animate-in slide-in-from-right">
-            {/* Close button */}
-            <div className="flex justify-end p-4">
-              <button
-                onClick={closeMobileMenu}
-                className="p-2 hover:bg-gray-800 rounded-lg transition-colors"
-                style={{color: '#D9C89E'}}
-              >
-                <X size={24} />
-              </button>
-            </div>
-            
-            {/* Menu content */}
-            <div className="px-6 pb-6 space-y-2">
-              <Link 
-                href="/" 
-                onClick={closeMobileMenu}
-                className="block py-3 px-4 text-lg font-medium rounded-lg transition-colors hover:bg-gray-800"
-                style={{color: '#D9C89E'}}
-              >
-                Home
-              </Link>
-              <Link 
-                href="/aanbod" 
-                onClick={closeMobileMenu}
-                className="block py-3 px-4 text-lg font-medium rounded-lg transition-colors hover:bg-gray-800"
-                style={{color: '#D9C89E'}}
-              >
-                Aanbod
-              </Link>
-              <Link 
-                href="/over-ons" 
-                onClick={closeMobileMenu}
-                className="block py-3 px-4 text-lg font-medium rounded-lg transition-colors hover:bg-gray-800"
-                style={{color: '#D9C89E'}}
-              >
-                Over Ons
-              </Link>
-              <button
-                onClick={() => scrollToSection('contact')}
-                className="block w-full text-left py-3 px-4 text-lg font-medium rounded-lg transition-colors hover:bg-gray-800"
-                style={{color: '#D9C89E'}}
-              >
-                Contact
-              </button>
-            </div>
+          {/* Menu content */}
+          <div className="px-4 pb-4 space-y-1">
+            <Link 
+              href="/" 
+              onClick={closeMobileMenu}
+              className="block py-2 px-3 text-base font-medium rounded transition-colors hover:bg-gray-800"
+              style={{color: '#D9C89E'}}
+            >
+              Home
+            </Link>
+            <Link 
+              href="/aanbod" 
+              onClick={closeMobileMenu}
+              className="block py-2 px-3 text-base font-medium rounded transition-colors hover:bg-gray-800"
+              style={{color: '#D9C89E'}}
+            >
+              Aanbod
+            </Link>
+            <Link 
+              href="/over-ons" 
+              onClick={closeMobileMenu}
+              className="block py-2 px-3 text-base font-medium rounded transition-colors hover:bg-gray-800"
+              style={{color: '#D9C89E'}}
+            >
+              Over Ons
+            </Link>
+            <button
+              onClick={() => scrollToSection('contact')}
+              className="block w-full text-left py-2 px-3 text-base font-medium rounded transition-colors hover:bg-gray-800"
+              style={{color: '#D9C89E'}}
+            >
+              Contact
+            </button>
           </div>
         </div>
       )}
