@@ -599,8 +599,17 @@ When deployed to production (NODE_ENV=production):
 - **Professional Descriptions**: Auto-generates structured descriptions matching RDW format with organized sections
 - **Image Processing**: Imports up to 10 high-quality images (1600x1200) directly from listings
 - **Brand Recognition**: Recognizes 35+ major car brands with intelligent parsing
-- **Data Validation**: Range validation for mileage (10-2,000,000 km) to prevent extraction errors
+- **Truth Validation**: Comprehensive validation checking realistic years, reasonable mileage, sensible prices
+- **Data Quality Warnings**: User feedback for suspicious data (unrealistic mileage, missing fields, invalid fuel types)
 - **Quality Control**: Manual review and editing before publishing
+
+### AI Description Restructure Feature (New - July 26, 2025)
+- **Purple AI Button**: "🤖 AI Herstructureren" button next to description field in vehicle form
+- **Gemini Integration**: Uses Gemini 2.5-flash for professional description restructuring
+- **Professional Formatting**: Creates structured Dutch descriptions with organized sections
+- **Consistent Structure**: Vehicle specs, condition notes, DD Cars service guarantees, professional disclaimer
+- **Smart Prompting**: Context-aware restructuring based on vehicle brand, model, year, and specifications
+- **User Experience**: Disabled when no description exists, loading state during processing
 
 ### Technical Implementation
 - **Frontend Integration**: Dual import system in VehicleForm.tsx - license plate (primary) and URL (secondary)

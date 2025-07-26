@@ -1265,6 +1265,9 @@ Een uitstekende keuze voor wie zoekt naar kwaliteit, prestaties en betrouwbaarhe
       // Generate structured description like RDW data
       carData.description = generateMarktplaatsDescription(carData, title);
       
+      // Truth validation for extracted data
+      const validationWarnings = validateMarktplaatsData(carData);
+      
       // Log enhanced extraction data for debugging
       console.log('Enhanced Marktplaats extraction result:', {
         brand: carData.brand,
@@ -1275,12 +1278,16 @@ Een uitstekende keuze voor wie zoekt naar kwaliteit, prestaties en betrouwbaarhe
         fuel: carData.fuel,
         transmission: carData.transmission,
         color: carData.color,
-        imageCount: carData.images.length
+        imageCount: carData.images.length,
+        validationWarnings: validationWarnings
       });
       console.log('Final mileage extracted:', carData.mileage);
       console.log('Final color extracted:', carData.color);
 
-      res.json(carData);
+      res.json({
+        ...carData,
+        validationWarnings: validationWarnings
+      });
     } catch (error) {
       console.error('Marktplaats import error:', error);
       
@@ -1300,6 +1307,112 @@ Een uitstekende keuze voor wie zoekt naar kwaliteit, prestaties en betrouwbaarhe
       }
     }
   });
+
+  // AI Description Restructure Endpoint
+  app.post('/api/admin/restructure-description', authenticateAdmin, async (req, res) => {
+    try {
+      const { brand, model, year, fuel, transmission, color, description } = req.body;
+      
+      if (!description) {
+        return res.status(400).json({ error: 'Description is required' });
+      }
+
+      const prompt = `You are a professional automotive copywriter for DD Cars, a premium used car dealer in the Netherlands. 
+
+Please restructure the following vehicle description into a professional, well-organized format in Dutch:
+
+Vehicle: ${brand} ${model} ${year}
+Fuel: ${fuel}
+Transmission: ${transmission}  
+Color: ${color}
+Current description: ${description}
+
+Create a professional description using this structure:
+1. Start with a compelling title line with the brand, model, and year
+2. "**Voertuig specificaties:**" section with bullet points for technical details
+3. "**Conditie:**" section highlighting condition and maintenance
+4. "**DD Cars Garantie:**" section with our service promises
+5. End with a compelling conclusion and standard disclaimer
+
+Keep the tone professional yet accessible, emphasize quality and reliability, and ensure all text is in proper Dutch. Use bullet points (•) for specifications and maintain consistent formatting.`;
+
+      // Use Gemini API for restructuring
+      const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' + process.env.GEMINI_API_KEY, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contents: [{
+            parts: [{
+              text: prompt
+            }]
+          }]
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Gemini API error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      const restructuredDescription = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+      if (!restructuredDescription) {
+        throw new Error('No response from AI service');
+      }
+
+      res.json({ restructuredDescription });
+    } catch (error) {
+      console.error('AI restructure error:', error);
+      res.status(500).json({ error: 'Failed to restructure description with AI' });
+    }
+  });
+
+  // Truth validation function for Marktplaats imports
+  function validateMarktplaatsData(carData: any): string[] {
+    const warnings: string[] = [];
+    
+    // Validate year
+    const currentYear = new Date().getFullYear();
+    if (carData.year < 1980 || carData.year > currentYear + 1) {
+      warnings.push(`Onrealistische bouwjaar: ${carData.year}`);
+    }
+    
+    // Validate mileage
+    if (carData.mileage < 10) {
+      warnings.push(`Verdachte lage kilometerstand: ${carData.mileage} km`);
+    } else if (carData.mileage > 500000) {
+      warnings.push(`Zeer hoge kilometerstand: ${carData.mileage} km`);
+    }
+    
+    // Validate price
+    const price = parseInt(carData.price);
+    if (price && (price < 500 || price > 200000)) {
+      warnings.push(`Ongewone prijs: €${price.toLocaleString('nl-NL')}`);
+    }
+    
+    // Check for missing critical data
+    if (!carData.brand) warnings.push("Merk ontbreekt");
+    if (!carData.model) warnings.push("Model ontbreekt");
+    if (!carData.fuel) warnings.push("Brandstof ontbreekt");
+    if (!carData.transmission) warnings.push("Transmissie ontbreekt");
+    if (!carData.color) warnings.push("Kleur ontbreekt");
+    
+    // Validate fuel types
+    const validFuels = ['benzine', 'diesel', 'hybrid', 'elektrisch', 'lpg'];
+    if (carData.fuel && !validFuels.includes(carData.fuel.toLowerCase())) {
+      warnings.push(`Onbekende brandstof: ${carData.fuel}`);
+    }
+    
+    // Validate transmission types
+    const validTransmissions = ['handgeschakeld', 'automaat', 'semi-automaat'];
+    if (carData.transmission && !validTransmissions.includes(carData.transmission.toLowerCase())) {
+      warnings.push(`Onbekende transmissie: ${carData.transmission}`);
+    }
+    
+    return warnings;
+  }
 
   // Helper function to generate structured description for Marktplaats imports
   function generateMarktplaatsDescription(carData: any, title: string): string {
