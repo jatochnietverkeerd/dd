@@ -169,32 +169,43 @@ function toast({ ...props }: Toast) {
 }
 
 function useToast() {
-  // Add safety check for React hooks
-  if (!React || typeof useState !== 'function') {
-    console.warn('React hooks not available, returning fallback toast state');
+  // Add comprehensive safety checks
+  try {
+    if (!React || typeof useState !== 'function' || typeof useEffect !== 'function') {
+      console.warn('React hooks not available, returning fallback toast state');
+      return {
+        toasts: [],
+        toast,
+        dismiss: () => {},
+      };
+    }
+
+    const [state, setState] = useState<State>(memoryState)
+
+    useEffect(() => {
+      if (setState && typeof setState === 'function') {
+        listeners.push(setState)
+        return () => {
+          const index = listeners.indexOf(setState)
+          if (index > -1) {
+            listeners.splice(index, 1)
+          }
+        }
+      }
+    }, [state])
+
+    return {
+      ...state,
+      toast,
+      dismiss: (toastId?: string) => dispatch({ type: "DISMISS_TOAST", toastId }),
+    }
+  } catch (error) {
+    console.error('Error in useToast hook:', error);
     return {
       toasts: [],
       toast,
       dismiss: () => {},
     };
-  }
-
-  const [state, setState] = useState<State>(memoryState)
-
-  useEffect(() => {
-    listeners.push(setState)
-    return () => {
-      const index = listeners.indexOf(setState)
-      if (index > -1) {
-        listeners.splice(index, 1)
-      }
-    }
-  }, [state])
-
-  return {
-    ...state,
-    toast,
-    dismiss: (toastId?: string) => dispatch({ type: "DISMISS_TOAST", toastId }),
   }
 }
 
