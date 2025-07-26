@@ -996,10 +996,29 @@ Sitemap: ${baseUrl}/sitemap.xml`;
         return res.status(400).json({ error: 'Valid Marktplaats URL is required' });
       }
 
-      // Fetch the page content
-      const response = await fetch(url);
+      // Fetch the page content with proper headers to avoid blocking
+      const response = await fetch(url, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+          'Accept-Language': 'nl-NL,nl;q=0.9,en;q=0.8',
+          'Accept-Encoding': 'gzip, deflate, br',
+          'Connection': 'keep-alive',
+          'Upgrade-Insecure-Requests': '1',
+        }
+      });
+      
+      console.log('Marktplaats fetch status:', response.status, response.statusText);
+      
       if (!response.ok) {
-        return res.status(400).json({ error: 'Unable to fetch Marktplaats page' });
+        console.log('Marktplaats fetch failed:', {
+          status: response.status,
+          statusText: response.statusText,
+          url: url
+        });
+        return res.status(400).json({ 
+          error: `Unable to fetch Marktplaats page (${response.status}: ${response.statusText})` 
+        });
       }
 
       const html = await response.text();
@@ -1204,7 +1223,21 @@ Sitemap: ${baseUrl}/sitemap.xml`;
       res.json(carData);
     } catch (error) {
       console.error('Marktplaats import error:', error);
-      res.status(500).json({ error: 'Failed to import car data from Marktplaats' });
+      
+      // Provide more specific error information
+      if (error instanceof Error) {
+        if (error.message.includes('fetch')) {
+          res.status(500).json({ 
+            error: 'Network error: Unable to access Marktplaats. The URL might be blocked or invalid.' 
+          });
+        } else {
+          res.status(500).json({ 
+            error: `Import failed: ${error.message}` 
+          });
+        }
+      } else {
+        res.status(500).json({ error: 'Failed to import car data from Marktplaats' });
+      }
     }
   });
 
