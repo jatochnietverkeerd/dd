@@ -6,6 +6,7 @@ cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
+  secure: true,
 });
 
 // Configure Multer for memory storage
@@ -38,10 +39,23 @@ export async function uploadToCloudinary(
   publicId?: string
 ): Promise<CloudinaryUploadResult> {
   try {
+    // Validate Cloudinary configuration
+    if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
+      throw new Error('Missing Cloudinary configuration. Please check environment variables.');
+    }
+
+    console.log('Cloudinary config check:', {
+      cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+      api_key: process.env.CLOUDINARY_API_KEY?.substring(0, 5) + '...',
+      api_secret_length: process.env.CLOUDINARY_API_SECRET?.length
+    });
+
     const result = await new Promise<CloudinaryUploadResult>((resolve, reject) => {
       const uploadOptions: any = {
         folder,
         resource_type: 'image',
+        use_filename: true,
+        unique_filename: true,
       };
 
       if (publicId) {
