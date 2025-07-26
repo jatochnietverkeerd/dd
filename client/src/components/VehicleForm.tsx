@@ -43,14 +43,15 @@ interface VehicleFormProps {
 
 export default function VehicleForm({ vehicle, isOpen, onClose, token }: VehicleFormProps) {
   const [images, setImages] = useState<string[]>(vehicle?.images || []);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   // Debug wrapper for setImages
-  const setImagesWithLog = (newImages: string[]) => {
+  const setImagesWithLog = useCallback((newImages: string[]) => {
     console.log('🎯 VehicleForm setImagesWithLog received:', newImages);
     console.log('🎯 VehicleForm current images before update:', images);
     setImages(newImages);
-    console.log('🎯 VehicleForm setImages state updated');
-  };
+    console.log('🎯 VehicleForm setImages state updated to:', newImages);
+  }, [images]);
   const [marktplaatsUrl, setMarktplaatsUrl] = useState("");
   const [licensePlate, setLicensePlate] = useState("");
   const [isImporting, setIsImporting] = useState(false);
@@ -121,6 +122,7 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
         title: "Voertuig toegevoegd",
         description: "Het voertuig is succesvol toegevoegd.",
       });
+      setIsSubmitting(false);
       onClose();
       form.reset();
       setImages([]);
@@ -131,6 +133,7 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
         description: "Er is een fout opgetreden bij het toevoegen van het voertuig.",
         variant: "destructive",
       });
+      setIsSubmitting(false);
     },
   });
 
@@ -166,6 +169,7 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
         });
         onClose();
       }
+      setIsSubmitting(false);
     },
     onError: () => {
       toast({
@@ -173,6 +177,7 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
         description: "Er is een fout opgetreden bij het bijwerken van het voertuig.",
         variant: "destructive",
       });
+      setIsSubmitting(false);
     },
   });
 
@@ -293,6 +298,12 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
   };
 
   const onSubmit = (data: VehicleFormData) => {
+    if (isSubmitting) {
+      console.log('🛑 Form submission already in progress, ignoring');
+      return;
+    }
+    
+    setIsSubmitting(true);
     console.log('🚀 FORM SUBMISSION STARTED - Current images:', images);
     console.log('🚀 FORM DATA:', data);
     console.log('🚀 FORM ERRORS:', form.formState.errors);
@@ -313,14 +324,27 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
     // Critical check: ensure images are included
     if (images.length > 0 && formDataWithImages.images.length === 0) {
       console.error('🚨 CRITICAL: Images exist but not in form data!');
+      console.error('🚨 Current images state:', images);
+      console.error('🚨 Form data images:', formDataWithImages.images);
       formDataWithImages.images = images;
       console.log('🚨 FIXED: Added images to form data:', images);
     }
     
-    if (vehicle) {
-      updateVehicleMutation.mutate(formDataWithImages);
-    } else {
-      createVehicleMutation.mutate(formDataWithImages);
+    // Final validation before submission
+    console.log('🚀 FINAL VALIDATION:');
+    console.log('🚀 Images state:', images);
+    console.log('🚀 Form data images:', formDataWithImages.images);
+    console.log('🚀 Images match:', JSON.stringify(images) === JSON.stringify(formDataWithImages.images));
+    
+    try {
+      if (vehicle) {
+        updateVehicleMutation.mutate(formDataWithImages);
+      } else {
+        createVehicleMutation.mutate(formDataWithImages);
+      }
+    } catch (error) {
+      console.error('Submission error:', error);
+      setIsSubmitting(false);
     }
   };
 

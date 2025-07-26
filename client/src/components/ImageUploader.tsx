@@ -143,8 +143,10 @@ export default function ImageUploader({
               : img
           );
           console.log('📸 Image upload completed, updated images:', updated.map(img => ({id: img.id, url: img.url, uploaded: img.isUploaded})));
-          // Call parent update for each successful upload
+          
+          // Always call parent update to keep state in sync
           updateParent(updated);
+          
           return updated;
         });
       } catch (error) {
@@ -157,6 +159,7 @@ export default function ImageUploader({
         // Remove failed upload
         setImages(prev => {
           const updated = prev.filter(img => img.id !== imageFile.id);
+          console.log('📸 Upload failed, removed image, remaining:', updated.length);
           updateParent(updated);
           return updated;
         });
