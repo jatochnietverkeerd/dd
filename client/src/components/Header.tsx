@@ -80,77 +80,44 @@ export default function Header() {
         </div>
       </nav>
       
-      {/* Mobile Navigation Overlay */}
-      {isMobileMenuOpen && (
-        <div className="md:hidden fixed inset-0 z-[9999]">
-          {/* Dark overlay background */}
-          <div 
-            className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+      {/* Simple Mobile Menu */}
+      <div className={`md:hidden fixed inset-x-0 top-[80px] bg-dark-primary border-t border-gray-700 z-40 transform transition-transform duration-300 ${
+        isMobileMenuOpen ? 'translate-y-0' : '-translate-y-full'
+      }`}>
+        <div className="py-6 px-4 space-y-1">
+          <Link 
+            href="/" 
             onClick={closeMobileMenu}
-          ></div>
-          
-          {/* Menu Panel */}
-          <div className="relative bg-white h-full w-full max-w-sm ml-auto shadow-2xl flex flex-col">
-            {/* Header */}
-            <div className="flex justify-between items-center p-6 border-b border-gray-200 bg-gray-50">
-              <h2 className="text-xl font-semibold text-gray-800">Menu</h2>
-              <button
-                onClick={closeMobileMenu}
-                className="p-2 hover:bg-gray-200 rounded-lg transition-colors text-gray-600"
-              >
-                <X size={24} />
-              </button>
-            </div>
-            
-            {/* Content */}
-            <div className="flex-1 p-6 bg-white">
-              {/* Logo Section */}
-              <div className="text-center mb-8">
-                <Logo className="h-12 mx-auto mb-3" />
-                <p className="text-sm text-gray-600">DD Cars - Betrouwbare Occasions</p>
-              </div>
-              
-              {/* Navigation Links */}
-              <div className="space-y-3">
-                <Link 
-                  href="/" 
-                  onClick={closeMobileMenu}
-                  className="flex items-center gap-4 w-full p-4 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors text-gray-800"
-                >
-                  <span className="text-2xl">🏠</span>
-                  <span className="text-lg font-medium">Home</span>
-                </Link>
-                
-                <Link 
-                  href="/aanbod" 
-                  onClick={closeMobileMenu}
-                  className="flex items-center gap-4 w-full p-4 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors text-gray-800"
-                >
-                  <span className="text-2xl">🚗</span>
-                  <span className="text-lg font-medium">Aanbod</span>
-                </Link>
-                
-                <Link 
-                  href="/over-ons" 
-                  onClick={closeMobileMenu}
-                  className="flex items-center gap-4 w-full p-4 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors text-gray-800"
-                >
-                  <span className="text-2xl">👥</span>
-                  <span className="text-lg font-medium">Over Ons</span>
-                </Link>
-                
-                <button
-                  onClick={() => scrollToSection('contact')}
-                  className="flex items-center gap-4 w-full p-4 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors text-left text-gray-800"
-                >
-                  <span className="text-2xl">📞</span>
-                  <span className="text-lg font-medium">Contact</span>
-                </button>
-              </div>
-            </div>
-          </div>
+            className="block py-3 px-4 text-lg font-medium rounded-lg transition-colors hover:bg-gray-800"
+            style={{color: '#D9C89E'}}
+          >
+            Home
+          </Link>
+          <Link 
+            href="/aanbod" 
+            onClick={closeMobileMenu}
+            className="block py-3 px-4 text-lg font-medium rounded-lg transition-colors hover:bg-gray-800"
+            style={{color: '#D9C89E'}}
+          >
+            Aanbod
+          </Link>
+          <Link 
+            href="/over-ons" 
+            onClick={closeMobileMenu}
+            className="block py-3 px-4 text-lg font-medium rounded-lg transition-colors hover:bg-gray-800"
+            style={{color: '#D9C89E'}}
+          >
+            Over Ons
+          </Link>
+          <button
+            onClick={() => scrollToSection('contact')}
+            className="block w-full text-left py-3 px-4 text-lg font-medium rounded-lg transition-colors hover:bg-gray-800"
+            style={{color: '#D9C89E'}}
+          >
+            Contact
+          </button>
         </div>
-      )}
+      </div>
     </header>
   );
 }
