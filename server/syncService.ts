@@ -40,9 +40,9 @@ export class DDCarsSyncService {
           await this.syncSingleVehicle(ddcarsVehicle);
           syncedCount++;
           console.log(`✅ Synced vehicle: ${ddcarsVehicle.brand} ${ddcarsVehicle.model}`);
-        } catch (error) {
+        } catch (error: any) {
           console.error(`❌ Failed to sync vehicle ${ddcarsVehicle.id}:`, error);
-          errors.push({ vehicleId: ddcarsVehicle.id, error: error.message });
+          errors.push({ vehicleId: ddcarsVehicle.id, error: error?.message || 'Unknown error' });
         }
       }
 
@@ -81,7 +81,7 @@ export class DDCarsSyncService {
       featured: ddcarsVehicle.featured || false,
       available: ddcarsVehicle.available !== false,
       status: ddcarsVehicle.status || 'beschikbaar',
-      slug: this.generateSlug(ddcarsVehicle.brand, ddcarsVehicle.model, ddcarsVehicle.year),
+
       metaTitle: `${ddcarsVehicle.brand} ${ddcarsVehicle.model} ${ddcarsVehicle.year} - DD Cars`,
       metaDescription: `${ddcarsVehicle.brand} ${ddcarsVehicle.model} ${ddcarsVehicle.year} te koop bij DD Cars. ${ddcarsVehicle.mileage?.toLocaleString()} km, ${ddcarsVehicle.fuel}, €${ddcarsVehicle.price?.toLocaleString()}.`
     };
@@ -135,7 +135,8 @@ export class DDCarsSyncService {
       const filepath = path.join(this.uploadsDir, filename);
 
       // Save image
-      const buffer = await response.buffer();
+      const arrayBuffer = await response.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
       fs.writeFileSync(filepath, buffer);
 
       console.log(`💾 Saved image: ${filename}`);
