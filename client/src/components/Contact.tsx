@@ -89,8 +89,8 @@ export default function Contact() {
               <div>
                 <h3 className="text-xl font-semibold mb-2" style={{color: '#D9C89E'}}>Adres</h3>
                 <p style={{color: '#D9C89E'}}>
-                  Hoofdstraat 123<br />
-                  1234 AB Amsterdam<br />
+                  Koekoekslaan 1A<br />
+                  1171PG Badhoevedorp<br />
                   Nederland
                 </p>
               </div>
@@ -102,7 +102,7 @@ export default function Contact() {
               </div>
               <div>
                 <h3 className="text-xl font-semibold mb-2" style={{color: '#D9C89E'}}>Telefoon</h3>
-                <p style={{color: '#D9C89E'}}>+31 20 123 4567</p>
+                <p style={{color: '#D9C89E'}}>06 15 40 41 04</p>
               </div>
             </div>
             
@@ -112,7 +112,7 @@ export default function Contact() {
               </div>
               <div>
                 <h3 className="text-xl font-semibold mb-2" style={{color: '#D9C89E'}}>E-mail</h3>
-                <p style={{color: '#D9C89E'}}>info@ddcars.nl</p>
+                <p style={{color: '#D9C89E'}}>DD.Cars@hotmail.nl</p>
               </div>
             </div>
             

@@ -513,6 +513,21 @@ When deployed to production (NODE_ENV=production):
 6. ✅ **Client-side HTTPS redirect** - JavaScript fallback for immediate redirect
 7. **Deploy to production** - Replit provides automatic HTTPS
 
+### Contact Information Update (July 26, 2025)
+
+### Business Contact Details Updated
+- **New Address**: Koekoekslaan 1A, 1171PG Badhoevedorp
+- **New Email**: DD.Cars@hotmail.nl
+- **New Phone**: 06 15 40 41 04
+- **Comprehensive Update**: All components, PDFs, and structured data updated
+
+### Updated Locations
+- **Contact Component**: Main contact section with address, phone, email
+- **PDF Invoice System**: Company information in all generated invoices
+- **Vehicle Detail Pages**: Contact CTA buttons with correct phone number
+- **Structured Data**: Schema.org markup for search engine optimization
+- **SEO Integration**: Search engines will index correct business information
+
 ### Custom Favicon Implementation (July 22, 2025)
 
 ### Brand Identity Enhancement

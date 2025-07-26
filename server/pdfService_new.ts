@@ -12,10 +12,10 @@ interface InvoiceData {
 
 const COMPANY_INFO = {
   name: "DD Cars",
-  address: "Voorbeeldstraat 123",
-  city: "1234 AB Amsterdam",
-  phone: "+31 (0)20 123 4567",
-  email: "info@ddcars.nl",
+  address: "Koekoekslaan 1A",
+  city: "1171PG Badhoevedorp",
+  phone: "06 15 40 41 04",
+  email: "DD.Cars@hotmail.nl",
   kvk: "12345678",
   btw: "NL123456789B01",
   website: "www.ddcars.nl",

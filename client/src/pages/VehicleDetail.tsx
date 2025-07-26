@@ -518,7 +518,7 @@ export default function VehicleDetail() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button className="bg-luxury-gold text-dark-primary hover:bg-white transition-colors duration-300 font-semibold px-8 py-3">
                   <Phone size={16} className="mr-2" />
-                  Bel nu: +31 20 123 4567
+                  Bel nu: 06 15 40 41 04
                 </Button>
                 <Button variant="outline" className="border-luxury-gold text-luxury-gold hover:bg-luxury-gold hover:text-dark-primary transition-colors duration-300">
                   Plan een proefrit
