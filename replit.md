@@ -431,8 +431,9 @@ The application uses a modern, type-safe architecture with excellent developer e
 - **Truth Validation Warnings**: Users receive immediate feedback about suspicious imported data
 - **Professional Description Generation**: Marktplaats imports now generate 1000+ character structured descriptions with company branding
 - **ChatGPT-Enhanced Marktplaats Import (NEW - July 26, 2025)**: Comprehensive vehicle data extraction using ChatGPT API to match detailed analysis capabilities
-- **Dual Import System**: Basic import for quick data extraction + AI import for detailed specifications, features, and dimensions
-- **Enhanced UI**: Side-by-side import buttons with clear descriptions of capabilities
+- **Dual Import System**: ChatGPT import (default/primary) for comprehensive analysis + Quick import (secondary) for basic data extraction
+- **Enhanced UI**: ChatGPT import as primary yellow button, Quick import as secondary gray button with clear capability descriptions
+- **Default ChatGPT Import (July 26, 2025)**: Made ChatGPT import the default/primary option due to superior data extraction quality
 
 ## Excel Export & Enhanced Financial Reporting (July 11, 2025)
 

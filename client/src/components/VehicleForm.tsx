@@ -553,7 +553,7 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
           {!vehicle && (
             <Card className="bg-gray-800 border-gray-700 opacity-75">
               <CardHeader>
-                <CardTitle className="text-yellow-500">📱 Import van Marktplaats (Experimenteel)</CardTitle>
+                <CardTitle className="text-yellow-500">📱 Import van Marktplaats (ChatGPT AI)</CardTitle>
                 <CardDescription className="text-gray-400">
                   Let op: Marktplaats blokkeert vaak automatische imports
                 </CardDescription>
@@ -569,25 +569,25 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
                   <div className="flex gap-2">
                     <Button
                       type="button"
-                      onClick={handleImportFromUrl}
+                      onClick={handleAIImportFromUrl}
                       disabled={isImporting || !marktplaatsUrl.trim()}
                       className="bg-yellow-500 hover:bg-yellow-600 text-black flex-1"
                     >
-                      {isImporting ? "Basis..." : "📄 Basis Import"}
+                      {isImporting ? "ChatGPT..." : "🤖 ChatGPT Import"}
                     </Button>
                     <Button
                       type="button"
-                      onClick={handleAIImportFromUrl}
+                      onClick={handleImportFromUrl}
                       disabled={isImporting || !marktplaatsUrl.trim()}
-                      className="bg-purple-600 hover:bg-purple-700 text-white flex-1"
+                      className="bg-gray-600 hover:bg-gray-700 text-white flex-1"
                     >
-                      {isImporting ? "ChatGPT..." : "🤖 ChatGPT Import"}
+                      {isImporting ? "Snel..." : "📄 Snel Import"}
                     </Button>
                   </div>
                 </div>
                 <div className="text-xs text-gray-400 space-y-1">
-                  <p>📄 <strong>Basis Import:</strong> Snelle import van basisgegevens (merk, model, jaar, prijs)</p>
-                  <p>🤖 <strong>ChatGPT Import:</strong> Uitgebreide analyse met specificaties, uitrusting, dimensies zoals ChatGPT</p>
+                  <p>🤖 <strong>ChatGPT Import (Aanbevolen):</strong> Uitgebreide analyse met specificaties, uitrusting, dimensies</p>
+                  <p>📄 <strong>Snel Import:</strong> Snelle import van alleen basisgegevens (merk, model, jaar, prijs)</p>
                   <p className="text-yellow-400">⚠️ Werkt niet altijd door anti-bot beveiliging • Gebruik kenteken lookup of handmatige invoer</p>
                 </div>
               </CardContent>
