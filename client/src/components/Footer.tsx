@@ -122,6 +122,16 @@ export default function Footer() {
                 <div>
                   Koekoekslaan 1A<br />
                   1171PG Badhoevedorp
+                  <br />
+                  <a 
+                    href="https://maps.google.com/maps?q=Koekoekslaan+1A,+1171PG+Badhoevedorp,+Nederland"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block mt-2 px-3 py-1 text-sm rounded-md transition-colors hover:opacity-80 border"
+                    style={{color: '#D9C89E', borderColor: '#D9C89E'}}
+                  >
+                    📍 Routebeschrijving
+                  </a>
                 </div>
               </li>
               <li className="flex items-center">
