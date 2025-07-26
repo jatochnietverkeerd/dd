@@ -43,6 +43,8 @@ interface VehicleFormProps {
 
 export default function VehicleForm({ vehicle, isOpen, onClose, token }: VehicleFormProps) {
   const [images, setImages] = useState<string[]>(vehicle?.images || []);
+  const [marktplaatsUrl, setMarktplaatsUrl] = useState("");
+  const [isImporting, setIsImporting] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -156,6 +158,66 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
     },
   });
 
+  const handleImportFromUrl = async () => {
+    if (!marktplaatsUrl.trim()) {
+      toast({
+        title: "URL vereist",
+        description: "Voer een Marktplaats URL in om te importeren.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!marktplaatsUrl.includes('marktplaats.nl')) {
+      toast({
+        title: "Ongeldige URL",
+        description: "Voer een geldige Marktplaats URL in.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsImporting(true);
+    try {
+      const response = await apiRequest('/api/admin/import-marktplaats', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: { url: marktplaatsUrl }
+      });
+
+      // Fill form with imported data
+      form.reset({
+        brand: response.brand || "",
+        model: response.model || "",
+        year: response.year || new Date().getFullYear(),
+        price: response.price || "",
+        mileage: response.mileage || 0,
+        fuel: response.fuel || "",
+        transmission: response.transmission || "",
+        color: response.color || "",
+        description: response.description || "",
+        featured: false,
+        status: "beschikbaar",
+        images: response.images || [],
+      });
+      
+      setImages(response.images || []);
+      
+      toast({
+        title: "Import succesvol",
+        description: "Auto gegevens zijn geïmporteerd. Controleer en pas aan indien nodig.",
+      });
+    } catch (error) {
+      console.error('Import error:', error);
+      toast({
+        title: "Import mislukt",
+        description: "Kon de auto gegevens niet importeren. Probeer het opnieuw.",
+        variant: "destructive",
+      });
+    }
+    setIsImporting(false);
+  };
+
   const onSubmit = (data: VehicleFormData) => {
     const formDataWithImages = {
       ...data,
@@ -190,6 +252,36 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
         </DialogHeader>
         
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          {/* Marktplaats Import Section - only show for new vehicles */}
+          {!vehicle && (
+            <Card className="bg-gray-800 border-gray-700">
+              <CardHeader>
+                <CardTitle className="text-yellow-500">Import van Marktplaats</CardTitle>
+                <CardDescription className="text-gray-400">
+                  Plak een Marktplaats auto URL om automatisch alle gegevens in te vullen
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex gap-2">
+                  <Input
+                    value={marktplaatsUrl}
+                    onChange={(e) => setMarktplaatsUrl(e.target.value)}
+                    placeholder="https://www.marktplaats.nl/a/auto-s/..."
+                    className="bg-gray-900 border-gray-600 text-white flex-1"
+                  />
+                  <Button
+                    type="button"
+                    onClick={handleImportFromUrl}
+                    disabled={isImporting}
+                    className="bg-yellow-500 hover:bg-yellow-600 text-black"
+                  >
+                    {isImporting ? "Importeren..." : "Importeren"}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label htmlFor="brand">Merk</Label>

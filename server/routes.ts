@@ -10,6 +10,7 @@ import path from "path";
 import fs from "fs";
 import { generateInvoicePDF, createInvoiceData } from "./pdfService_new";
 import { sendInvoiceEmail } from "./emailService";
+import * as cheerio from 'cheerio';
 
 // Ensure uploads directory exists
 const uploadsDir = path.join(process.cwd(), 'uploads');
@@ -869,6 +870,139 @@ Sitemap: ${baseUrl}/sitemap.xml`;
     } catch (error) {
       console.error('Error sending sale invoice email:', error);
       res.status(500).json({ error: 'Failed to send email' });
+    }
+  });
+
+  // Marktplaats Import Endpoint
+  app.post('/api/admin/import-marktplaats', authenticateAdmin, async (req, res) => {
+    try {
+      const { url } = req.body;
+      
+      if (!url || !url.includes('marktplaats.nl')) {
+        return res.status(400).json({ error: 'Valid Marktplaats URL is required' });
+      }
+
+      // Fetch the page content
+      const response = await fetch(url);
+      if (!response.ok) {
+        return res.status(400).json({ error: 'Unable to fetch Marktplaats page' });
+      }
+
+      const html = await response.text();
+      const $ = cheerio.load(html);
+
+      // Extract car data from the page
+      const carData = {
+        brand: '',
+        model: '',
+        year: new Date().getFullYear(),
+        price: '',
+        mileage: 0,
+        fuel: '',
+        transmission: '',
+        color: '',
+        description: '',
+        images: [] as string[]
+      };
+
+      // Extract title and parse brand/model
+      const title = $('h1').first().text().trim() || $('.mp-listing-title').text().trim();
+      if (title) {
+        const titleParts = title.split(' ');
+        if (titleParts.length >= 2) {
+          carData.brand = titleParts[0];
+          carData.model = titleParts.slice(1).join(' ').replace(/\d{4}.*/, '').trim();
+        }
+      }
+
+      // Extract price
+      const priceText = $('.mp-text-price-label').text() || $('.price-label').text() || $('.mp-listing-price').text();
+      const priceMatch = priceText.match(/€\s*([\d.,]+)/);
+      if (priceMatch) {
+        carData.price = priceMatch[1].replace(/[.,]/g, '');
+      }
+
+      // Extract description
+      const description = $('.mp-listing-description').text().trim() || $('.description').text().trim();
+      if (description) {
+        carData.description = description;
+      }
+
+      // Extract specifications from the page
+      $('.mp-listing-features li, .listing-features li, .spec-table-item').each((i, elem) => {
+        const text = $(elem).text().toLowerCase();
+        const fullText = $(elem).text();
+        
+        // Extract year
+        const yearMatch = fullText.match(/(\d{4})/);
+        if (yearMatch && parseInt(yearMatch[1]) >= 1980 && parseInt(yearMatch[1]) <= new Date().getFullYear()) {
+          carData.year = parseInt(yearMatch[1]);
+        }
+        
+        // Extract mileage
+        const mileageMatch = fullText.match(/([\d.,]+)\s*km/i);
+        if (mileageMatch) {
+          carData.mileage = parseInt(mileageMatch[1].replace(/[.,]/g, ''));
+        }
+        
+        // Extract fuel type
+        if (text.includes('benzine') || text.includes('gasoline')) {
+          carData.fuel = 'Benzine';
+        } else if (text.includes('diesel')) {
+          carData.fuel = 'Diesel';
+        } else if (text.includes('elektrisch') || text.includes('electric')) {
+          carData.fuel = 'Elektrisch';
+        } else if (text.includes('hybride') || text.includes('hybrid')) {
+          carData.fuel = 'Hybride';
+        }
+        
+        // Extract transmission
+        if (text.includes('handgeschakeld') || text.includes('manual')) {
+          carData.transmission = 'Handgeschakeld';
+        } else if (text.includes('automaat') || text.includes('automatic')) {
+          carData.transmission = 'Automaat';
+        }
+        
+        // Extract color
+        const colorKeywords = ['zwart', 'wit', 'grijs', 'blauw', 'rood', 'groen', 'zilver', 'goud', 'geel', 'oranje'];
+        colorKeywords.forEach(color => {
+          if (text.includes(color)) {
+            carData.color = color.charAt(0).toUpperCase() + color.slice(1);
+          }
+        });
+      });
+
+      // Extract images
+      const images: string[] = [];
+      $('.mp-listing-images img, .listing-images img, .photo-carousel img').each((i, elem) => {
+        const src = $(elem).attr('src') || $(elem).attr('data-src');
+        if (src && src.includes('marktplaats') && !src.includes('placeholder')) {
+          // Get the full-size image URL
+          const fullImageUrl = src.replace(/\/s-\d+x\d+\//, '/s-1600x1200/');
+          if (!images.includes(fullImageUrl)) {
+            images.push(fullImageUrl);
+          }
+        }
+      });
+      carData.images = images.slice(0, 10); // Limit to 10 images
+
+      // Clean up extracted data
+      if (!carData.brand && title) {
+        // Try to extract brand from common car brands
+        const brands = ['Volkswagen', 'Mercedes-Benz', 'BMW', 'Audi', 'Toyota', 'Ford', 'Opel', 'Peugeot', 'Renault', 'Citroën', 'Nissan', 'Volvo', 'Skoda', 'SEAT', 'Kia', 'Hyundai', 'Mazda', 'Honda', 'Fiat'];
+        for (const brand of brands) {
+          if (title.toLowerCase().includes(brand.toLowerCase())) {
+            carData.brand = brand;
+            carData.model = title.replace(new RegExp(brand, 'gi'), '').replace(/\d{4}.*/, '').trim();
+            break;
+          }
+        }
+      }
+
+      res.json(carData);
+    } catch (error) {
+      console.error('Marktplaats import error:', error);
+      res.status(500).json({ error: 'Failed to import car data from Marktplaats' });
     }
   });
 
