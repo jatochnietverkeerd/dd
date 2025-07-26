@@ -119,20 +119,11 @@ export default function ImageUploader({
 
     setImages(prev => [...prev, ...newImages]);
 
-    // Upload images in background
-    for (const imageFile of newImages) {
+    // Upload images in background - upload all at once to avoid race conditions
+    const uploadPromises = newImages.map(async (imageFile) => {
       try {
         const url = await uploadImage(imageFile.file!);
-        setImages(prev => {
-          const updated = prev.map(img => 
-            img.id === imageFile.id 
-              ? { ...img, url, isUploaded: true }
-              : img
-          );
-          // Schedule updateParent to run after this render
-          setTimeout(() => updateParent(updated), 0);
-          return updated;
-        });
+        return { ...imageFile, url, isUploaded: true };
       } catch (error) {
         console.error('Upload error:', error);
         toast({
@@ -140,9 +131,31 @@ export default function ImageUploader({
           description: `Kon afbeelding niet uploaden: ${imageFile.file?.name}`,
           variant: "destructive",
         });
-        setImages(prev => prev.filter(img => img.id !== imageFile.id));
+        return null; // Failed upload
       }
-    }
+    });
+
+    // Wait for all uploads to complete, then update state once
+    Promise.all(uploadPromises).then(uploadResults => {
+      const successfulUploads = uploadResults.filter(result => result !== null);
+      const failedUploads = uploadResults.filter(result => result === null);
+      
+      setImages(prev => {
+        // Remove failed uploads, update successful ones
+        const updated = prev.map(img => {
+          const uploadedVersion = successfulUploads.find(uploaded => uploaded?.id === img.id);
+          return uploadedVersion || img;
+        }).filter(img => {
+          // Remove failed uploads
+          const failed = newImages.find(newImg => newImg.id === img.id);
+          return !failed || successfulUploads.some(success => success?.id === img.id);
+        });
+        
+        // Update parent immediately after state update
+        updateParent(updated);
+        return updated;
+      });
+    });
   }, [images.length, maxImages, toast, updateParent]);
 
   const handleDrop = useCallback((e: React.DragEvent) => {
@@ -158,7 +171,7 @@ export default function ImageUploader({
   const removeImage = (id: string) => {
     setImages(prev => {
       const newImages = prev.filter(img => img.id !== id);
-      setTimeout(() => updateParent(newImages), 0);
+      updateParent(newImages);
       return newImages;
     });
   };
@@ -182,7 +195,7 @@ export default function ImageUploader({
 
     setImages(newImages);
     setDraggedIndex(index);
-    setTimeout(() => updateParent(newImages), 0);
+    updateParent(newImages);
   };
 
   return (
