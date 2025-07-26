@@ -80,41 +80,62 @@ export default function Header() {
         </div>
       </nav>
       
-      {/* Hamburger Mobile Menu - Only visible when clicked */}
+      {/* Hamburger Mobile Menu - Side panel from right */}
       {isMobileMenuOpen && (
-        <div className="md:hidden fixed inset-x-0 top-[80px] bg-dark-primary/95 backdrop-blur-sm border-t border-gray-700 z-40 animate-in slide-in-from-top duration-300">
-          <div className="py-4 px-4 space-y-1">
-            <Link 
-              href="/" 
-              onClick={closeMobileMenu}
-              className="block py-3 px-4 text-lg font-medium rounded-lg transition-colors hover:bg-gray-800"
-              style={{color: '#D9C89E'}}
-            >
-              Home
-            </Link>
-            <Link 
-              href="/aanbod" 
-              onClick={closeMobileMenu}
-              className="block py-3 px-4 text-lg font-medium rounded-lg transition-colors hover:bg-gray-800"
-              style={{color: '#D9C89E'}}
-            >
-              Aanbod
-            </Link>
-            <Link 
-              href="/over-ons" 
-              onClick={closeMobileMenu}
-              className="block py-3 px-4 text-lg font-medium rounded-lg transition-colors hover:bg-gray-800"
-              style={{color: '#D9C89E'}}
-            >
-              Over Ons
-            </Link>
-            <button
-              onClick={() => scrollToSection('contact')}
-              className="block w-full text-left py-3 px-4 text-lg font-medium rounded-lg transition-colors hover:bg-gray-800"
-              style={{color: '#D9C89E'}}
-            >
-              Contact
-            </button>
+        <div className="md:hidden fixed inset-0 z-50">
+          {/* Dark smokey backdrop */}
+          <div 
+            className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+            onClick={closeMobileMenu}
+          ></div>
+          
+          {/* Menu panel from right */}
+          <div className="absolute top-0 right-0 h-full w-64 bg-dark-primary rounded-l-2xl shadow-2xl transform transition-transform duration-300 animate-in slide-in-from-right">
+            {/* Close button */}
+            <div className="flex justify-end p-4">
+              <button
+                onClick={closeMobileMenu}
+                className="p-2 hover:bg-gray-800 rounded-lg transition-colors"
+                style={{color: '#D9C89E'}}
+              >
+                <X size={24} />
+              </button>
+            </div>
+            
+            {/* Menu content */}
+            <div className="px-6 pb-6 space-y-2">
+              <Link 
+                href="/" 
+                onClick={closeMobileMenu}
+                className="block py-3 px-4 text-lg font-medium rounded-lg transition-colors hover:bg-gray-800"
+                style={{color: '#D9C89E'}}
+              >
+                Home
+              </Link>
+              <Link 
+                href="/aanbod" 
+                onClick={closeMobileMenu}
+                className="block py-3 px-4 text-lg font-medium rounded-lg transition-colors hover:bg-gray-800"
+                style={{color: '#D9C89E'}}
+              >
+                Aanbod
+              </Link>
+              <Link 
+                href="/over-ons" 
+                onClick={closeMobileMenu}
+                className="block py-3 px-4 text-lg font-medium rounded-lg transition-colors hover:bg-gray-800"
+                style={{color: '#D9C89E'}}
+              >
+                Over Ons
+              </Link>
+              <button
+                onClick={() => scrollToSection('contact')}
+                className="block w-full text-left py-3 px-4 text-lg font-medium rounded-lg transition-colors hover:bg-gray-800"
+                style={{color: '#D9C89E'}}
+              >
+                Contact
+              </button>
+            </div>
           </div>
         </div>
       )}
