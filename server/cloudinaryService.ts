@@ -1,11 +1,11 @@
 import { v2 as cloudinary } from 'cloudinary';
 import multer from 'multer';
 
-// Configure Cloudinary
+// Configure Cloudinary with direct credentials to avoid URL parsing issues
 cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
+  cloud_name: 'dpqb9lz1i',
+  api_key: '361681299372585', 
+  api_secret: 'yHBKkU3hZOHSvTVtGAoMHa7hYsk',
   secure: true,
 });
 
