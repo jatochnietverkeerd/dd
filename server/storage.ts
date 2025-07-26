@@ -104,70 +104,10 @@ export class DatabaseStorage implements IStorage {
         console.log("Secondary admin user created");
       }
 
-      // Check if vehicles exist
+      // Check if vehicles exist - no longer creating sample vehicles with placeholder images
       const vehicleCount = await db.select({ count: sql`count(*)` }).from(vehicles);
       if (Number(vehicleCount[0].count) === 0) {
-        // Insert sample vehicles
-        await db.insert(vehicles).values([
-          {
-            brand: "Volkswagen",
-            model: "Polo GTI",
-            year: 2025,
-            price: 33000,
-            mileage: 17000,
-            fuel: "benzine",
-            transmission: "automaat",
-            color: "wit",
-            description: "Volkswagen Polo GTI 2025 in perfecte staat. Deze compacte sportwagen biedt de perfecte combinatie van stijl, prestaties en betrouwbaarheid. Met slechts 17.000 km op de teller is deze auto nog bijna nieuw.",
-            images: ["https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?q=80&w=1000&auto=format&fit=crop"],
-            featured: true,
-            available: true,
-            availableDate: new Date(),
-            status: "beschikbaar",
-            slug: generateSlug("Volkswagen", "Polo GTI", 2025),
-            metaTitle: generateMetaTitle("Volkswagen", "Polo GTI", 2025, 33000),
-            metaDescription: generateMetaDescription("Volkswagen", "Polo GTI", 2025, 17000, "benzine", "automaat")
-          },
-          {
-            brand: "Volkswagen",
-            model: "Golf R line",
-            year: 2025,
-            price: 38000,
-            mileage: 12000,
-            fuel: "hybrid",
-            transmission: "automaat",
-            color: "wit",
-            description: "Volkswagen Golf R line 2025 met hybride technologie. Deze moderne auto combineert sportiviteit met zuinigheid. Volledig onderhouden en in uitstekende staat.",
-            images: ["https://images.unsplash.com/photo-1606016247627-e6b9c8b7d0f1?q=80&w=1000&auto=format&fit=crop"],
-            featured: true,
-            available: true,
-            availableDate: new Date(),
-            status: "beschikbaar",
-            slug: generateSlug("Volkswagen", "Golf R line", 2025),
-            metaTitle: generateMetaTitle("Volkswagen", "Golf R line", 2025, 38000),
-            metaDescription: generateMetaDescription("Volkswagen", "Golf R line", 2025, 12000, "hybrid", "automaat")
-          },
-          {
-            brand: "Mercedes-Benz",
-            model: "A35 AMG",
-            year: 2024,
-            price: 42900,
-            mileage: 8500,
-            fuel: "benzine",
-            transmission: "automaat",
-            color: "grijs",
-            description: "Mercedes-Benz A35 AMG 2024 met 306 PK en vierwielaandrijving. Deze premium hot hatch combineert luxe met prestaties. Volledig onderhouden en in perfecte staat.",
-            images: ["https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?q=80&w=1000&auto=format&fit=crop"],
-            featured: true,
-            available: true,
-            availableDate: new Date(),
-            status: "beschikbaar",
-            slug: generateSlug("Mercedes-Benz", "A35 AMG", 2024),
-            metaTitle: generateMetaTitle("Mercedes-Benz", "A35 AMG", 2024, 42900),
-            metaDescription: generateMetaDescription("Mercedes-Benz", "A35 AMG", 2024, 8500, "benzine", "automaat")
-          }
-        ]);
-        console.log("Sample vehicles created");
+        console.log("No sample vehicles created - ready for real vehicle uploads");
       }
       
       this.initialized = true;

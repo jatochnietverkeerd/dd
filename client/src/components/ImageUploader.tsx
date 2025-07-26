@@ -197,7 +197,7 @@ export default function ImageUploader({
           className="border-gray-700 text-white hover:bg-gray-800"
         >
           <Upload className="w-4 h-4 mr-2" />
-          Upload
+          Meerdere Uploaden
         </Button>
       </div>
 
@@ -218,8 +218,9 @@ export default function ImageUploader({
       >
         <CardContent className="p-8 text-center">
           <ImageIcon className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-          <p className="text-gray-300 mb-2">Sleep afbeeldingen hierheen of klik op Upload</p>
-          <p className="text-sm text-gray-500">PNG, JPG, JPEG tot 10MB</p>
+          <p className="text-gray-300 mb-2">Sleep <strong>meerdere afbeeldingen</strong> hierheen of klik op "Meerdere Uploaden"</p>
+          <p className="text-sm text-gray-500">Selecteer meerdere bestanden tegelijk • PNG, JPG, JPEG tot 10MB per bestand</p>
+          <p className="text-xs text-yellow-400 mt-2">💡 TIP: Houd Ctrl/Cmd ingedrukt om meerdere bestanden te selecteren</p>
         </CardContent>
       </Card>
 
