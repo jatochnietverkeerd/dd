@@ -102,7 +102,7 @@ export default function VehicleShowcase() {
                 e.currentTarget.style.color = '#D9C89E';
               }}
             >
-              Bekijk al onze auto's ({allVehicles?.length || 0})
+              Bekijk al onze auto's ({availableVehicles?.length || 0})
             </Button>
           </Link>
         </div>
