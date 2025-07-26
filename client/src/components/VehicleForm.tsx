@@ -46,8 +46,10 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
   
   // Debug wrapper for setImages
   const setImagesWithLog = (newImages: string[]) => {
-    console.log('VehicleForm setImages called with:', newImages);
+    console.log('🎯 VehicleForm setImagesWithLog received:', newImages);
+    console.log('🎯 VehicleForm current images before update:', images);
     setImages(newImages);
+    console.log('🎯 VehicleForm setImages state updated');
   };
   const [marktplaatsUrl, setMarktplaatsUrl] = useState("");
   const [licensePlate, setLicensePlate] = useState("");
@@ -283,7 +285,9 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
   };
 
   const onSubmit = (data: VehicleFormData) => {
-    console.log('Form submission - Current images:', images); // Debug log
+    console.log('🚀 FORM SUBMISSION STARTED - Current images:', images);
+    console.log('🚀 FORM DATA:', data);
+    console.log('🚀 FORM ERRORS:', form.formState.errors);
     
     const formDataWithImages = {
       ...data,
@@ -296,6 +300,7 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
       ...Object.fromEntries(Object.entries(data).filter(([_, v]) => v !== undefined && v !== null && v !== "")),
     };
     
+    console.log('🚀 FINAL FORM DATA WITH IMAGES:', formDataWithImages);
     console.log('Form data being submitted:', formDataWithImages); // Debug log
     
     if (vehicle) {

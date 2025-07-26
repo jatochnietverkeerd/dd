@@ -38,12 +38,15 @@ export default function ImageUploader({
   
   // Update images when initialImages changes
   useEffect(() => {
+    console.log('📸 ImageUploader useEffect triggered - initialImages changed:', initialImages);
+    console.log('📸 ImageUploader current images before reset:', images.map(img => img.url));
     setImages(initialImages.map((url, index) => ({
       id: `initial-${index}`,
       url,
       preview: url,
       isUploaded: true
     })));
+    console.log('📸 ImageUploader images reset to initialImages');
   }, [initialImages]);
   const { toast } = useToast();
 
@@ -51,8 +54,11 @@ export default function ImageUploader({
     const urls = newImages
       .filter(img => img.isUploaded)
       .map(img => img.url);
-    console.log('ImageUploader updateParent called with:', urls); // Debug log
+    console.log('📸 ImageUploader updateParent called with URLs:', urls);
+    console.log('📸 ImageUploader total images:', newImages.length, 'uploaded:', newImages.filter(img => img.isUploaded).length);
+    console.log('📸 ImageUploader calling onImagesChange callback...');
     onImagesChange(urls);
+    console.log('📸 ImageUploader onImagesChange callback completed');
   }, [onImagesChange]);
 
   const uploadImage = async (file: File): Promise<string> => {
