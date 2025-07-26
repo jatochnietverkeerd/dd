@@ -354,13 +354,28 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
             </Card>
           )}
 
+          {/* Manual Vehicle Entry - Reliable Method */}
+          <Card className="bg-blue-900 border-blue-700">
+            <CardHeader>
+              <CardTitle className="text-blue-400">✏️ Handmatige Invoer (Betrouwbaar)</CardTitle>
+              <CardDescription className="text-gray-300">
+                Vul alle voertuiggegevens handmatig in voor 100% controle en nauwkeurigheid
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <p className="text-xs text-gray-400">
+                ✅ Altijd betrouwbaar • ✅ Volledige controle • ✅ Meerdere afbeeldingen uploaden
+              </p>
+            </CardContent>
+          </Card>
+
           {/* Marktplaats Import Section - only show for new vehicles */}
           {!vehicle && (
-            <Card className="bg-gray-800 border-gray-700">
+            <Card className="bg-gray-800 border-gray-700 opacity-75">
               <CardHeader>
-                <CardTitle className="text-yellow-500">📱 Import van Marktplaats</CardTitle>
+                <CardTitle className="text-yellow-500">📱 Import van Marktplaats (Experimenteel)</CardTitle>
                 <CardDescription className="text-gray-400">
-                  Als alternatief: plak een Marktplaats auto URL om gegevens in te vullen
+                  Let op: Marktplaats blokkeert vaak automatische imports
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -377,11 +392,11 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
                     disabled={isImporting}
                     className="bg-yellow-500 hover:bg-yellow-600 text-black"
                   >
-                    {isImporting ? "Importeren..." : "Importeren"}
+                    {isImporting ? "Proberen..." : "Proberen"}
                   </Button>
                 </div>
                 <p className="text-xs text-gray-400">
-                  ⚠️ Mogelijk onnauwkeurig • 📸 Importeert afbeeldingen
+                  ⚠️ Werkt niet altijd door anti-bot beveiliging • Gebruik kenteken lookup of handmatige invoer
                 </p>
               </CardContent>
             </Card>
