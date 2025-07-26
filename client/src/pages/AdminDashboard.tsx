@@ -110,7 +110,7 @@ export default function AdminDashboard() {
     setUser(JSON.parse(storedUser));
   }, [setLocation]);
 
-  const authHeaders = token ? { Authorization: `Bearer ${token}` } : {};
+  const authHeaders = token ? { Authorization: `Bearer ${token}` } : undefined;
 
   const { data: vehicles, isLoading: vehiclesLoading } = useQuery({
     queryKey: ["/api/admin/vehicles", statusFilter],
@@ -160,7 +160,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     const handleShowSaleForm = (event: CustomEvent) => {
       const vehicleId = event.detail.vehicleId;
-      const vehicle = vehicles?.find(v => v.id === vehicleId);
+      const vehicle = vehicles?.find((v: any) => v.id === vehicleId);
       if (vehicle) {
         setSelectedSaleVehicle(vehicle);
         setIsSaleDialogOpen(true);
@@ -246,7 +246,7 @@ export default function AdminDashboard() {
       
       // If status was changed to "verkocht", trigger sale form
       if (variables.status === "verkocht" && result.requireSaleForm) {
-        const vehicle = vehicles?.find(v => v.id === variables.vehicleId);
+        const vehicle = vehicles?.find((v: any) => v.id === variables.vehicleId);
         if (vehicle) {
           setSelectedSaleVehicle(vehicle);
           setIsSaleDialogOpen(true);
@@ -504,7 +504,7 @@ export default function AdminDashboard() {
                         </div>
                         <div>
                           <p className="text-gray-400">Brandstof</p>
-                          <p className="font-semibold">{vehicle.fuelType}</p>
+                          <p className="font-semibold">{vehicle.fuel}</p>
                         </div>
                         <div>
                           <p className="text-gray-400">Transmissie</p>
@@ -557,7 +557,7 @@ export default function AdminDashboard() {
                             <ShoppingCart className="w-4 h-4 mr-1" />
                             Inkoop
                           </Button>
-                          {(vehicle.status === 'verkocht' || purchases?.find(p => p.vehicleId === vehicle.id)) && (
+                          {(vehicle.status === 'verkocht' || purchases?.find((p: any) => p.vehicleId === vehicle.id)) && (
                             <Button
                               size="sm"
                               variant="outline"
@@ -592,7 +592,7 @@ export default function AdminDashboard() {
                     <CardHeader>
                       <div className="flex justify-between items-start">
                         <div>
-                          <CardTitle className="text-white">{contact.name}</CardTitle>
+                          <CardTitle className="text-white">{contact.firstName} {contact.lastName}</CardTitle>
                           <CardDescription className="text-gray-400">
                             {contact.email} • {contact.phone}
                           </CardDescription>
@@ -619,7 +619,7 @@ export default function AdminDashboard() {
             ) : (
               <div className="grid gap-4">
                 {reservations?.map((reservation: Reservation) => {
-                  const vehicle = vehicles?.find((v: Vehicle) => v.id === reservation.vehicleId);
+                  const vehicle = vehicles?.find((v: any) => v.id === reservation.vehicleId);
                   const statusIcon = {
                     pending: <Clock className="w-4 h-4 text-yellow-500" />,
                     confirmed: <CheckCircle className="w-4 h-4 text-green-500" />,
@@ -916,7 +916,7 @@ export default function AdminDashboard() {
                                   size="sm"
                                   variant="outline"
                                   onClick={() => {
-                                    const vehicle = vehicles?.find(v => v.id === purchase.vehicleId);
+                                    const vehicle = vehicles?.find((v: any) => v.id === purchase.vehicleId);
                                     if (vehicle) {
                                       setSelectedInvoiceData({ vehicle, purchase });
                                       setIsInvoiceModalOpen(true);
@@ -959,7 +959,7 @@ export default function AdminDashboard() {
                   <div className="space-y-4">
                     {sales && sales.length > 0 ? (
                       sales.map((sale: Sale) => {
-                        const vehicle = vehicles?.find((v: Vehicle) => v.id === sale.vehicleId);
+                        const vehicle = vehicles?.find((v: any) => v.id === sale.vehicleId);
                         return (
                           <Card key={sale.id} className="bg-gray-900 border-gray-800">
                             <CardHeader>
@@ -974,7 +974,7 @@ export default function AdminDashboard() {
                                 </div>
                                 <div className="text-right">
                                   <div className="text-xl font-bold text-green-500">
-                                    €{sale.salePrice.toLocaleString()}
+                                    €{sale.salePrice ? parseFloat(sale.salePrice).toLocaleString() : '0'}
                                   </div>
                                   <p className="text-sm text-gray-400">
                                     {new Date(sale.saleDate).toLocaleDateString()}
@@ -999,7 +999,7 @@ export default function AdminDashboard() {
                                 </div>
                                 <div>
                                   <p className="text-sm text-gray-400">BTW</p>
-                                  <p className="text-white">{sale.vatRate}%</p>
+                                  <p className="text-white">{sale.vatType}</p>
                                 </div>
                               </div>
                               {sale.notes && (
@@ -1013,7 +1013,7 @@ export default function AdminDashboard() {
                                   size="sm"
                                   variant="outline"
                                   onClick={() => {
-                                    const vehicle = vehicles?.find(v => v.id === sale.vehicleId);
+                                    const vehicle = vehicles?.find((v: any) => v.id === sale.vehicleId);
                                     if (vehicle) {
                                       setSelectedInvoiceData({ vehicle, sale });
                                       setIsInvoiceModalOpen(true);
@@ -1145,7 +1145,7 @@ export default function AdminDashboard() {
 
       {/* Vehicle Forms */}
       <VehicleForm 
-        vehicle={editingVehicle}
+        vehicle={editingVehicle || undefined}
         isOpen={isEditDialogOpen}
         onClose={() => setIsEditDialogOpen(false)}
         token={token!}
@@ -1161,7 +1161,7 @@ export default function AdminDashboard() {
       {selectedPurchaseVehicle && (
         <PurchaseForm 
           vehicle={selectedPurchaseVehicle}
-          purchase={editingPurchase}
+          purchase={editingPurchase || undefined}
           isOpen={isPurchaseDialogOpen}
           onClose={() => {
             setIsPurchaseDialogOpen(false);
@@ -1176,8 +1176,8 @@ export default function AdminDashboard() {
       {selectedSaleVehicle && (
         <SimpleSaleForm 
           vehicle={selectedSaleVehicle}
-          purchase={purchases?.find(p => p.vehicleId === selectedSaleVehicle.id)}
-          sale={editingSale}
+          purchase={purchases?.find((p: any) => p.vehicleId === selectedSaleVehicle.id) || undefined}
+          sale={editingSale || undefined}
           isOpen={isSaleDialogOpen}
           onClose={() => {
             setIsSaleDialogOpen(false);
