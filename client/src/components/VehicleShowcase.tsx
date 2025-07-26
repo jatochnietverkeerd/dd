@@ -18,11 +18,7 @@ export default function VehicleShowcase() {
     queryKey: ['/api/vehicles'],
   });
 
-  // Calculate available vehicles for display and count
-  const availableVehicles = allVehicles?.filter(v => 
-    (v.available !== false && v.status !== 'gearchiveerd' && v.status !== 'verkocht') || 
-    (!v.status || v.status === 'beschikbaar')
-  ) || [];
+
 
   if (isLoading) {
     return (
@@ -68,6 +64,10 @@ export default function VehicleShowcase() {
           {(() => {
             // Show featured vehicles first, then fill with recent non-featured vehicles if needed
             const featured = featuredVehicles || [];
+            const availableVehicles = allVehicles?.filter(v => 
+              (v.available !== false && v.status !== 'gearchiveerd' && v.status !== 'verkocht') || 
+              (!v.status || v.status === 'beschikbaar')
+            ) || [];
             const nonFeatured = availableVehicles.filter(v => !v.featured);
             const displayVehicles = [...featured];
             
@@ -104,7 +104,10 @@ export default function VehicleShowcase() {
                 e.currentTarget.style.color = '#D9C89E';
               }}
             >
-              Bekijk al onze auto's ({availableVehicles?.length || 0})
+              Bekijk al onze auto's ({allVehicles?.filter(v => 
+                (v.available !== false && v.status !== 'gearchiveerd' && v.status !== 'verkocht') || 
+                (!v.status || v.status === 'beschikbaar')
+              ).length || 0})
             </Button>
           </Link>
         </div>
