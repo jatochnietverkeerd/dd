@@ -289,6 +289,108 @@ DD Cars Website
   }
 }
 
+// Send auto-reply email to customer
+export async function sendContactAutoReply(
+  customerEmail: string,
+  customerName: string
+): Promise<boolean> {
+  try {
+    const config = getEmailConfig();
+    const transporter = nodemailer.createTransport(config);
+    
+    const mailOptions = {
+      from: config.auth.user,
+      to: customerEmail,
+      subject: 'Bedankt voor uw contact - DD Cars',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <div style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); color: white; padding: 30px; border-radius: 10px; margin-bottom: 20px;">
+            <h1 style="color: #d9c89e; margin: 0; font-size: 28px;">DD Cars</h1>
+            <p style="margin: 10px 0 0 0; opacity: 0.9;">Betrouwbare Occasions</p>
+          </div>
+          
+          <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            <h2 style="color: #333; margin-top: 0;">Bedankt voor uw contact!</h2>
+            
+            <p>Beste ${customerName},</p>
+            
+            <p>Hartelijk dank voor uw interesse in DD Cars. We hebben uw bericht goed ontvangen en zullen zo spoedig mogelijk contact met u opnemen.</p>
+            
+            <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #d9c89e;">
+              <h3 style="margin: 0 0 15px 0; color: #333;">Direct Contact Opnemen?</h3>
+              <div style="margin-bottom: 15px;">
+                <strong>WhatsApp:</strong> 
+                <a href="https://wa.me/31615404104?text=Hallo%20DD%20Cars" style="color: #d9c89e; text-decoration: none;">
+                  +31 6 15 40 41 04
+                </a>
+              </div>
+              <div style="margin-bottom: 15px;">
+                <strong>Telefoon:</strong> 
+                <a href="tel:+31615404104" style="color: #d9c89e; text-decoration: none;">
+                  +31 6 15 40 41 04
+                </a>
+              </div>
+              <div>
+                <strong>Email:</strong> 
+                <a href="mailto:DD.Cars@hotmail.nl" style="color: #d9c89e; text-decoration: none;">
+                  DD.Cars@hotmail.nl
+                </a>
+              </div>
+            </div>
+            
+            <div style="background: #fff9e6; padding: 15px; border-radius: 8px; border-left: 4px solid #d9c89e; margin: 20px 0;">
+              <p style="margin: 0; font-size: 14px;"><strong>Bezoek ons ook:</strong><br>
+              Koekoekslaan 1A<br>
+              1171PG Badhoevedorp<br>
+              Openingstijden: Ma-Vr 09:00-18:00, Za 10:00-17:00</p>
+            </div>
+            
+            <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee;">
+            
+            <p style="color: #666; font-size: 14px; margin-bottom: 5px;">Met vriendelijke groet,</p>
+            <p style="color: #d9c89e; font-weight: bold; margin: 0;">Het DD Cars Team</p>
+          </div>
+        </div>
+      `,
+      text: `
+Bedankt voor uw contact! - DD Cars
+
+Beste ${customerName},
+
+Hartelijk dank voor uw interesse in DD Cars. We hebben uw bericht goed ontvangen en zullen zo spoedig mogelijk contact met u opnemen.
+
+Direct Contact Opnemen?
+WhatsApp: +31 6 15 40 41 04
+Telefoon: +31 6 15 40 41 04  
+Email: DD.Cars@hotmail.nl
+
+Bezoek ons ook:
+Koekoekslaan 1A
+1171PG Badhoevedorp
+Openingstijden: Ma-Vr 09:00-18:00, Za 10:00-17:00
+
+Met vriendelijke groet,
+Het DD Cars Team
+      `
+    };
+    
+    // In development, simulate sending
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`📧 Simulating auto-reply email to: ${customerEmail}`);
+      console.log(`For: ${customerName}`);
+      return true;
+    }
+    
+    await transporter.sendMail(mailOptions);
+    console.log(`✅ Auto-reply email sent successfully to: ${customerEmail}`);
+    return true;
+    
+  } catch (error) {
+    console.error('❌ Error sending auto-reply email:', error);
+    return false;
+  }
+}
+
 export async function sendTestEmail(to: string): Promise<boolean> {
   try {
     const config = getEmailConfig();

@@ -9,7 +9,7 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 import { generateInvoicePDF, createInvoiceData } from "./pdfService_new";
-import { sendInvoiceEmail, sendContactFormEmail } from "./emailService";
+import { sendInvoiceEmail, sendContactFormEmail, sendContactAutoReply } from "./emailService";
 import * as cheerio from 'cheerio';
 
 // Ensure uploads directory exists
@@ -295,6 +295,18 @@ Sitemap: ${baseUrl}/sitemap.xml`;
         console.log('✅ Contact form email sent successfully');
       } catch (emailError) {
         console.error('❌ Failed to send contact form email:', emailError);
+        // Continue with response even if email fails
+      }
+      
+      // Send auto-reply to customer
+      try {
+        await sendContactAutoReply(
+          validatedData.email,
+          `${validatedData.firstName} ${validatedData.lastName}`
+        );
+        console.log('✅ Auto-reply email sent successfully');
+      } catch (emailError) {
+        console.error('❌ Failed to send auto-reply email:', emailError);
         // Continue with response even if email fails
       }
       

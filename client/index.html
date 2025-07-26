@@ -156,7 +156,7 @@
     
     <!-- WhatsApp Floating Button -->
     <a
-      href="https://wa.me/31615404104?text=Hello%20DD%20Cars"
+      href="https://wa.me/31615404104?text=Hallo%20DD%20Cars%2C%20ik%20heb%20interesse%20in%20jullie%20auto%27s"
       target="_blank"
       rel="noopener noreferrer"
       class="whatsapp-float"
@@ -171,49 +171,27 @@
     
     <!-- Force WhatsApp Button Script -->
     <script>
-      function createWhatsAppButton() {
-        // Remove any existing button
-        const existing = document.getElementById('whatsapp-btn');
-        if (existing) existing.remove();
-        
-        // Create button
-        const btn = document.createElement('a');
-        btn.id = 'whatsapp-btn';
-        btn.href = 'https://wa.me/31615404104?text=Hello%20DD%20Cars';
-        btn.target = '_blank';
-        btn.style.cssText = `
-          position: fixed !important;
-          bottom: 24px !important;
-          right: 24px !important;
-          width: 60px !important;
-          height: 60px !important;
-          background: #D9C89E !important;
-          border-radius: 50% !important;
-          display: flex !important;
-          align-items: center !important;
-          justify-content: center !important;
-          z-index: 999999 !important;
-          box-shadow: 0 4px 20px rgba(0,0,0,0.3) !important;
-          text-decoration: none !important;
-          transition: transform 0.3s ease !important;
-          font-size: 30px !important;
-        `;
-        btn.innerHTML = '💬';
-        btn.onmouseover = () => btn.style.transform = 'scale(1.1)';
-        btn.onmouseout = () => btn.style.transform = 'scale(1)';
-        
-        document.body.appendChild(btn);
+      // Simple WhatsApp button visibility checker
+      function ensureWhatsAppButton() {
+        const btn = document.getElementById('whatsapp-float-button');
+        if (btn) {
+          btn.style.display = 'flex';
+          btn.style.position = 'fixed';
+          btn.style.bottom = '24px';
+          btn.style.right = '24px';
+          btn.style.zIndex = '999999';
+        }
       }
       
-      // Create button when page loads
+      // Check button visibility when page loads
       if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', createWhatsAppButton);
+        document.addEventListener('DOMContentLoaded', ensureWhatsAppButton);
       } else {
-        createWhatsAppButton();
+        ensureWhatsAppButton();
       }
       
-      // Recreate button periodically to ensure it stays visible
-      setInterval(createWhatsAppButton, 2000);
+      // Check periodically to maintain visibility
+      setInterval(ensureWhatsAppButton, 3000);
     </script>
     
     <!-- This is a replit script which adds a banner on the top of the page when opened in development mode outside the replit environment -->
