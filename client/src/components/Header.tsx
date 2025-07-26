@@ -80,44 +80,44 @@ export default function Header() {
         </div>
       </nav>
       
-      {/* Simple Mobile Menu */}
-      <div className={`md:hidden fixed inset-x-0 top-[80px] bg-dark-primary border-t border-gray-700 z-40 transform transition-transform duration-300 ${
-        isMobileMenuOpen ? 'translate-y-0' : '-translate-y-full'
-      }`}>
-        <div className="py-6 px-4 space-y-1">
-          <Link 
-            href="/" 
-            onClick={closeMobileMenu}
-            className="block py-3 px-4 text-lg font-medium rounded-lg transition-colors hover:bg-gray-800"
-            style={{color: '#D9C89E'}}
-          >
-            Home
-          </Link>
-          <Link 
-            href="/aanbod" 
-            onClick={closeMobileMenu}
-            className="block py-3 px-4 text-lg font-medium rounded-lg transition-colors hover:bg-gray-800"
-            style={{color: '#D9C89E'}}
-          >
-            Aanbod
-          </Link>
-          <Link 
-            href="/over-ons" 
-            onClick={closeMobileMenu}
-            className="block py-3 px-4 text-lg font-medium rounded-lg transition-colors hover:bg-gray-800"
-            style={{color: '#D9C89E'}}
-          >
-            Over Ons
-          </Link>
-          <button
-            onClick={() => scrollToSection('contact')}
-            className="block w-full text-left py-3 px-4 text-lg font-medium rounded-lg transition-colors hover:bg-gray-800"
-            style={{color: '#D9C89E'}}
-          >
-            Contact
-          </button>
+      {/* Hamburger Mobile Menu - Only visible when clicked */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden fixed inset-x-0 top-[80px] bg-dark-primary/95 backdrop-blur-sm border-t border-gray-700 z-40 animate-in slide-in-from-top duration-300">
+          <div className="py-4 px-4 space-y-1">
+            <Link 
+              href="/" 
+              onClick={closeMobileMenu}
+              className="block py-3 px-4 text-lg font-medium rounded-lg transition-colors hover:bg-gray-800"
+              style={{color: '#D9C89E'}}
+            >
+              Home
+            </Link>
+            <Link 
+              href="/aanbod" 
+              onClick={closeMobileMenu}
+              className="block py-3 px-4 text-lg font-medium rounded-lg transition-colors hover:bg-gray-800"
+              style={{color: '#D9C89E'}}
+            >
+              Aanbod
+            </Link>
+            <Link 
+              href="/over-ons" 
+              onClick={closeMobileMenu}
+              className="block py-3 px-4 text-lg font-medium rounded-lg transition-colors hover:bg-gray-800"
+              style={{color: '#D9C89E'}}
+            >
+              Over Ons
+            </Link>
+            <button
+              onClick={() => scrollToSection('contact')}
+              className="block w-full text-left py-3 px-4 text-lg font-medium rounded-lg transition-colors hover:bg-gray-800"
+              style={{color: '#D9C89E'}}
+            >
+              Contact
+            </button>
+          </div>
         </div>
-      </div>
+      )}
     </header>
   );
 }
