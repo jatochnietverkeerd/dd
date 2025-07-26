@@ -533,14 +533,15 @@ When deployed to production (NODE_ENV=production):
 ### WhatsApp & Phone Integration Enhancement (July 26, 2025)
 - **Footer WhatsApp Link**: Fixed footer WhatsApp button to properly link to WhatsApp with Dutch message
 - **VehicleDetail WhatsApp Buttons**: Added WhatsApp functionality to contact buttons on vehicle pages
+- **Floating WhatsApp Button**: Professional floating button on all pages - 60px diameter, bottom-right, with pulse animation
 - **Clickable Phone Numbers**: All phone numbers now clickable with `tel:` links to open phone dialer
 - **Contact Section**: Phone number in contact section is now clickable
 - **Footer Contact**: Phone and email in footer are now clickable links
 - **International Format**: All phone numbers displayed as +31 6 15 40 41 04 for international accessibility
 - **Dutch Messages**: WhatsApp links include pre-filled Dutch messages for better user experience
 - **Brand Colors**: All WhatsApp buttons use website color scheme (#D9C89E) instead of standard green
-- **Simplified Floating Button**: Cleaned up conflicting WhatsApp button implementations for better reliability
-- **User Experience**: Hover effects and tooltips added to all clickable contact elements
+- **Mobile Responsive**: Floating button adapts to mobile with smaller size (56px) and proper positioning
+- **User Experience**: Hover effects, tooltips, and smooth animations added to all clickable contact elements
 
 ### Marktplaats Integration
 - **Profile Link**: Connected Marktplaats button to actual profile: https://www.marktplaats.nl/u/dd-cars/27830238/
