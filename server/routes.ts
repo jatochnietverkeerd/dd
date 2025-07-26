@@ -1426,56 +1426,64 @@ Extract and structure all available information in this JSON format:
 
 Important: Return ONLY the JSON object, no explanations or markdown formatting.`;
 
-      console.log('Sending request to Gemini AI...');
+      console.log('Sending request to ChatGPT API...');
 
-      // Call Gemini API
-      const aiResponse = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' + process.env.GEMINI_API_KEY, {
+      // Call OpenAI ChatGPT API (the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user)
+      const aiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
         },
         body: JSON.stringify({
-          contents: [{
-            parts: [{
-              text: aiPrompt
-            }]
-          }],
-          generationConfig: {
-            temperature: 0.1,
-            maxOutputTokens: 3000
-          }
+          model: "gpt-4o",
+          messages: [
+            {
+              role: "system",
+              content: "You are an expert automotive data analyst. Extract detailed vehicle information from Dutch Marktplaats listings and return ONLY valid JSON with comprehensive details."
+            },
+            {
+              role: "user", 
+              content: aiPrompt
+            }
+          ],
+          temperature: 0.1,
+          max_tokens: 3000,
+          response_format: { type: "json_object" }
         })
       });
 
       if (!aiResponse.ok) {
-        throw new Error(`Gemini API error: ${aiResponse.status}`);
+        const errorData = await aiResponse.text();
+        console.error('OpenAI API error response:', errorData);
+        throw new Error(`ChatGPT API error: ${aiResponse.status} ${aiResponse.statusText}`);
       }
 
       const aiData = await aiResponse.json();
-      const aiText = aiData.candidates?.[0]?.content?.parts?.[0]?.text;
+      const aiText = aiData.choices?.[0]?.message?.content;
 
       if (!aiText) {
-        throw new Error('No response from AI service');
+        console.error('No content in ChatGPT response:', aiData);
+        throw new Error('No response from ChatGPT service');
       }
 
-      console.log('AI Response length:', aiText.length);
+      console.log('ChatGPT Response length:', aiText.length);
 
-      // Parse AI response
+      // Parse ChatGPT response
       let carData;
       try {
-        // Clean the response to ensure it's valid JSON
-        const cleanJson = aiText.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
-        carData = JSON.parse(cleanJson);
-        console.log('AI successfully parsed car data:', Object.keys(carData));
+        // ChatGPT with response_format json_object returns clean JSON
+        carData = JSON.parse(aiText);
+        console.log('ChatGPT successfully parsed car data:', Object.keys(carData));
       } catch (parseError) {
-        console.error('Failed to parse AI response as JSON:', parseError);
-        console.error('AI response preview:', aiText.substring(0, 500));
-        throw new Error('AI returned invalid JSON format');
+        console.error('Failed to parse ChatGPT response as JSON:', parseError);
+        console.error('ChatGPT response preview:', aiText.substring(0, 500));
+        throw new Error('ChatGPT returned invalid JSON format');
       }
 
       // Validate essential data
       if (!carData.brand || !carData.model) {
-        throw new Error('AI could not extract basic vehicle information (brand/model missing)');
+        throw new Error('ChatGPT could not extract basic vehicle information (brand/model missing)');
       }
 
       // Generate professional DD Cars description using structured data
@@ -1485,7 +1493,7 @@ Important: Return ONLY the JSON object, no explanations or markdown formatting.`
       // Truth validation
       const validationWarnings = validateMarktplaatsData(carData);
       
-      console.log('AI Enhanced extraction result:', {
+      console.log('ChatGPT Enhanced extraction result:', {
         brand: carData.brand,
         model: carData.model,
         year: carData.year,
@@ -1520,7 +1528,7 @@ Important: Return ONLY the JSON object, no explanations or markdown formatting.`
         enhanced: true // Flag to indicate this is AI-enhanced data
       };
 
-      console.log('Final AI-enhanced response structure:', {
+      console.log('Final ChatGPT-enhanced response structure:', {
         basicFields: ['brand', 'model', 'year', 'price', 'mileage', 'fuel', 'transmission', 'color'].filter(k => responseData[k as keyof typeof responseData]),
         enhancedFields: Object.keys(responseData.specifications).length + Object.keys(responseData.features).length + Object.keys(responseData.dimensions).length + Object.keys(responseData.condition).length,
         descriptionLength: responseData.description.length
@@ -1528,12 +1536,12 @@ Important: Return ONLY the JSON object, no explanations or markdown formatting.`
 
       res.json(responseData);
     } catch (error) {
-      console.error('AI-Enhanced Marktplaats import error:', error);
+      console.error('ChatGPT-Enhanced Marktplaats import error:', error);
       
       if (error instanceof Error) {
-        if (error.message.includes('Gemini API')) {
+        if (error.message.includes('ChatGPT API')) {
           res.status(500).json({ 
-            error: 'AI analysis failed. Please try the basic import instead.' 
+            error: 'ChatGPT analysis failed. Please try the basic import instead.' 
           });
         } else if (error.message.includes('fetch')) {
           res.status(500).json({ 
@@ -1541,11 +1549,11 @@ Important: Return ONLY the JSON object, no explanations or markdown formatting.`
           });
         } else {
           res.status(500).json({ 
-            error: `AI Import failed: ${error.message}` 
+            error: `ChatGPT Import failed: ${error.message}` 
           });
         }
       } else {
-        res.status(500).json({ error: 'Failed to import car data with AI enhancement' });
+        res.status(500).json({ error: 'Failed to import car data with ChatGPT enhancement' });
       }
     }
   });

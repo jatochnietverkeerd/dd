@@ -356,19 +356,19 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
       // Show validation warnings if any
       if (response.validationWarnings && response.validationWarnings.length > 0) {
         toast({
-          title: "🤖 AI Import met waarschuwingen",
+          title: "🤖 ChatGPT Import met waarschuwingen",
           description: `Uitgebreide analyse voltooid: ${enhancementDetails.join(', ')}. Controleer: ${response.validationWarnings.join(", ")}`,
           variant: "destructive",
         });
       } else {
         toast({
-          title: "🤖 AI Import succesvol",
+          title: "🤖 ChatGPT Import succesvol",
           description: `Uitgebreide voertuiganalyse voltooid met ${enhancementDetails.join(', ')}.`,
         });
       }
 
       // Log enhanced data for debugging
-      console.log('🤖 AI Enhanced Data:', {
+      console.log('🤖 ChatGPT Enhanced Data:', {
         specifications: response.specifications,
         features: response.features,
         dimensions: response.dimensions,
@@ -379,8 +379,8 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
     } catch (error) {
       console.error('AI Import error:', error);
       toast({
-        title: "🤖 AI Import mislukt",
-        description: "AI analyse kon niet worden voltooid. Probeer de basis import.",
+        title: "🤖 ChatGPT Import mislukt",
+        description: "ChatGPT analyse kon niet worden voltooid. Probeer de basis import.",
         variant: "destructive",
       });
     }
@@ -581,13 +581,13 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
                       disabled={isImporting || !marktplaatsUrl.trim()}
                       className="bg-purple-600 hover:bg-purple-700 text-white flex-1"
                     >
-                      {isImporting ? "AI..." : "🤖 AI Import"}
+                      {isImporting ? "ChatGPT..." : "🤖 ChatGPT Import"}
                     </Button>
                   </div>
                 </div>
                 <div className="text-xs text-gray-400 space-y-1">
                   <p>📄 <strong>Basis Import:</strong> Snelle import van basisgegevens (merk, model, jaar, prijs)</p>
-                  <p>🤖 <strong>AI Import:</strong> Uitgebreide analyse met specificaties, uitrusting, dimensies zoals ChatGPT</p>
+                  <p>🤖 <strong>ChatGPT Import:</strong> Uitgebreide analyse met specificaties, uitrusting, dimensies zoals ChatGPT</p>
                   <p className="text-yellow-400">⚠️ Werkt niet altijd door anti-bot beveiliging • Gebruik kenteken lookup of handmatige invoer</p>
                 </div>
               </CardContent>
