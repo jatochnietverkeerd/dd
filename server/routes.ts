@@ -289,7 +289,7 @@ Sitemap: ${baseUrl}/sitemap.xml`;
           firstName: validatedData.firstName,
           lastName: validatedData.lastName,
           email: validatedData.email,
-          phone: validatedData.phone,
+          phone: validatedData.phone || '',
           message: validatedData.message
         });
         console.log('✅ Contact form email sent successfully');
@@ -775,9 +775,9 @@ Sitemap: ${baseUrl}/sitemap.xml`;
       const sales = await storage.getSales();
       
       // Create CSV content
-      const csvHeaders = "ID,Vehicle ID,Sale Price,Customer Name,Customer Email,Customer Phone,Discount,VAT Rate,Sale Date,Invoice Number,Notes,Created At";
+      const csvHeaders = "ID,Vehicle ID,Sale Price,Customer Name,Customer Email,Customer Phone,Discount,VAT Type,Sale Date,Invoice Number,Notes,Created At";
       const csvRows = sales.map(s => 
-        `${s.id},${s.vehicleId},"${s.salePrice}","${s.customerName}","${s.customerEmail}","${s.customerPhone}","${s.discount}","${s.vatRate}","${s.saleDate}","${s.invoiceNumber}","${s.notes || ''}","${s.createdAt}"`
+        `${s.id},${s.vehicleId},"${s.salePrice}","${s.customerName}","${s.customerEmail}","${s.customerPhone}","${s.discount}","${s.vatType}","${s.saleDate}","${s.invoiceNumber}","${s.notes || ''}","${s.createdAt}"`
       );
       const csvContent = [csvHeaders, ...csvRows].join('\n');
       
