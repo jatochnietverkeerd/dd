@@ -45,13 +45,12 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
   const [images, setImages] = useState<string[]>(vehicle?.images || []);
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  // Debug wrapper for setImages
+  // Debug wrapper for setImages - FIXED: removed dependency on images to prevent stale closure
   const setImagesWithLog = useCallback((newImages: string[]) => {
     console.log('🎯 VehicleForm setImagesWithLog received:', newImages);
-    console.log('🎯 VehicleForm current images before update:', images);
     setImages(newImages);
     console.log('🎯 VehicleForm setImages state updated to:', newImages);
-  }, [images]);
+  }, []);
   const [marktplaatsUrl, setMarktplaatsUrl] = useState("");
   const [licensePlate, setLicensePlate] = useState("");
   const [isImporting, setIsImporting] = useState(false);
@@ -266,6 +265,7 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
       });
 
       // Fill form with imported data
+      const importedImages = response.images || [];
       form.reset({
         brand: response.brand || "",
         model: response.model || "",
@@ -278,10 +278,12 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
         description: response.description || "",
         featured: false,
         status: "beschikbaar",
-        images: response.images || [],
+        images: importedImages,
       });
       
-      setImages(response.images || []);
+      // Update images state immediately
+      setImages(importedImages);
+      console.log('🎯 Marktplaats import: Setting images to:', importedImages);
       
       toast({
         title: "Import succesvol",
@@ -359,15 +361,12 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
     console.log('🚀 FORM DATA:', data);
     console.log('🚀 FORM ERRORS:', form.formState.errors);
     
+    // FIXED: Simple approach - just ensure images are in the data
     const formDataWithImages = {
       ...data,
-      images: images,
-      // Ensure new vehicles are available by default
+      images: images, // Always use the current images state
       available: true,
-      // Convert price to string to match schema
       price: String(data.price),
-      // Remove undefined values to prevent validation issues (but preserve images)
-      ...Object.fromEntries(Object.entries(data).filter(([key, v]) => key === 'images' || (v !== undefined && v !== null && v !== ""))),
     };
     
     console.log('🚀 FINAL FORM DATA WITH IMAGES:', formDataWithImages);

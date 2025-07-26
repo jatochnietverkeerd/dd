@@ -1413,18 +1413,10 @@ Keep the tone professional yet accessible, emphasize quality and reliability, an
     return warnings;
   }
 
-  // Helper function to generate simple description for Marktplaats imports
+  // Helper function to generate RAW description for Marktplaats imports (no formatting)
   function generateMarktplaatsDescription(carData: any, title: string): string {
-    let description = `Algemene gegevens\n`;
-    if (carData.mileage) description += `Tellerstand: ${carData.mileage.toLocaleString('nl-NL')} km\n`;
-    if (carData.fuel) description += `Brandstofsoort: ${carData.fuel}\n`;
-    if (carData.year) description += `Bouwjaar: ${carData.year}\n`;
-    if (carData.transmission) description += `Transmissie: ${carData.transmission}\n`;
-    if (carData.color) description += `Kleur: ${carData.color}\n`;
-    
-    description += `\nEen ${carData.brand} ${carData.model} uit ${carData.year}. Geïmporteerd van Marktplaats. Alle gegevens onder voorbehoud van typefouten.`;
-    
-    return description;
+    // Return the raw title as description - minimal processing
+    return title || `${carData.brand} ${carData.model} ${carData.year}`;
   }
 
   const httpServer = createServer(app);
