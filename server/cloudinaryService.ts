@@ -19,7 +19,7 @@ export const upload = multer({
     if (file.mimetype.startsWith('image/')) {
       cb(null, true);
     } else {
-      cb(new Error('Only image files are allowed'), false);
+      cb(null, false);
     }
   }
 });
@@ -88,7 +88,7 @@ export async function getCloudinaryImages(folder: string = 'ddcars'): Promise<an
   try {
     const result = await cloudinary.search
       .expression(`folder:${folder}`)
-      .sort_by([['created_at', 'desc']])
+      .sort_by('created_at', 'desc')
       .max_results(100)
       .execute();
     

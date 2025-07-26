@@ -2,6 +2,7 @@ import { IStorage } from "./storage";
 import { InsertVehicle } from "@shared/schema";
 import fs from 'fs';
 import path from 'path';
+import { uploadToCloudinary } from './cloudinaryService';
 
 export class DDCarsSyncService {
   private storage: IStorage;
@@ -80,10 +81,7 @@ export class DDCarsSyncService {
       images: syncedImages,
       featured: ddcarsVehicle.featured || false,
       available: ddcarsVehicle.available !== false,
-      status: ddcarsVehicle.status || 'beschikbaar',
-
-      metaTitle: `${ddcarsVehicle.brand} ${ddcarsVehicle.model} ${ddcarsVehicle.year} - DD Cars`,
-      metaDescription: `${ddcarsVehicle.brand} ${ddcarsVehicle.model} ${ddcarsVehicle.year} te koop bij DD Cars. ${ddcarsVehicle.mileage?.toLocaleString()} km, ${ddcarsVehicle.fuel}, €${ddcarsVehicle.price?.toLocaleString()}.`
+      status: ddcarsVehicle.status || 'beschikbaar'
     };
 
     if (existingVehicle) {
@@ -126,23 +124,22 @@ export class DDCarsSyncService {
         throw new Error(`Failed to download image: ${response.statusText}`);
       }
 
-      // Generate unique filename
-      const urlPath = new URL(fullUrl).pathname;
-      const extension = path.extname(urlPath) || '.jpeg';
-      const timestamp = Date.now();
-      const random = Math.round(Math.random() * 1E9);
-      const filename = `synced-${timestamp}-${random}${extension}`;
-      const filepath = path.join(this.uploadsDir, filename);
-
-      // Save image
+      // Get image buffer
       const arrayBuffer = await response.arrayBuffer();
       const buffer = Buffer.from(arrayBuffer);
-      fs.writeFileSync(filepath, buffer);
 
-      console.log(`💾 Saved image: ${filename}`);
-      return `/uploads/${filename}`;
+      // Upload to Cloudinary
+      const timestamp = Date.now();
+      const random = Math.round(Math.random() * 1E9);
+      const publicId = `synced-${timestamp}-${random}`;
+      
+      console.log(`☁️ Uploading to Cloudinary: ${publicId}`);
+      const cloudinaryResult = await uploadToCloudinary(buffer, 'ddcars-sync', publicId);
+      
+      console.log(`✅ Uploaded to Cloudinary: ${cloudinaryResult.secure_url}`);
+      return cloudinaryResult.secure_url;
     } catch (error) {
-      console.error('Image download failed:', error);
+      console.error('Image sync failed:', error);
       return null;
     }
   }

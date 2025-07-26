@@ -32,11 +32,20 @@ export default function VehicleCard({ vehicle }: VehicleCardProps) {
       className={`bg-dark-secondary border-dark-quaternary rounded-lg overflow-hidden group scale-on-hover transition-all duration-500 ${fadeInClass}`}
     >
       <div className="relative overflow-hidden">
-        <LazyImage
-          src={vehicle.images?.[0] || "https://images.unsplash.com/photo-1555215695-3004980ad54e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600"}
-          alt={`${vehicle.brand} ${vehicle.model}`}
-          className="w-full h-48 object-cover image-zoom"
-        />
+        {vehicle.images && vehicle.images.length > 0 ? (
+          <LazyImage
+            src={vehicle.images[0]}
+            alt={`${vehicle.brand} ${vehicle.model}`}
+            className="w-full h-48 object-cover image-zoom"
+          />
+        ) : (
+          <div className="w-full h-48 bg-dark-tertiary flex items-center justify-center">
+            <div className="text-center">
+              <div className="text-4xl mb-2" style={{color: '#D9C89E'}}>📷</div>
+              <p className="text-sm" style={{color: '#D9C89E'}}>Geen afbeelding beschikbaar</p>
+            </div>
+          </div>
+        )}
       </div>
       <CardContent className="p-6">
         <h3 className="text-xl font-semibold mb-2" style={{color: '#D9C89E'}}>{vehicle.brand}</h3>

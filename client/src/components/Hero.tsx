@@ -31,7 +31,7 @@ export default function Hero() {
           className="w-full h-full object-cover object-center image-zoom"
           onError={(e: any) => {
             console.error('Hero image failed to load:', e);
-            e.target.src = "https://images.unsplash.com/photo-1503376780353-7e6692767b70?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080&q=80";
+            e.target.style.display = 'none';
           }}
         />
       </div>

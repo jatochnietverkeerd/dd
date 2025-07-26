@@ -170,12 +170,21 @@ export default function VehicleDetail() {
             {/* Images */}
             <div>
               <div className="relative mb-4">
-                <img
-                  src={images[currentImageIndex]}
-                  alt={`${vehicle.brand} ${vehicle.model}`}
-                  className="w-full h-96 object-cover rounded-lg cursor-pointer hover:opacity-90 transition-opacity duration-300"
-                  onClick={() => setIsImageModalOpen(true)}
-                />
+                {images.length > 0 ? (
+                  <img
+                    src={images[currentImageIndex]}
+                    alt={`${vehicle.brand} ${vehicle.model}`}
+                    className="w-full h-96 object-cover rounded-lg cursor-pointer hover:opacity-90 transition-opacity duration-300"
+                    onClick={() => setIsImageModalOpen(true)}
+                  />
+                ) : (
+                  <div className="w-full h-96 bg-dark-tertiary flex items-center justify-center rounded-lg">
+                    <div className="text-center">
+                      <div className="text-6xl mb-4" style={{color: '#D9C89E'}}>📷</div>
+                      <p className="text-xl" style={{color: '#D9C89E'}}>Geen afbeeldingen beschikbaar</p>
+                    </div>
+                  </div>
+                )}
                 {vehicle.featured && (
                   <Badge className="absolute top-4 left-4 bg-luxury-gold text-dark-primary font-semibold">
                     Featured
