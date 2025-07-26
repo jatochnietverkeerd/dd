@@ -42,8 +42,6 @@ export async function uploadToCloudinary(
       const uploadOptions: any = {
         folder,
         resource_type: 'image',
-        quality: 'auto',
-        fetch_format: 'auto',
       };
 
       if (publicId) {
@@ -73,7 +71,7 @@ export async function uploadToCloudinary(
     return result;
   } catch (error) {
     console.error('Cloudinary upload error:', error);
-    throw new Error(`Failed to upload image: ${error}`);
+    throw new Error(`Failed to upload image: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 }
 

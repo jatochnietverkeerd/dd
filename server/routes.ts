@@ -12,6 +12,7 @@ import { generateInvoicePDF, createInvoiceData } from "./pdfService_new";
 import { sendInvoiceEmail, sendContactFormEmail, sendContactAutoReply } from "./emailService";
 import * as cheerio from 'cheerio';
 import { upload as cloudinaryUpload, uploadToCloudinary, deleteFromCloudinary, getCloudinaryImages } from "./cloudinaryService";
+import { migrateExistingImagesToCloudinary } from "./migrateImagesToCloudinary";
 
 // Ensure uploads directory exists
 const uploadsDir = path.join(process.cwd(), 'uploads');
@@ -194,6 +195,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Failed to delete Cloudinary image:', error);
       res.status(500).json({ message: 'Failed to delete image' });
+    }
+  });
+
+  // Migrate existing images to Cloudinary
+  app.post('/api/admin/migrate-to-cloudinary', authenticateAdmin, async (req, res) => {
+    try {
+      console.log('🚀 Starting image migration to Cloudinary...');
+      const result = await migrateExistingImagesToCloudinary();
+      
+      if (result.success) {
+        res.json(result);
+      } else {
+        res.status(500).json(result);
+      }
+    } catch (error) {
+      console.error('Migration route error:', error);
+      res.status(500).json({ 
+        success: false,
+        message: 'Migration failed',
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
     }
   });
 
