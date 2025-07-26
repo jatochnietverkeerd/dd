@@ -86,10 +86,7 @@ export default function VehicleShowcase() {
           })()}
         </div>
         
-        <div 
-          ref={buttonRef}
-          className={`text-center mt-12 transition-all duration-700 delay-600 ${buttonFadeClass}`}
-        >
+        <div className="text-center mt-12">
           <Link href="/aanbod">
             <Button 
               variant="outline"
@@ -104,10 +101,7 @@ export default function VehicleShowcase() {
                 e.currentTarget.style.color = '#D9C89E';
               }}
             >
-              Bekijk al onze auto's ({allVehicles?.filter(v => 
-                (v.available !== false && v.status !== 'gearchiveerd' && v.status !== 'verkocht') || 
-                (!v.status || v.status === 'beschikbaar')
-              ).length || 0})
+              Bekijk al onze auto's (9)
             </Button>
           </Link>
         </div>
