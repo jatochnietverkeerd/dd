@@ -80,6 +80,9 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
   // Reset form when vehicle changes or dialog opens
   useEffect(() => {
     if (isOpen) {
+      const vehicleImages = vehicle?.images || [];
+      console.log('🎯 VehicleForm useEffect resetting form for vehicle:', vehicle?.id, 'with images:', vehicleImages);
+      
       form.reset({
         brand: vehicle?.brand || "",
         model: vehicle?.model || "",
@@ -92,9 +95,16 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
         description: vehicle?.description || "",
         featured: vehicle?.featured || false,
         status: vehicle?.status || "beschikbaar",
-        images: vehicle?.images || [],
+        images: vehicleImages,
       });
-      setImages(vehicle?.images || []);
+      
+      // Only reset images when opening with a different vehicle or creating new vehicle
+      if (!vehicle || vehicle.id !== images.length) {
+        console.log('🎯 VehicleForm resetting images state to:', vehicleImages);
+        setImages(vehicleImages);
+      } else {
+        console.log('🎯 VehicleForm keeping current images state:', images);
+      }
     }
   }, [vehicle, isOpen, form]);
 
@@ -301,7 +311,13 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
     };
     
     console.log('🚀 FINAL FORM DATA WITH IMAGES:', formDataWithImages);
-    console.log('Form data being submitted:', formDataWithImages); // Debug log
+    
+    // Critical check: ensure images are included
+    if (images.length > 0 && formDataWithImages.images.length === 0) {
+      console.error('🚨 CRITICAL: Images exist but not in form data!');
+      formDataWithImages.images = images;
+      console.log('🚨 FIXED: Added images to form data:', images);
+    }
     
     if (vehicle) {
       updateVehicleMutation.mutate(formDataWithImages);

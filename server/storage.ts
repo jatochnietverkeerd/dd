@@ -171,9 +171,9 @@ export class DatabaseStorage implements IStorage {
     };
     
     // Generate a unique slug
-    const slug = await generateUniqueSlug(insertVehicle.brand, insertVehicle.model, insertVehicle.year, checkSlugExists);
-    const metaTitle = generateMetaTitle(insertVehicle.brand, insertVehicle.model, insertVehicle.year, insertVehicle.price);
-    const metaDescription = generateMetaDescription(insertVehicle.brand, insertVehicle.model, insertVehicle.year, insertVehicle.mileage, insertVehicle.fuel, insertVehicle.transmission);
+    const slug = await generateUniqueSlug(insertVehicle.brand, insertVehicle.model, Number(insertVehicle.year), checkSlugExists);
+    const metaTitle = generateMetaTitle(insertVehicle.brand, insertVehicle.model, Number(insertVehicle.year), insertVehicle.price);
+    const metaDescription = generateMetaDescription(insertVehicle.brand, insertVehicle.model, Number(insertVehicle.year), insertVehicle.mileage, insertVehicle.fuel, insertVehicle.transmission);
 
     const [vehicle] = await db.insert(vehicles).values({
       ...insertVehicle,
