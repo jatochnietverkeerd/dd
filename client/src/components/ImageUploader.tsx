@@ -120,11 +120,21 @@ export default function ImageUploader({
 
     setImages(prev => [...prev, ...newImages]);
 
-    // Upload images in background - upload all at once to avoid race conditions
-    const uploadPromises = newImages.map(async (imageFile) => {
+    // Upload images one by one to avoid race conditions
+    for (const imageFile of newImages) {
       try {
         const url = await uploadImage(imageFile.file!);
-        return { ...imageFile, url, isUploaded: true };
+        // Update the specific image when upload completes
+        setImages(prev => {
+          const updated = prev.map(img => 
+            img.id === imageFile.id 
+              ? { ...img, url, isUploaded: true }
+              : img
+          );
+          // Call parent update for each successful upload
+          updateParent(updated);
+          return updated;
+        });
       } catch (error) {
         console.error('Upload error:', error);
         toast({
@@ -132,31 +142,14 @@ export default function ImageUploader({
           description: `Kon afbeelding niet uploaden: ${imageFile.file?.name}`,
           variant: "destructive",
         });
-        return null; // Failed upload
-      }
-    });
-
-    // Wait for all uploads to complete, then update state once
-    Promise.all(uploadPromises).then(uploadResults => {
-      const successfulUploads = uploadResults.filter(result => result !== null);
-      const failedUploads = uploadResults.filter(result => result === null);
-      
-      setImages(prev => {
-        // Remove failed uploads, update successful ones
-        const updated = prev.map(img => {
-          const uploadedVersion = successfulUploads.find(uploaded => uploaded?.id === img.id);
-          return uploadedVersion || img;
-        }).filter(img => {
-          // Remove failed uploads
-          const failed = newImages.find(newImg => newImg.id === img.id);
-          return !failed || successfulUploads.some(success => success?.id === img.id);
+        // Remove failed upload
+        setImages(prev => {
+          const updated = prev.filter(img => img.id !== imageFile.id);
+          updateParent(updated);
+          return updated;
         });
-        
-        // Update parent immediately after state update
-        updateParent(updated);
-        return updated;
-      });
-    });
+      }
+    }
   }, [images.length, maxImages, toast, updateParent]);
 
   const handleDrop = useCallback((e: React.DragEvent) => {

@@ -1019,25 +1019,93 @@ Sitemap: ${baseUrl}/sitemap.xml`;
         images: [] as string[]
       };
 
-      // Extract title and parse brand/model
-      const title = $('h1').first().text().trim() || $('.mp-listing-title').text().trim();
+      // Extract title and parse brand/model/year
+      const title = $('h1').first().text().trim() || $('.mp-listing-title').text().trim() || $('title').text().trim();
+      console.log('Extracted title:', title);
+      
       if (title) {
+        // Extract year from title
+        const yearMatch = title.match(/\b(19|20)\d{2}\b/);
+        if (yearMatch) {
+          carData.year = parseInt(yearMatch[0]);
+        }
+        
+        // Parse brand/model
         const titleParts = title.split(' ');
         if (titleParts.length >= 2) {
           carData.brand = titleParts[0];
-          carData.model = titleParts.slice(1).join(' ').replace(/\d{4}.*/, '').trim();
+          carData.model = titleParts.slice(1).join(' ').replace(/\b(19|20)\d{2}\b.*/, '').trim();
         }
       }
 
+      // Extract specifications from various selectors
+      const specs = {};
+      
+      // Try different selectors for specifications
+      $('.vip-ad-attributes dt, .vip-ad-attributes dd, .mp-listing-attributes dt, .mp-listing-attributes dd, .attributes dt, .attributes dd').each((i, elem) => {
+        const text = $(elem).text().trim().toLowerCase();
+        const nextText = $(elem).next().text().trim();
+        
+        if (text.includes('kilometerstand') || text.includes('km')) {
+          const kmMatch = nextText.match(/[\d.,]+/);
+          if (kmMatch) {
+            carData.mileage = parseInt(kmMatch[0].replace(/[.,]/g, ''));
+          }
+        }
+        
+        if (text.includes('brandstof') || text.includes('fuel')) {
+          if (nextText.toLowerCase().includes('benzine')) carData.fuel = 'benzine';
+          else if (nextText.toLowerCase().includes('diesel')) carData.fuel = 'diesel';
+          else if (nextText.toLowerCase().includes('hybrid')) carData.fuel = 'hybrid';
+          else if (nextText.toLowerCase().includes('elektrisch')) carData.fuel = 'elektrisch';
+        }
+        
+        if (text.includes('transmissie') || text.includes('schakeling')) {
+          if (nextText.toLowerCase().includes('handgeschakeld') || nextText.toLowerCase().includes('hand')) carData.transmission = 'handgeschakeld';
+          else if (nextText.toLowerCase().includes('automaat') || nextText.toLowerCase().includes('automatic')) carData.transmission = 'automaat';
+          else if (nextText.toLowerCase().includes('semi')) carData.transmission = 'semi-automaat';
+        }
+        
+        if (text.includes('kleur') || text.includes('color')) {
+          carData.color = nextText;
+        }
+      });
+
+      // Alternative extraction from text content
+      const fullText = $('body').text();
+      
+      // Extract mileage if not found
+      if (!carData.mileage) {
+        const kmMatch = fullText.match(/(\d{1,3}(?:[.,]\d{3})*)\s*km/i);
+        if (kmMatch) {
+          carData.mileage = parseInt(kmMatch[1].replace(/[.,]/g, ''));
+        }
+      }
+      
+      // Extract fuel type if not found
+      if (!carData.fuel) {
+        if (fullText.toLowerCase().includes('benzine')) carData.fuel = 'benzine';
+        else if (fullText.toLowerCase().includes('diesel')) carData.fuel = 'diesel';
+        else if (fullText.toLowerCase().includes('hybrid')) carData.fuel = 'hybrid';
+        else if (fullText.toLowerCase().includes('elektrisch')) carData.fuel = 'elektrisch';
+      }
+      
+      // Extract transmission if not found
+      if (!carData.transmission) {
+        if (fullText.toLowerCase().includes('handgeschakeld')) carData.transmission = 'handgeschakeld';
+        else if (fullText.toLowerCase().includes('automaat')) carData.transmission = 'automaat';
+        else if (fullText.toLowerCase().includes('semi-automaat')) carData.transmission = 'semi-automaat';
+      }
+
       // Extract price
-      const priceText = $('.mp-text-price-label').text() || $('.price-label').text() || $('.mp-listing-price').text();
+      const priceText = $('.mp-text-price-label').text() || $('.price-label').text() || $('.mp-listing-price').text() || $('[class*="price"]').text();
       const priceMatch = priceText.match(/€\s*([\d.,]+)/);
       if (priceMatch) {
         carData.price = priceMatch[1].replace(/[.,]/g, '');
       }
 
       // Extract description
-      const description = $('.mp-listing-description').text().trim() || $('.description').text().trim();
+      const description = $('.mp-listing-description').text().trim() || $('.description').text().trim() || $('[class*="description"]').text().trim();
       if (description) {
         carData.description = description;
       }
@@ -1100,18 +1168,38 @@ Sitemap: ${baseUrl}/sitemap.xml`;
       });
       carData.images = images.slice(0, 10); // Limit to 10 images
 
-      // Clean up extracted data
+      // Clean up extracted data and brand detection
       if (!carData.brand && title) {
-        // Try to extract brand from common car brands
-        const brands = ['Volkswagen', 'Mercedes-Benz', 'BMW', 'Audi', 'Toyota', 'Ford', 'Opel', 'Peugeot', 'Renault', 'Citroën', 'Nissan', 'Volvo', 'Skoda', 'SEAT', 'Kia', 'Hyundai', 'Mazda', 'Honda', 'Fiat'];
+        // Enhanced brand detection with more brands
+        const brands = [
+          'Volkswagen', 'Mercedes-Benz', 'BMW', 'Audi', 'Toyota', 'Ford', 'Opel', 'Peugeot', 
+          'Renault', 'Citroën', 'Nissan', 'Volvo', 'Skoda', 'SEAT', 'Kia', 'Hyundai', 
+          'Mazda', 'Honda', 'Fiat', 'Porsche', 'Tesla', 'Jaguar', 'Land Rover', 'Mini',
+          'Alfa Romeo', 'Lexus', 'Infiniti', 'Subaru', 'Mitsubishi', 'Suzuki', 'Dacia',
+          'Smart', 'Jeep', 'Chrysler', 'Cadillac', 'Chevrolet', 'Lancia', 'Saab'
+        ];
+        
         for (const brand of brands) {
           if (title.toLowerCase().includes(brand.toLowerCase())) {
             carData.brand = brand;
-            carData.model = title.replace(new RegExp(brand, 'gi'), '').replace(/\d{4}.*/, '').trim();
+            carData.model = title.replace(new RegExp(brand, 'gi'), '').replace(/\b(19|20)\d{2}\b.*/, '').trim();
             break;
           }
         }
       }
+
+      // Log extracted data for debugging
+      console.log('Marktplaats extraction result:', {
+        brand: carData.brand,
+        model: carData.model,
+        year: carData.year,
+        price: carData.price,
+        mileage: carData.mileage,
+        fuel: carData.fuel,
+        transmission: carData.transmission,
+        color: carData.color,
+        imageCount: carData.images.length
+      });
 
       res.json(carData);
     } catch (error) {
