@@ -83,14 +83,25 @@ export class DatabaseStorage implements IStorage {
       console.log("Initializing database data...");
       
       // Check if admin user exists
-      const adminExists = await db.select().from(users).where(eq(users.username, "admin")).limit(1);
+      const adminExists = await db.select().from(users).where(eq(users.username, "ddcars")).limit(1);
       if (adminExists.length === 0) {
         await db.insert(users).values({
-          username: "admin",
-          password: "admin",
+          username: "ddcars",
+          password: "DD44carstore",
           role: "admin"
         });
-        console.log("Admin user created");
+        console.log("Primary admin user created");
+      }
+
+      // Check if secondary admin user exists
+      const secondaryAdminExists = await db.select().from(users).where(eq(users.username, "dd.cars@hotmail.com")).limit(1);
+      if (secondaryAdminExists.length === 0) {
+        await db.insert(users).values({
+          username: "dd.cars@hotmail.com",
+          password: "Versace44!",
+          role: "admin"
+        });
+        console.log("Secondary admin user created");
       }
 
       // Check if vehicles exist
