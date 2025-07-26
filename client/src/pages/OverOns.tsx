@@ -1,3 +1,4 @@
+import React from "react";
 import { Star, Award, Shield, CheckCircle, Users, Heart } from "lucide-react";
 
 export default function OverOns() {
