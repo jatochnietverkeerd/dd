@@ -102,7 +102,14 @@ export default function Contact() {
               </div>
               <div>
                 <h3 className="text-xl font-semibold mb-2" style={{color: '#D9C89E'}}>Telefoon</h3>
-                <p style={{color: '#D9C89E'}}>+31 6 15 40 41 04</p>
+                <a 
+                  href="tel:+31615404104" 
+                  className="transition-colors duration-300 hover:opacity-80 underline"
+                  style={{color: '#D9C89E'}}
+                  title="Klik om te bellen"
+                >
+                  +31 6 15 40 41 04
+                </a>
               </div>
             </div>
             

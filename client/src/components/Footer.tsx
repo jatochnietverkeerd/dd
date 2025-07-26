@@ -143,11 +143,25 @@ export default function Footer() {
               </li>
               <li className="flex items-center">
                 <Phone size={16} className="mr-2" />
-                +31 6 15 40 41 04
+                <a 
+                  href="tel:+31615404104" 
+                  className="transition-colors duration-300 hover:opacity-80 underline"
+                  style={{color: '#D9C89E'}}
+                  title="Klik om te bellen"
+                >
+                  +31 6 15 40 41 04
+                </a>
               </li>
               <li className="flex items-center">
                 <Mail size={16} className="mr-2" />
-                DD.Cars@hotmail.nl
+                <a 
+                  href="mailto:DD.Cars@hotmail.nl" 
+                  className="transition-colors duration-300 hover:opacity-80 underline"
+                  style={{color: '#D9C89E'}}
+                  title="Stuur een email"
+                >
+                  DD.Cars@hotmail.nl
+                </a>
               </li>
             </ul>
           </div>
