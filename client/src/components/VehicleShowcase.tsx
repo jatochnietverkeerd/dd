@@ -18,6 +18,12 @@ export default function VehicleShowcase() {
     queryKey: ['/api/vehicles'],
   });
 
+  // Calculate available vehicles for display and count
+  const availableVehicles = allVehicles?.filter(v => 
+    (v.available !== false && v.status !== 'gearchiveerd' && v.status !== 'verkocht') || 
+    (!v.status || v.status === 'beschikbaar')
+  ) || [];
+
   if (isLoading) {
     return (
       <section id="aanbod" className="py-20 bg-dark-primary">
@@ -62,10 +68,6 @@ export default function VehicleShowcase() {
           {(() => {
             // Show featured vehicles first, then fill with recent non-featured vehicles if needed
             const featured = featuredVehicles || [];
-            const availableVehicles = allVehicles?.filter(v => 
-              (v.available !== false && v.status !== 'gearchiveerd' && v.status !== 'verkocht') || 
-              (!v.status || v.status === 'beschikbaar')
-            ) || [];
             const nonFeatured = availableVehicles.filter(v => !v.featured);
             const displayVehicles = [...featured];
             
