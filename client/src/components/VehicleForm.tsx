@@ -43,6 +43,12 @@ interface VehicleFormProps {
 
 export default function VehicleForm({ vehicle, isOpen, onClose, token }: VehicleFormProps) {
   const [images, setImages] = useState<string[]>(vehicle?.images || []);
+  
+  // Debug wrapper for setImages
+  const setImagesWithLog = (newImages: string[]) => {
+    console.log('VehicleForm setImages called with:', newImages);
+    setImages(newImages);
+  };
   const [marktplaatsUrl, setMarktplaatsUrl] = useState("");
   const [licensePlate, setLicensePlate] = useState("");
   const [isImporting, setIsImporting] = useState(false);
@@ -277,6 +283,8 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
   };
 
   const onSubmit = (data: VehicleFormData) => {
+    console.log('Form submission - Current images:', images); // Debug log
+    
     const formDataWithImages = {
       ...data,
       images: images,
@@ -287,6 +295,8 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
       // Remove undefined values to prevent validation issues
       ...Object.fromEntries(Object.entries(data).filter(([_, v]) => v !== undefined && v !== null && v !== "")),
     };
+    
+    console.log('Form data being submitted:', formDataWithImages); // Debug log
     
     if (vehicle) {
       updateVehicleMutation.mutate(formDataWithImages);
@@ -540,9 +550,8 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
 
           <div>
             <ImageUploader
-              key={vehicle?.id || 'new'}
               initialImages={images}
-              onImagesChange={setImages}
+              onImagesChange={setImagesWithLog}
               maxImages={20}
               token={token}
             />

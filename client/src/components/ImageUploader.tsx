@@ -51,6 +51,7 @@ export default function ImageUploader({
     const urls = newImages
       .filter(img => img.isUploaded)
       .map(img => img.url);
+    console.log('ImageUploader updateParent called with:', urls); // Debug log
     onImagesChange(urls);
   }, [onImagesChange]);
 
