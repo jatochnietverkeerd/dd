@@ -42,15 +42,8 @@ interface VehicleFormProps {
 }
 
 export default function VehicleForm({ vehicle, isOpen, onClose, token }: VehicleFormProps) {
-  const [images, setImages] = useState<string[]>(vehicle?.images || []);
+  const [images, setImages] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
-  // Debug wrapper for setImages - FIXED: removed dependency on images to prevent stale closure
-  const setImagesWithLog = useCallback((newImages: string[]) => {
-    console.log('🎯 VehicleForm setImagesWithLog received:', newImages);
-    setImages(newImages);
-    console.log('🎯 VehicleForm setImages state updated to:', newImages);
-  }, []);
   const [marktplaatsUrl, setMarktplaatsUrl] = useState("");
   const [licensePlate, setLicensePlate] = useState("");
   const [isImporting, setIsImporting] = useState(false);
@@ -78,11 +71,10 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
     mode: "onChange",
   });
 
-  // Reset form when vehicle changes or dialog opens
+  // Reset form when dialog opens
   useEffect(() => {
     if (isOpen) {
       const vehicleImages = vehicle?.images || [];
-      console.log('🎯 VehicleForm useEffect resetting form for vehicle:', vehicle?.id, 'with images:', vehicleImages);
       
       form.reset({
         brand: vehicle?.brand || "",
@@ -99,8 +91,6 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
         images: vehicleImages,
       });
       
-      // Always reset images when form opens - this ensures clean state
-      console.log('🎯 VehicleForm resetting images state to:', vehicleImages);
       setImages(vehicleImages);
     }
   }, [vehicle, isOpen, form]);
@@ -264,8 +254,7 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
         body: { url: marktplaatsUrl }
       });
 
-      // Fill form with imported data
-      const importedImages = response.images || [];
+      // Fill form with imported data - no images from Marktplaats
       form.reset({
         brand: response.brand || "",
         model: response.model || "",
@@ -278,17 +267,24 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
         description: response.description || "",
         featured: false,
         status: "beschikbaar",
-        images: importedImages,
+        images: [],
       });
       
-      // Update images state immediately
-      setImages(importedImages);
-      console.log('🎯 Marktplaats import: Setting images to:', importedImages);
+      setImages([]);
       
-      toast({
-        title: "Import succesvol",
-        description: "Auto gegevens zijn geïmporteerd. Controleer en pas aan indien nodig.",
-      });
+      // Show validation warnings if any
+      if (response.validationWarnings && response.validationWarnings.length > 0) {
+        toast({
+          title: "Import met waarschuwingen",
+          description: `${response.validationWarnings.join(", ")}. Controleer alle velden zorgvuldig.`,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Import succesvol",
+          description: "Auto gegevens zijn geïmporteerd. Controleer en pas aan indien nodig.",
+        });
+      }
     } catch (error) {
       console.error('Import error:', error);
       toast({
@@ -361,10 +357,10 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
     console.log('🚀 FORM DATA:', data);
     console.log('🚀 FORM ERRORS:', form.formState.errors);
     
-    // FIXED: Simple approach - just ensure images are in the data
+    // Ensure images are included in submission
     const formDataWithImages = {
       ...data,
-      images: images, // Always use the current images state
+      images: images,
       available: true,
       price: String(data.price),
     };
@@ -669,7 +665,7 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
           <div>
             <ImageUploader
               initialImages={images}
-              onImagesChange={setImagesWithLog}
+              onImagesChange={setImages}
               maxImages={20}
               token={token}
             />

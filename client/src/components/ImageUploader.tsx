@@ -38,15 +38,12 @@ export default function ImageUploader({
   
   // Update images when initialImages changes
   useEffect(() => {
-    console.log('📸 ImageUploader useEffect triggered - initialImages changed:', initialImages);
-    console.log('📸 ImageUploader current images before reset:', images.map(img => img.url));
     setImages(initialImages.map((url, index) => ({
       id: `initial-${index}`,
       url,
       preview: url,
       isUploaded: true
     })));
-    console.log('📸 ImageUploader images reset to initialImages');
   }, [initialImages]);
   const { toast } = useToast();
 
@@ -54,11 +51,7 @@ export default function ImageUploader({
     const urls = newImages
       .filter(img => img.isUploaded)
       .map(img => img.url);
-    console.log('📸 ImageUploader updateParent called with URLs:', urls);
-    console.log('📸 ImageUploader total images:', newImages.length, 'uploaded:', newImages.filter(img => img.isUploaded).length);
-    console.log('📸 ImageUploader calling onImagesChange callback...');
     onImagesChange(urls);
-    console.log('📸 ImageUploader onImagesChange callback completed');
   }, [onImagesChange]);
 
   const uploadImage = async (file: File): Promise<string> => {
@@ -124,29 +117,21 @@ export default function ImageUploader({
       });
     }
 
-    // First add images to state showing as uploading
-    setImages(prev => {
-      const updated = [...prev, ...newImages];
-      console.log('📸 Added new images to upload queue:', newImages.length, 'total images now:', updated.length);
-      return updated;
-    });
+    // Add images to state
+    setImages(prev => [...prev, ...newImages]);
 
-    // Upload images one by one to avoid race conditions
+    // Upload images one by one 
     for (const imageFile of newImages) {
       try {
         const url = await uploadImage(imageFile.file!);
-        // Update the specific image when upload completes
+        
         setImages(prev => {
           const updated = prev.map(img => 
             img.id === imageFile.id 
               ? { ...img, url, isUploaded: true }
               : img
           );
-          console.log('📸 Image upload completed, updated images:', updated.map(img => ({id: img.id, url: img.url, uploaded: img.isUploaded})));
-          
-          // Always call parent update to keep state in sync
           updateParent(updated);
-          
           return updated;
         });
       } catch (error) {
@@ -156,10 +141,9 @@ export default function ImageUploader({
           description: `Kon afbeelding niet uploaden: ${imageFile.file?.name}`,
           variant: "destructive",
         });
-        // Remove failed upload
+        
         setImages(prev => {
           const updated = prev.filter(img => img.id !== imageFile.id);
-          console.log('📸 Upload failed, removed image, remaining:', updated.length);
           updateParent(updated);
           return updated;
         });
