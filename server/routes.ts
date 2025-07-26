@@ -901,7 +901,93 @@ Sitemap: ${baseUrl}/sitemap.xml`;
     }
   });
 
-  // Marktplaats Import Endpoint
+  // License Plate Lookup Endpoint (RDW API)
+  app.post('/api/admin/lookup-license-plate', authenticateAdmin, async (req, res) => {
+    try {
+      const { licensePlate } = req.body;
+      
+      if (!licensePlate) {
+        return res.status(400).json({ error: 'License plate is required' });
+      }
+
+      // Clean license plate (remove spaces, dashes, make uppercase)
+      const cleanPlate = licensePlate.replace(/[-\s]/g, '').toUpperCase();
+      
+      // RDW Open Data API call
+      const rdwUrl = `https://opendata.rdw.nl/resource/m9d7-ebf2.json?kenteken=${cleanPlate}`;
+      const response = await fetch(rdwUrl);
+      
+      if (!response.ok) {
+        return res.status(400).json({ error: 'Unable to fetch vehicle data from RDW' });
+      }
+
+      const rdwData = await response.json();
+      
+      if (!rdwData || rdwData.length === 0) {
+        return res.status(404).json({ error: 'No vehicle found with this license plate' });
+      }
+
+      const vehicleData = rdwData[0];
+      
+      // Map RDW data to our vehicle structure
+      const carData = {
+        brand: vehicleData.merk || '',
+        model: vehicleData.handelsbenaming || vehicleData.type || '',
+        year: vehicleData.datum_eerste_toelating ? parseInt(vehicleData.datum_eerste_toelating.substring(0, 4)) : new Date().getFullYear(),
+        price: '', // Price not available from RDW, user must enter
+        mileage: 0, // Mileage not available from RDW, user must enter
+        fuel: mapFuelType(vehicleData.brandstof_omschrijving),
+        transmission: vehicleData.inrichting === 'automatisch' ? 'automaat' : 'handgeschakeld',
+        color: vehicleData.eerste_kleur || '',
+        description: generateDescription(vehicleData),
+        images: [] as string[],
+        // Additional data for BPM calculations
+        co2Uitstoot: vehicleData.co2_uitstoot_gecombineerd ? parseInt(vehicleData.co2_uitstoot_gecombineerd) : undefined,
+        datumEersteToelating: vehicleData.datum_eerste_toelating ? new Date(vehicleData.datum_eerste_toelating) : undefined,
+        nettoCatalogusprijs: vehicleData.catalogusprijs ? parseInt(vehicleData.catalogusprijs) : undefined,
+        power: vehicleData.vermogen_massarijklaar ? `${vehicleData.vermogen_massarijklaar} kW` : undefined,
+        chassisNumber: vehicleData.voertuigsoort || undefined
+      };
+
+      res.json(carData);
+    } catch (error) {
+      console.error('License plate lookup error:', error);
+      res.status(500).json({ error: 'Failed to lookup vehicle data' });
+    }
+  });
+
+  // Helper function to map RDW fuel types to our system
+  function mapFuelType(rdwFuelType: string): string {
+    if (!rdwFuelType) return '';
+    
+    const fuel = rdwFuelType.toLowerCase();
+    if (fuel.includes('benzine') || fuel.includes('gasoline')) return 'benzine';
+    if (fuel.includes('diesel')) return 'diesel';
+    if (fuel.includes('elektrisch') || fuel.includes('electric')) return 'elektrisch';
+    if (fuel.includes('hybride') || fuel.includes('hybrid')) return 'hybrid';
+    if (fuel.includes('lpg')) return 'lpg';
+    if (fuel.includes('cng')) return 'cng';
+    return rdwFuelType;
+  }
+
+  // Helper function to generate professional description from RDW data
+  function generateDescription(vehicleData: any): string {
+    const brand = vehicleData.merk || '';
+    const model = vehicleData.handelsbenaming || vehicleData.type || '';
+    const year = vehicleData.datum_eerste_toelating ? vehicleData.datum_eerste_toelating.substring(0, 4) : '';
+    const fuel = vehicleData.brandstof_omschrijving || '';
+    const power = vehicleData.vermogen_massarijklaar ? `${vehicleData.vermogen_massarijklaar} kW` : '';
+    const doors = vehicleData.aantal_deuren || '';
+    const seats = vehicleData.aantal_zitplaatsen || '';
+    
+    return `${brand} ${model} ${year} in uitstekende staat. ` +
+           `Deze ${fuel.toLowerCase()} auto ${power ? `met ${power} vermogen ` : ''}biedt betrouwbaarheid en comfort. ` +
+           `${doors ? `${doors} deuren, ` : ''}${seats ? `${seats} zitplaatsen. ` : ''}` +
+           `Volledig onderhouden en technisch in perfecte conditie. ` +
+           `Een uitstekende keuze voor wie kwaliteit en prestaties zoekt.`;
+  }
+
+  // Marktplaats Import Endpoint (Fixed)
   app.post('/api/admin/import-marktplaats', authenticateAdmin, async (req, res) => {
     try {
       const { url } = req.body;

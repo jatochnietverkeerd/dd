@@ -44,7 +44,9 @@ interface VehicleFormProps {
 export default function VehicleForm({ vehicle, isOpen, onClose, token }: VehicleFormProps) {
   const [images, setImages] = useState<string[]>(vehicle?.images || []);
   const [marktplaatsUrl, setMarktplaatsUrl] = useState("");
+  const [licensePlate, setLicensePlate] = useState("");
   const [isImporting, setIsImporting] = useState(false);
+  const [isLookingUp, setIsLookingUp] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -158,6 +160,62 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
     },
   });
 
+  const handleLicensePlateLookup = async () => {
+    if (!licensePlate.trim()) {
+      toast({
+        title: "Kenteken vereist",
+        description: "Voer een kenteken in om op te zoeken.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsLookingUp(true);
+    try {
+      const response = await apiRequest('/api/admin/lookup-license-plate', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: { licensePlate: licensePlate.trim() }
+      });
+
+      // Fill form with RDW data
+      form.reset({
+        brand: response.brand || "",
+        model: response.model || "",
+        year: response.year || new Date().getFullYear(),
+        price: "", // User must enter price
+        mileage: 0, // User must enter mileage
+        fuel: response.fuel || "",
+        transmission: response.transmission || "",
+        color: response.color || "",
+        description: response.description || "",
+        featured: false,
+        status: "beschikbaar",
+        images: [],
+      });
+
+      toast({
+        title: "Kenteken gevonden!",
+        description: "Voertuiggegevens zijn succesvol opgehaald van RDW. Vul nu de prijs en kilometerstand in.",
+      });
+      
+      // Focus on price field since that's what user needs to enter
+      setTimeout(() => {
+        const priceField = document.querySelector('input[name="price"]') as HTMLInputElement;
+        if (priceField) priceField.focus();
+      }, 100);
+      
+    } catch (error: any) {
+      toast({
+        title: "Kenteken niet gevonden",
+        description: error.message || "Kon geen voertuiggegevens vinden voor dit kenteken.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLookingUp(false);
+    }
+  };
+
   const handleImportFromUrl = async () => {
     if (!marktplaatsUrl.trim()) {
       toast({
@@ -252,13 +310,47 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
         </DialogHeader>
         
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          {/* License Plate Lookup Section - only show for new vehicles */}
+          {!vehicle && (
+            <Card className="bg-green-900 border-green-700">
+              <CardHeader>
+                <CardTitle className="text-green-400">🚗 Kenteken Opzoeken (Aanbevolen)</CardTitle>
+                <CardDescription className="text-gray-300">
+                  Voer een Nederlands kenteken in om automatisch alle officiële RDW gegevens op te halen
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex gap-2">
+                  <Input
+                    value={licensePlate}
+                    onChange={(e) => setLicensePlate(e.target.value.toUpperCase())}
+                    placeholder="12-ABC-3 of 12ABC3"
+                    className="bg-gray-900 border-gray-600 text-white flex-1 font-mono text-lg"
+                    maxLength={8}
+                  />
+                  <Button
+                    type="button"
+                    onClick={handleLicensePlateLookup}
+                    disabled={isLookingUp}
+                    className="bg-green-500 hover:bg-green-600 text-white"
+                  >
+                    {isLookingUp ? "Zoeken..." : "Opzoeken"}
+                  </Button>
+                </div>
+                <p className="text-xs text-gray-400">
+                  ✅ Officiële RDW gegevens • ✅ Automatische beschrijving • ⚡ Snelste methode
+                </p>
+              </CardContent>
+            </Card>
+          )}
+
           {/* Marktplaats Import Section - only show for new vehicles */}
           {!vehicle && (
             <Card className="bg-gray-800 border-gray-700">
               <CardHeader>
-                <CardTitle className="text-yellow-500">Import van Marktplaats</CardTitle>
+                <CardTitle className="text-yellow-500">📱 Import van Marktplaats</CardTitle>
                 <CardDescription className="text-gray-400">
-                  Plak een Marktplaats auto URL om automatisch alle gegevens in te vullen
+                  Als alternatief: plak een Marktplaats auto URL om gegevens in te vullen
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -278,6 +370,9 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
                     {isImporting ? "Importeren..." : "Importeren"}
                   </Button>
                 </div>
+                <p className="text-xs text-gray-400">
+                  ⚠️ Mogelijk onnauwkeurig • 📸 Importeert afbeeldingen
+                </p>
               </CardContent>
             </Card>
           )}
