@@ -80,65 +80,73 @@ export default function Header() {
         </div>
       </nav>
       
-      {/* Mobile Navigation */}
-      <div className={`md:hidden fixed inset-0 bg-dark-primary transform transition-transform duration-300 z-50 ${
-        isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
-      }`}>
-        {/* Close button */}
-        <div className="absolute top-4 right-4 z-60">
-          <button
-            onClick={closeMobileMenu}
-            className="p-2 transition-colors duration-300"
-            style={{color: '#D9C89E'}}
-          >
-            <X size={28} />
-          </button>
-        </div>
-        
-        {/* Menu Content */}
-        <div className="flex flex-col h-full pt-20 px-8">
-          {/* Logo Section */}
-          <div className="text-center mb-12">
-            <Logo className="h-16 mx-auto mb-4" />
-            <h2 className="text-xl font-light" style={{color: '#D9C89E'}}>DD Cars</h2>
-          </div>
-          
-          {/* Navigation Links */}
-          <div className="flex flex-col space-y-6">
-            <Link 
-              href="/" 
-              onClick={closeMobileMenu}
-              className="text-xl py-4 px-6 rounded-lg transition-all duration-300 border border-transparent hover:border-[#D9C89E]/30 hover:bg-[#D9C89E]/10"
-              style={{color: '#D9C89E'}}
-            >
-              🏠 Home
-            </Link>
-            <Link 
-              href="/aanbod" 
-              onClick={closeMobileMenu}
-              className="text-xl py-4 px-6 rounded-lg transition-all duration-300 border border-transparent hover:border-[#D9C89E]/30 hover:bg-[#D9C89E]/10"
-              style={{color: '#D9C89E'}}
-            >
-              🚗 Aanbod
-            </Link>
-            <Link 
-              href="/over-ons" 
-              onClick={closeMobileMenu}
-              className="text-xl py-4 px-6 rounded-lg transition-all duration-300 border border-transparent hover:border-[#D9C89E]/30 hover:bg-[#D9C89E]/10"
-              style={{color: '#D9C89E'}}
-            >
-              👥 Over Ons
-            </Link>
+      {/* Mobile Navigation - Full Screen Overlay */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden fixed inset-0 bg-dark-primary z-[9999] flex flex-col">
+          {/* Header with close button */}
+          <div className="flex justify-between items-center p-6 border-b border-gray-700">
+            <h2 className="text-xl font-semibold" style={{color: '#D9C89E'}}>Menu</h2>
             <button
-              onClick={() => scrollToSection('contact')}
-              className="text-xl py-4 px-6 rounded-lg transition-all duration-300 border border-transparent hover:border-[#D9C89E]/30 hover:bg-[#D9C89E]/10 text-left"
+              onClick={closeMobileMenu}
+              className="p-2 hover:bg-gray-800 rounded-lg transition-colors"
               style={{color: '#D9C89E'}}
             >
-              📞 Contact
+              <X size={24} />
             </button>
           </div>
+          
+          {/* Menu Content */}
+          <div className="flex-1 overflow-y-auto p-6">
+            {/* Logo Section */}
+            <div className="text-center mb-8">
+              <Logo className="h-12 mx-auto mb-3" />
+              <p className="text-sm opacity-75" style={{color: '#D9C89E'}}>Betrouwbare Occasions</p>
+            </div>
+            
+            {/* Navigation Links */}
+            <div className="space-y-4">
+              <Link 
+                href="/" 
+                onClick={closeMobileMenu}
+                className="flex items-center gap-3 w-full p-4 rounded-xl bg-gray-800/50 hover:bg-gray-700/50 transition-colors"
+                style={{color: '#D9C89E'}}
+              >
+                <span className="text-2xl">🏠</span>
+                <span className="text-lg">Home</span>
+              </Link>
+              
+              <Link 
+                href="/aanbod" 
+                onClick={closeMobileMenu}
+                className="flex items-center gap-3 w-full p-4 rounded-xl bg-gray-800/50 hover:bg-gray-700/50 transition-colors"
+                style={{color: '#D9C89E'}}
+              >
+                <span className="text-2xl">🚗</span>
+                <span className="text-lg">Aanbod</span>
+              </Link>
+              
+              <Link 
+                href="/over-ons" 
+                onClick={closeMobileMenu}
+                className="flex items-center gap-3 w-full p-4 rounded-xl bg-gray-800/50 hover:bg-gray-700/50 transition-colors"
+                style={{color: '#D9C89E'}}
+              >
+                <span className="text-2xl">👥</span>
+                <span className="text-lg">Over Ons</span>
+              </Link>
+              
+              <button
+                onClick={() => scrollToSection('contact')}
+                className="flex items-center gap-3 w-full p-4 rounded-xl bg-gray-800/50 hover:bg-gray-700/50 transition-colors text-left"
+                style={{color: '#D9C89E'}}
+              >
+                <span className="text-2xl">📞</span>
+                <span className="text-lg">Contact</span>
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
+      )}
     </header>
   );
 }
