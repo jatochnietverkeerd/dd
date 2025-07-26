@@ -56,6 +56,7 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
   const [licensePlate, setLicensePlate] = useState("");
   const [isImporting, setIsImporting] = useState(false);
   const [isLookingUp, setIsLookingUp] = useState(false);
+  const [isRestructuring, setIsRestructuring] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -295,6 +296,57 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
       });
     }
     setIsImporting(false);
+  };
+
+  const handleRestructureDescription = async () => {
+    const currentDescription = form.watch("description");
+    
+    if (!currentDescription.trim()) {
+      toast({
+        title: "Geen beschrijving",
+        description: "Voer eerst een beschrijving in om te herstructureren.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsRestructuring(true);
+    try {
+      const vehicleData = {
+        brand: form.watch("brand"),
+        model: form.watch("model"),
+        year: form.watch("year"),
+        fuel: form.watch("fuel"),
+        transmission: form.watch("transmission"),
+        color: form.watch("color"),
+        mileage: form.watch("mileage"),
+      };
+
+      const response = await apiRequest('/api/admin/restructure-description', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: { 
+          description: currentDescription,
+          vehicleData 
+        }
+      });
+
+      form.setValue("description", response.description, { shouldValidate: true });
+      
+      toast({
+        title: "Beschrijving herstructureerd",
+        description: "De beschrijving is professioneel herstructureerd met AI.",
+      });
+      
+    } catch (error: any) {
+      toast({
+        title: "Herstructureren mislukt",
+        description: error.message || "Kon de beschrijving niet herstructureren.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsRestructuring(false);
+    }
   };
 
   const onSubmit = (data: VehicleFormData) => {
@@ -593,17 +645,32 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
           </div>
 
           <div>
-            <Label htmlFor="description">Beschrijving</Label>
+            <div className="flex justify-between items-center mb-2">
+              <Label htmlFor="description">Beschrijving</Label>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={handleRestructureDescription}
+                disabled={isRestructuring}
+                className="text-purple-400 border-purple-400 hover:bg-purple-400 hover:text-white"
+              >
+                {isRestructuring ? "Herstructureren..." : "🤖 AI Herstructureren"}
+              </Button>
+            </div>
             <Textarea
               id="description"
               {...form.register("description")}
               className="bg-gray-800 border-gray-700 text-white"
               placeholder="Gedetailleerde beschrijving van het voertuig..."
-              rows={4}
+              rows={6}
             />
             {form.formState.errors.description && (
               <p className="text-red-400 text-sm mt-1">{form.formState.errors.description.message}</p>
             )}
+            <p className="text-xs text-gray-400 mt-1">
+              Tip: Plak een ruwe beschrijving en gebruik AI Herstructureren voor professionele opmaak
+            </p>
           </div>
 
           <div>
