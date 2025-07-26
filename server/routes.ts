@@ -10,6 +10,8 @@ import path from "path";
 import fs from "fs";
 import { generateInvoicePDF, createInvoiceData } from "./pdfService_new";
 import { sendInvoiceEmail, sendContactFormEmail, sendContactAutoReply } from "./emailService";
+import { uploadImageToCloudinary, migrateLocalImagesToCloudinary, isCloudinaryUrl, testCloudinaryConfig } from "./cloudinaryService";
+import { transferImagesToStaticFolder, setupImageServing } from "./imageTransferService";
 import * as cheerio from 'cheerio';
 
 // Ensure uploads directory exists
@@ -137,13 +139,106 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
   app.use('/uploads', express.static(uploadsDir));
 
-  // Image upload route
-  app.post('/api/upload/image', authenticateAdmin, upload.single('image'), (req, res) => {
+  // Test Cloudinary configuration endpoint
+  app.get('/api/admin/test-cloudinary', authenticateAdmin, (req, res) => {
+    const config = testCloudinaryConfig();
+    res.json(config);
+  });
+
+  // Simple image transfer endpoint (fallback solution)
+  app.post('/api/admin/transfer-images', authenticateAdmin, async (req, res) => {
+    try {
+      console.log('🔄 Starting image transfer to static folder...');
+      const result = await transferImagesToStaticFolder();
+      
+      res.json({
+        message: 'Image transfer completed successfully',
+        transferred: result.transferred,
+        updatedVehicles: result.updatedVehicles,
+        errors: result.errors.length,
+        details: result
+      });
+    } catch (error) {
+      console.error('Transfer error:', error);
+      res.status(500).json({ 
+        message: 'Image transfer failed', 
+        error: error instanceof Error ? error.message : 'Unknown error' 
+      });
+    }
+  });
+
+  // Migration endpoint to move images to Cloudinary
+  app.post('/api/admin/migrate-images', authenticateAdmin, async (req, res) => {
+    try {
+      const config = testCloudinaryConfig();
+      if (!config.configured) {
+        return res.status(400).json({ 
+          message: 'Cloudinary credentials not configured properly',
+          missing: config.missing
+        });
+      }
+
+      const { migrations, errors } = await migrateLocalImagesToCloudinary(uploadsDir);
+      
+      if (migrations.length > 0) {
+        // Update vehicle image URLs in database
+        const vehicles = await storage.getVehicles();
+        let updatedVehicles = 0;
+
+        for (const vehicle of vehicles) {
+          if (vehicle.images && vehicle.images.length > 0) {
+            const updatedImages = vehicle.images.map(imageUrl => {
+              const migration = migrations.find(m => m.oldUrl === imageUrl);
+              return migration ? migration.newUrl : imageUrl;
+            });
+
+            if (JSON.stringify(updatedImages) !== JSON.stringify(vehicle.images)) {
+              await storage.updateVehicle(vehicle.id, { images: updatedImages });
+              updatedVehicles++;
+            }
+          }
+        }
+
+        res.json({
+          message: 'Migration completed successfully',
+          migratedImages: migrations.length,
+          updatedVehicles,
+          errors: errors.length,
+          details: { migrations, errors }
+        });
+      } else {
+        res.json({
+          message: 'No images needed migration',
+          errors: errors.length,
+          details: { errors }
+        });
+      }
+    } catch (error) {
+      console.error('Migration error:', error);
+      res.status(500).json({ message: 'Migration failed', error: error instanceof Error ? error.message : 'Unknown error' });
+    }
+  });
+
+  // Image upload route with cloud storage fallback
+  app.post('/api/upload/image', authenticateAdmin, upload.single('image'), async (req, res) => {
     try {
       if (!req.file) {
         return res.status(400).json({ message: 'No file uploaded' });
       }
 
+      // Try Cloudinary first if configured
+      if (process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_API_SECRET) {
+        try {
+          const cloudinaryResult = await uploadImageToCloudinary(req.file.path);
+          // Delete local file after successful upload
+          fs.unlinkSync(req.file.path);
+          return res.json({ url: cloudinaryResult.secure_url });
+        } catch (cloudinaryError) {
+          console.log('Cloudinary upload failed, falling back to local storage:', cloudinaryError);
+        }
+      }
+
+      // Fallback to local storage
       const imageUrl = `/uploads/${req.file.filename}`;
       res.json({ url: imageUrl });
     } catch (error) {
