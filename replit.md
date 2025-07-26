@@ -592,11 +592,14 @@ When deployed to production (NODE_ENV=production):
 - **Professional Descriptions**: Auto-generates professional Dutch descriptions from RDW data
 - **Time Savings**: 95% reduction in manual data entry with official accuracy
 
-### Marktplaats URL Import System (Alternative Method)
+### Enhanced Marktplaats URL Import System (Updated July 26, 2025)
 - **URL-Based Import**: Paste any Marktplaats car URL to auto-fill vehicle form
-- **Smart Data Extraction**: Automatically extracts brand, model, year, price, mileage, fuel type, transmission, color
+- **Enhanced Data Extraction**: Improved extraction of mileage (kilometerstand), color, fuel type, transmission
+- **Multiple Extraction Patterns**: Advanced pattern matching for reliable data capture from various page layouts
+- **Professional Descriptions**: Auto-generates structured descriptions matching RDW format with organized sections
 - **Image Processing**: Imports up to 10 high-quality images (1600x1200) directly from listings
-- **Intelligent Parsing**: Recognizes 20+ major car brands with fallback detection
+- **Brand Recognition**: Recognizes 35+ major car brands with intelligent parsing
+- **Data Validation**: Range validation for mileage (10-2,000,000 km) to prevent extraction errors
 - **Quality Control**: Manual review and editing before publishing
 
 ### Technical Implementation

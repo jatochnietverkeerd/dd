@@ -1075,44 +1075,81 @@ Een uitstekende keuze voor wie zoekt naar kwaliteit, prestaties en betrouwbaarhe
       // Extract specifications from various selectors
       const specs = {};
       
-      // Try different selectors for specifications
-      $('.vip-ad-attributes dt, .vip-ad-attributes dd, .mp-listing-attributes dt, .mp-listing-attributes dd, .attributes dt, .attributes dd').each((i, elem) => {
+      // Enhanced specification extraction with better selectors
+      $('.vip-specs tr, .vip-ad-attributes dt, .vip-ad-attributes dd, .mp-listing-attributes dt, .mp-listing-attributes dd, .attributes dt, .attributes dd, .spec-item, .specification-item').each((i, elem) => {
         const text = $(elem).text().trim().toLowerCase();
         const nextText = $(elem).next().text().trim();
+        const fullText = $(elem).text().trim();
         
-        if (text.includes('kilometerstand') || text.includes('km')) {
-          const kmMatch = nextText.match(/[\d.,]+/);
+        // Better mileage extraction
+        if (text.includes('kilometerstand') || text.includes('km-stand') || text.includes('kilometers')) {
+          const kmMatch = nextText.match(/([\d.,]+)\s*km/i) || nextText.match(/([\d.,]+)/);
           if (kmMatch) {
-            carData.mileage = parseInt(kmMatch[0].replace(/[.,]/g, ''));
+            const mileageStr = kmMatch[1].replace(/[.,]/g, '');
+            const mileageNum = parseInt(mileageStr);
+            if (mileageNum > 0 && mileageNum < 2000000) { // Reasonable range
+              carData.mileage = mileageNum;
+            }
+          }
+        }
+        
+        // Extract mileage from same row text
+        const mileageInRow = fullText.match(/([\d]{1,3}(?:[.,]\d{3})*)\s*km/i);
+        if (mileageInRow && !carData.mileage) {
+          const mileageStr = mileageInRow[1].replace(/[.,]/g, '');
+          const mileageNum = parseInt(mileageStr);
+          if (mileageNum > 0 && mileageNum < 2000000) {
+            carData.mileage = mileageNum;
           }
         }
         
         if (text.includes('brandstof') || text.includes('fuel')) {
-          if (nextText.toLowerCase().includes('benzine')) carData.fuel = 'benzine';
-          else if (nextText.toLowerCase().includes('diesel')) carData.fuel = 'diesel';
-          else if (nextText.toLowerCase().includes('hybrid')) carData.fuel = 'hybrid';
-          else if (nextText.toLowerCase().includes('elektrisch')) carData.fuel = 'elektrisch';
+          const fuelText = nextText.toLowerCase();
+          if (fuelText.includes('benzine') || fuelText.includes('gasoline')) carData.fuel = 'benzine';
+          else if (fuelText.includes('diesel')) carData.fuel = 'diesel';
+          else if (fuelText.includes('hybrid')) carData.fuel = 'hybrid';
+          else if (fuelText.includes('elektrisch') || fuelText.includes('electric')) carData.fuel = 'elektrisch';
+          else if (fuelText.includes('lpg')) carData.fuel = 'lpg';
         }
         
-        if (text.includes('transmissie') || text.includes('schakeling')) {
-          if (nextText.toLowerCase().includes('handgeschakeld') || nextText.toLowerCase().includes('hand')) carData.transmission = 'handgeschakeld';
-          else if (nextText.toLowerCase().includes('automaat') || nextText.toLowerCase().includes('automatic')) carData.transmission = 'automaat';
-          else if (nextText.toLowerCase().includes('semi')) carData.transmission = 'semi-automaat';
+        if (text.includes('transmissie') || text.includes('schakeling') || text.includes('versnelling')) {
+          const transText = nextText.toLowerCase();
+          if (transText.includes('handgeschakeld') || transText.includes('hand') || transText.includes('manual')) carData.transmission = 'handgeschakeld';
+          else if (transText.includes('automaat') || transText.includes('automatic') || transText.includes('aut')) carData.transmission = 'automaat';
+          else if (transText.includes('semi')) carData.transmission = 'semi-automaat';
         }
         
-        if (text.includes('kleur') || text.includes('color')) {
-          carData.color = nextText;
+        if (text.includes('kleur') || text.includes('color') || text.includes('lak')) {
+          if (nextText && nextText.length > 0 && nextText !== '-') {
+            carData.color = nextText;
+          }
         }
       });
 
-      // Alternative extraction from text content
+      // Alternative extraction from page content with enhanced patterns
       const fullText = $('body').text();
       
-      // Extract mileage if not found
-      if (!carData.mileage) {
-        const kmMatch = fullText.match(/(\d{1,3}(?:[.,]\d{3})*)\s*km/i);
-        if (kmMatch) {
-          carData.mileage = parseInt(kmMatch[1].replace(/[.,]/g, ''));
+      // Multiple patterns for mileage extraction if not found
+      if (!carData.mileage || carData.mileage <= 10) {
+        const mileagePatterns = [
+          /(\d{1,3}(?:[.,]\d{3})*)\s*km(?:\s|$)/gi,
+          /kilometerstand:?\s*(\d{1,3}(?:[.,]\d{3})*)/gi,
+          /km-stand:?\s*(\d{1,3}(?:[.,]\d{3})*)/gi,
+          /(\d{1,3}(?:[.,]\d{3})*)\s*kilometers?/gi
+        ];
+        
+        for (const pattern of mileagePatterns) {
+          const match = fullText.match(pattern);
+          if (match) {
+            const mileageStr = match[0].match(/(\d{1,3}(?:[.,]\d{3})*)/);
+            if (mileageStr) {
+              const mileageNum = parseInt(mileageStr[1].replace(/[.,]/g, ''));
+              if (mileageNum > 10 && mileageNum < 2000000) {
+                carData.mileage = mileageNum;
+                break;
+              }
+            }
+          }
         }
       }
       
@@ -1138,10 +1175,13 @@ Een uitstekende keuze voor wie zoekt naar kwaliteit, prestaties en betrouwbaarhe
         carData.price = priceMatch[1].replace(/[.,]/g, '');
       }
 
-      // Extract description
-      const description = $('.mp-listing-description').text().trim() || $('.description').text().trim() || $('[class*="description"]').text().trim();
-      if (description) {
-        carData.description = description;
+      // Generate structured description like RDW data
+      carData.description = generateMarktplaatsDescription(carData, title);
+      
+      // Extract original description as backup
+      const originalDescription = $('.mp-listing-description').text().trim() || $('.description').text().trim() || $('[class*="description"]').text().trim();
+      if (originalDescription && originalDescription.length > carData.description.length) {
+        carData.description += `\n\n**Originele beschrijving:**\n${originalDescription}`;
       }
 
       // Extract specifications from the page
@@ -1222,8 +1262,11 @@ Een uitstekende keuze voor wie zoekt naar kwaliteit, prestaties en betrouwbaarhe
         }
       }
 
-      // Log extracted data for debugging
-      console.log('Marktplaats extraction result:', {
+      // Generate structured description like RDW data
+      carData.description = generateMarktplaatsDescription(carData, title);
+      
+      // Log enhanced extraction data for debugging
+      console.log('Enhanced Marktplaats extraction result:', {
         brand: carData.brand,
         model: carData.model,
         year: carData.year,
@@ -1234,6 +1277,8 @@ Een uitstekende keuze voor wie zoekt naar kwaliteit, prestaties en betrouwbaarhe
         color: carData.color,
         imageCount: carData.images.length
       });
+      console.log('Final mileage extracted:', carData.mileage);
+      console.log('Final color extracted:', carData.color);
 
       res.json(carData);
     } catch (error) {
@@ -1255,6 +1300,28 @@ Een uitstekende keuze voor wie zoekt naar kwaliteit, prestaties en betrouwbaarhe
       }
     }
   });
+
+  // Helper function to generate structured description for Marktplaats imports
+  function generateMarktplaatsDescription(carData: any, title: string): string {
+    return `**${carData.brand} ${carData.model} ${carData.year}**
+
+**Voertuig specificaties:**
+• Brandstof: ${carData.fuel || 'Niet gespecificeerd'}
+${carData.mileage ? `• Kilometerstand: ${carData.mileage.toLocaleString('nl-NL')} km\n` : ''}${carData.transmission ? `• Transmissie: ${carData.transmission}\n` : ''}${carData.color ? `• Kleur: ${carData.color}\n` : ''}
+**Conditie:**
+• Geïmporteerd van Marktplaats advertentie
+• Controleer alle details bij bezichtiging
+• Vraag naar onderhoudshistorie
+
+**DD Cars Service:**
+• Professionele inspectie aanbevolen
+• Transparante bemiddeling
+• Betrouwbare service en begeleiding
+
+Een interessante auto geïmporteerd van Marktplaats. Alle details onder voorbehoud - controleer bij bezichtiging.
+
+*Alle informatie onder voorbehoud van typefouten. Wijzigingen en verkoop voorbehouden.*`;
+  }
 
   const httpServer = createServer(app);
   return httpServer;
