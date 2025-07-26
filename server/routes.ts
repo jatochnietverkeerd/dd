@@ -1323,6 +1323,319 @@ Sitemap: ${baseUrl}/sitemap.xml`;
     }
   });
 
+  // AI-Enhanced Marktplaats Import Endpoint (New)
+  app.post('/api/admin/import-marktplaats-ai', authenticateAdmin, async (req, res) => {
+    try {
+      const { url } = req.body;
+      
+      if (!url || !url.includes('marktplaats.nl')) {
+        return res.status(400).json({ error: 'Valid Marktplaats URL is required' });
+      }
+
+      console.log('AI-Enhanced Marktplaats import started for:', url);
+
+      // Fetch the page content
+      const response = await fetch(url, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+          'Accept-Language': 'nl-NL,nl;q=0.9,en;q=0.8',
+          'Accept-Encoding': 'gzip, deflate, br',
+          'DNT': '1',
+          'Connection': 'keep-alive',
+          'Upgrade-Insecure-Requests': '1',
+        }
+      });
+
+      console.log('Marktplaats fetch status:', response.status, response.statusText);
+
+      if (!response.ok) {
+        return res.status(400).json({ 
+          error: `Unable to fetch Marktplaats page. Status: ${response.status} ${response.statusText}` 
+        });
+      }
+
+      const html = await response.text();
+      const $ = cheerio.load(html);
+
+      // Extract all visible text content for AI analysis
+      const visibleText = $('body').find('*').contents().filter(function() {
+        return this.nodeType === 3; // Text nodes only
+      }).map(function() {
+        return $(this).text().trim();
+      }).get().filter(text => text.length > 2).join('\n');
+
+      // Clean and prepare text for AI analysis (limit to prevent token overflow)
+      const cleanText = visibleText
+        .replace(/\s+/g, ' ')
+        .replace(/\n+/g, '\n')
+        .substring(0, 12000) // Increased limit for comprehensive extraction
+        .trim();
+
+      console.log('Extracted text length for AI analysis:', cleanText.length);
+
+      // Use Gemini AI to extract comprehensive car data like ChatGPT
+      const aiPrompt = `Analyze this Dutch Marktplaats car listing and extract detailed vehicle information. Return ONLY a valid JSON object with comprehensive details.
+
+LISTING CONTENT:
+${cleanText}
+
+Extract and structure all available information in this JSON format:
+{
+  "brand": "car brand name",
+  "model": "complete model name and variant",
+  "year": number,
+  "price": "asking price without € symbol (numbers only)",
+  "mileage": number,
+  "fuel": "benzine/diesel/hybrid/elektrisch",
+  "transmission": "automaat/handgeschakeld/semi-automaat",
+  "color": "exterior color",
+  "specifications": {
+    "engine": "engine description with displacement",
+    "power": "power in pk and/or kW",
+    "torque": "torque if available",
+    "acceleration": "0-100 km/h time if available",
+    "topSpeed": "maximum speed if available",
+    "consumption": "fuel consumption if available",
+    "co2": "CO2 emissions if available",
+    "energyLabel": "energy rating if available",
+    "cylinders": "number of cylinders if available",
+    "displacement": "engine displacement in cc or liters"
+  },
+  "features": {
+    "safety": ["ABS", "ESP", "airbags", "etc if mentioned"],
+    "exterior": ["alloy wheels", "sunroof", "etc if mentioned"],
+    "interior": ["leather seats", "airco", "etc if mentioned"],
+    "infotainment": ["navigation", "bluetooth", "etc if mentioned"]
+  },
+  "dimensions": {
+    "doors": "number of doors if available",
+    "seats": "number of seats if available",
+    "weight": "weight if available",
+    "length": "length if available",
+    "width": "width if available",
+    "height": "height if available"
+  },
+  "condition": {
+    "apkUntil": "APK valid until date if mentioned",
+    "owners": "number of previous owners if mentioned",
+    "condition": "overall condition description if available"
+  },
+  "originalDescription": "the original sales text from the listing"
+}
+
+Important: Return ONLY the JSON object, no explanations or markdown formatting.`;
+
+      console.log('Sending request to Gemini AI...');
+
+      // Call Gemini API
+      const aiResponse = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' + process.env.GEMINI_API_KEY, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contents: [{
+            parts: [{
+              text: aiPrompt
+            }]
+          }],
+          generationConfig: {
+            temperature: 0.1,
+            maxOutputTokens: 3000
+          }
+        })
+      });
+
+      if (!aiResponse.ok) {
+        throw new Error(`Gemini API error: ${aiResponse.status}`);
+      }
+
+      const aiData = await aiResponse.json();
+      const aiText = aiData.candidates?.[0]?.content?.parts?.[0]?.text;
+
+      if (!aiText) {
+        throw new Error('No response from AI service');
+      }
+
+      console.log('AI Response length:', aiText.length);
+
+      // Parse AI response
+      let carData;
+      try {
+        // Clean the response to ensure it's valid JSON
+        const cleanJson = aiText.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+        carData = JSON.parse(cleanJson);
+        console.log('AI successfully parsed car data:', Object.keys(carData));
+      } catch (parseError) {
+        console.error('Failed to parse AI response as JSON:', parseError);
+        console.error('AI response preview:', aiText.substring(0, 500));
+        throw new Error('AI returned invalid JSON format');
+      }
+
+      // Validate essential data
+      if (!carData.brand || !carData.model) {
+        throw new Error('AI could not extract basic vehicle information (brand/model missing)');
+      }
+
+      // Generate professional DD Cars description using structured data
+      const ddDescription = generateEnhancedMarktplaatsDescription(carData);
+      carData.description = ddDescription;
+      
+      // Truth validation
+      const validationWarnings = validateMarktplaatsData(carData);
+      
+      console.log('AI Enhanced extraction result:', {
+        brand: carData.brand,
+        model: carData.model,
+        year: carData.year,
+        price: carData.price,
+        mileage: carData.mileage,
+        hasSpecifications: !!carData.specifications && Object.keys(carData.specifications).length > 0,
+        hasFeatures: !!carData.features && Object.keys(carData.features).length > 0,
+        hasDimensions: !!carData.dimensions && Object.keys(carData.dimensions).length > 0,
+        hasCondition: !!carData.condition && Object.keys(carData.condition).length > 0,
+        validationWarnings: validationWarnings.length,
+        descriptionLength: carData.description ? carData.description.length : 0
+      });
+
+      // Prepare comprehensive response
+      const responseData = {
+        brand: carData.brand,
+        model: carData.model,
+        year: carData.year || new Date().getFullYear(),
+        price: carData.price || '',
+        mileage: carData.mileage || 0,
+        fuel: carData.fuel || '',
+        transmission: carData.transmission || '',
+        color: carData.color || '',
+        description: carData.description,
+        specifications: carData.specifications || {},
+        features: carData.features || {},
+        dimensions: carData.dimensions || {},
+        condition: carData.condition || {},
+        originalDescription: carData.originalDescription || '',
+        images: [], // Images will be empty for now
+        validationWarnings: validationWarnings,
+        enhanced: true // Flag to indicate this is AI-enhanced data
+      };
+
+      console.log('Final AI-enhanced response structure:', {
+        basicFields: ['brand', 'model', 'year', 'price', 'mileage', 'fuel', 'transmission', 'color'].filter(k => responseData[k as keyof typeof responseData]),
+        enhancedFields: Object.keys(responseData.specifications).length + Object.keys(responseData.features).length + Object.keys(responseData.dimensions).length + Object.keys(responseData.condition).length,
+        descriptionLength: responseData.description.length
+      });
+
+      res.json(responseData);
+    } catch (error) {
+      console.error('AI-Enhanced Marktplaats import error:', error);
+      
+      if (error instanceof Error) {
+        if (error.message.includes('Gemini API')) {
+          res.status(500).json({ 
+            error: 'AI analysis failed. Please try the basic import instead.' 
+          });
+        } else if (error.message.includes('fetch')) {
+          res.status(500).json({ 
+            error: 'Network error: Unable to access Marktplaats URL.' 
+          });
+        } else {
+          res.status(500).json({ 
+            error: `AI Import failed: ${error.message}` 
+          });
+        }
+      } else {
+        res.status(500).json({ error: 'Failed to import car data with AI enhancement' });
+      }
+    }
+  });
+
+  // Enhanced description generator for AI-imported data
+  function generateEnhancedMarktplaatsDescription(carData: any): string {
+    let description = `Beschrijving\n\n`;
+    
+    // Algemene informatie section
+    description += `Algemene informatie\n`;
+    if (carData.year) description += `Bouwjaar: ${carData.year}\n`;
+    if (carData.color) description += `Kleur: ${carData.color}\n`;
+    if (carData.fuel) description += `Brandstof: ${carData.fuel}\n`;
+    if (carData.transmission) description += `Transmissie: ${carData.transmission}\n`;
+    if (carData.mileage) description += `Kilometerstand: ${carData.mileage.toLocaleString('nl-NL')} km\n`;
+    if (carData.dimensions?.doors) description += `Aantal deuren: ${carData.dimensions.doors}\n`;
+    if (carData.dimensions?.seats) description += `Aantal zitplaatsen: ${carData.dimensions.seats}\n`;
+    
+    // Technische gegevens section
+    description += `\nTechnische gegevens\n`;
+    description += `Merk: ${carData.brand}\n`;
+    description += `Model: ${carData.model}\n`;
+    if (carData.specifications?.engine) description += `Motor: ${carData.specifications.engine}\n`;
+    if (carData.specifications?.power) description += `Vermogen: ${carData.specifications.power}\n`;
+    if (carData.specifications?.torque) description += `Koppel: ${carData.specifications.torque}\n`;
+    if (carData.specifications?.acceleration) description += `Acceleratie 0-100: ${carData.specifications.acceleration}\n`;
+    if (carData.specifications?.topSpeed) description += `Topsnelheid: ${carData.specifications.topSpeed}\n`;
+    if (carData.specifications?.consumption) description += `Verbruik: ${carData.specifications.consumption}\n`;
+    if (carData.specifications?.co2) description += `CO2-uitstoot: ${carData.specifications.co2}\n`;
+    if (carData.specifications?.energyLabel) description += `Energielabel: ${carData.specifications.energyLabel}\n`;
+    
+    // Uitrusting section if features are available
+    if (carData.features && Object.keys(carData.features).length > 0) {
+      description += `\nUitrusting en opties\n`;
+      if (carData.features.safety?.length > 0) {
+        description += `Veiligheid: ${carData.features.safety.join(', ')}\n`;
+      }
+      if (carData.features.exterior?.length > 0) {
+        description += `Exterieur: ${carData.features.exterior.join(', ')}\n`;
+      }
+      if (carData.features.interior?.length > 0) {
+        description += `Interieur: ${carData.features.interior.join(', ')}\n`;
+      }
+      if (carData.features.infotainment?.length > 0) {
+        description += `Infotainment: ${carData.features.infotainment.join(', ')}\n`;
+      }
+    }
+    
+    // Staat section
+    description += `\nStaat\n`;
+    if (carData.condition?.condition) {
+      description += `${carData.condition.condition}\n`;
+    } else {
+      description += `Optische staat: goed\n`;
+      description += `Staat interieur: goed\n`;
+    }
+    if (carData.condition?.apkUntil) description += `APK geldig tot: ${carData.condition.apkUntil}\n`;
+    if (carData.condition?.owners) description += `Aantal eigenaren: ${carData.condition.owners}\n`;
+    
+    // Financiële informatie section
+    description += `\nFinanciële informatie\n`;
+    if (carData.price) description += `Vraagprijs: €${parseInt(carData.price).toLocaleString('nl-NL')}\n`;
+    description += `BTW/marge: BTW niet verrekenbaar voor ondernemers (margeregeling)\n`;
+    
+    // Original description if available
+    if (carData.originalDescription) {
+      description += `\nOriginele beschrijving\n`;
+      description += `${carData.originalDescription}\n\n`;
+    } else {
+      description += `\nBeschrijving\n`;
+      description += `${carData.brand} ${carData.model} uit ${carData.year}. Geïmporteerd van Marktplaats advertentie met AI-verrijking.\n\n`;
+    }
+    
+    // DD Cars standard footer
+    description += `Wij werken op afspraak graag even bellen voor vertrek.\n\n`;
+    description += `Onze vraagprijzen zijn meeneemprijzen\n`;
+    description += `Wanneer u uw auto wilt inruilen ontvangen wij graag de informatie van uw huidige auto om zo indicatief een voorstel te kunnen maken.\n`;
+    description += `Ook heeft DD Cars verschillende financiering mogelijkheden en we doen u graag een voorstel.\n`;
+    description += `Alle moeite is genomen om de informatie op deze internetsite zo accuraat en actueel mogelijk weer te geven.\n`;
+    description += `Fouten zijn echter nooit uit te sluiten. Vertrouw daarom niet alleen op deze informatie, maar controleer bij aankoop de zaken die uw beslissing kunnen beïnvloeden.\n\n`;
+    
+    description += `DD Cars\n\n`;
+    description += `Koekoekslaan 1A\n`;
+    description += `1171PG Badhoevedorp\n`;
+    description += `E-Mail: DD.Cars@hotmail.nl\n`;
+    description += `Tel: 06 15 40 41 04\n`;
+    
+    return description;
+  }
+
   // AI Description Restructure Endpoint
   app.post('/api/admin/restructure-description', authenticateAdmin, async (req, res) => {
     try {

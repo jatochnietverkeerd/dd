@@ -430,6 +430,9 @@ The application uses a modern, type-safe architecture with excellent developer e
 - **Structured Marktplaats Import**: Returns properly formatted descriptions matching dealer format with sections (COMPLETED - working perfectly)
 - **Truth Validation Warnings**: Users receive immediate feedback about suspicious imported data
 - **Professional Description Generation**: Marktplaats imports now generate 1000+ character structured descriptions with company branding
+- **AI-Enhanced Marktplaats Import (NEW - July 26, 2025)**: Comprehensive vehicle data extraction using Gemini AI to match ChatGPT capabilities
+- **Dual Import System**: Basic import for quick data extraction + AI import for detailed specifications, features, and dimensions
+- **Enhanced UI**: Side-by-side import buttons with clear descriptions of capabilities
 
 ## Excel Export & Enhanced Financial Reporting (July 11, 2025)
 

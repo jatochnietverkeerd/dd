@@ -296,6 +296,97 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
     setIsImporting(false);
   };
 
+  const handleAIImportFromUrl = async () => {
+    if (!marktplaatsUrl.trim()) {
+      toast({
+        title: "URL vereist",
+        description: "Voer een Marktplaats URL in om te importeren.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!marktplaatsUrl.includes('marktplaats.nl')) {
+      toast({
+        title: "Ongeldige URL",
+        description: "Voer een geldige Marktplaats URL in.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsImporting(true);
+    try {
+      const response = await apiRequest('/api/admin/import-marktplaats-ai', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: { url: marktplaatsUrl }
+      });
+
+      // Fill form with AI-enhanced imported data
+      form.reset({
+        brand: response.brand || "",
+        model: response.model || "",
+        year: response.year || new Date().getFullYear(),
+        price: response.price || "",
+        mileage: response.mileage || 0,
+        fuel: response.fuel || "",
+        transmission: response.transmission || "",
+        color: response.color || "",
+        description: response.description || "",
+        featured: false,
+        status: "beschikbaar",
+        images: [],
+      });
+      
+      setImages([]);
+
+      // Show AI enhancement details
+      const enhancementDetails = [];
+      if (response.specifications && Object.keys(response.specifications).length > 0) {
+        enhancementDetails.push(`${Object.keys(response.specifications).length} specificaties`);
+      }
+      if (response.features && Object.keys(response.features).length > 0) {
+        enhancementDetails.push(`uitrusting (${Object.keys(response.features).length} categorieën)`);
+      }
+      if (response.dimensions && Object.keys(response.dimensions).length > 0) {
+        enhancementDetails.push(`afmetingen`);
+      }
+      
+      // Show validation warnings if any
+      if (response.validationWarnings && response.validationWarnings.length > 0) {
+        toast({
+          title: "🤖 AI Import met waarschuwingen",
+          description: `Uitgebreide analyse voltooid: ${enhancementDetails.join(', ')}. Controleer: ${response.validationWarnings.join(", ")}`,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "🤖 AI Import succesvol",
+          description: `Uitgebreide voertuiganalyse voltooid met ${enhancementDetails.join(', ')}.`,
+        });
+      }
+
+      // Log enhanced data for debugging
+      console.log('🤖 AI Enhanced Data:', {
+        specifications: response.specifications,
+        features: response.features,
+        dimensions: response.dimensions,
+        condition: response.condition,
+        originalDescription: response.originalDescription
+      });
+      
+    } catch (error) {
+      console.error('AI Import error:', error);
+      toast({
+        title: "🤖 AI Import mislukt",
+        description: "AI analyse kon niet worden voltooid. Probeer de basis import.",
+        variant: "destructive",
+      });
+    }
+    setIsImporting(false);
+  };
+
   const handleAIRestructure = async () => {
     const currentDescription = form.watch("description");
     if (!currentDescription) {
@@ -468,25 +559,37 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="flex gap-2">
+                <div className="space-y-2">
                   <Input
                     value={marktplaatsUrl}
                     onChange={(e) => setMarktplaatsUrl(e.target.value)}
                     placeholder="https://www.marktplaats.nl/a/auto-s/..."
-                    className="bg-gray-900 border-gray-600 text-white flex-1"
+                    className="bg-gray-900 border-gray-600 text-white w-full"
                   />
-                  <Button
-                    type="button"
-                    onClick={handleImportFromUrl}
-                    disabled={isImporting}
-                    className="bg-yellow-500 hover:bg-yellow-600 text-black"
-                  >
-                    {isImporting ? "Proberen..." : "Proberen"}
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button
+                      type="button"
+                      onClick={handleImportFromUrl}
+                      disabled={isImporting || !marktplaatsUrl.trim()}
+                      className="bg-yellow-500 hover:bg-yellow-600 text-black flex-1"
+                    >
+                      {isImporting ? "Basis..." : "📄 Basis Import"}
+                    </Button>
+                    <Button
+                      type="button"
+                      onClick={handleAIImportFromUrl}
+                      disabled={isImporting || !marktplaatsUrl.trim()}
+                      className="bg-purple-600 hover:bg-purple-700 text-white flex-1"
+                    >
+                      {isImporting ? "AI..." : "🤖 AI Import"}
+                    </Button>
+                  </div>
                 </div>
-                <p className="text-xs text-gray-400">
-                  ⚠️ Werkt niet altijd door anti-bot beveiliging • Gebruik kenteken lookup of handmatige invoer
-                </p>
+                <div className="text-xs text-gray-400 space-y-1">
+                  <p>📄 <strong>Basis Import:</strong> Snelle import van basisgegevens (merk, model, jaar, prijs)</p>
+                  <p>🤖 <strong>AI Import:</strong> Uitgebreide analyse met specificaties, uitrusting, dimensies zoals ChatGPT</p>
+                  <p className="text-yellow-400">⚠️ Werkt niet altijd door anti-bot beveiliging • Gebruik kenteken lookup of handmatige invoer</p>
+                </div>
               </CardContent>
             </Card>
           )}
