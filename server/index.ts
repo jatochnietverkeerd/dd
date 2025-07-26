@@ -1,3 +1,6 @@
+// Fix Cloudinary URL format before any imports
+process.env.CLOUDINARY_URL = 'cloudinary://361681299372585:yHBKkU3hZOHSvTVtGAoMHa7hYsk@dpqb9lz1i';
+
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";

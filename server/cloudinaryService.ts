@@ -1,14 +1,14 @@
+// Set the correct CLOUDINARY_URL before importing the library
+process.env.CLOUDINARY_URL = 'cloudinary://361681299372585:yHBKkU3hZOHSvTVtGAoMHa7hYsk@dpqb9lz1i';
+
 import { v2 as cloudinary } from 'cloudinary';
 import multer from 'multer';
 
-// Configure Cloudinary using environment variables
-// Remove CLOUDINARY_URL from environment to avoid conflicts and use direct config
-delete process.env.CLOUDINARY_URL;
-
+// Additional configuration to ensure settings are correct
 cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
+  cloud_name: 'dpqb9lz1i',
+  api_key: '361681299372585',
+  api_secret: 'yHBKkU3hZOHSvTVtGAoMHa7hYsk',
   secure: true,
 });
 
