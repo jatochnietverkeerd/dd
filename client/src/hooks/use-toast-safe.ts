@@ -61,13 +61,45 @@ function createSafeToast() {
 }
 
 export function useSafeToast() {
-  // Complete fallback without any React hooks
+  // Safe React hook usage with fallback
+  const [renderCount, setRenderCount] = (typeof React !== 'undefined' && React.useState)
+    ? React.useState(0)
+    : [0, () => {}];
+
+  // Safe useEffect usage
+  if (typeof React !== 'undefined' && React.useEffect) {
+    React.useEffect(() => {
+      const listener = () => {
+        if (typeof setRenderCount === 'function') {
+          setRenderCount((count: number) => count + 1);
+        }
+      };
+      
+      listeners.push(listener);
+      
+      return () => {
+        const index = listeners.indexOf(listener);
+        if (index > -1) {
+          listeners.splice(index, 1);
+        }
+      };
+    }, []);
+  }
+  
   return {
-    toasts: [],
-    toast: (options: any) => {
-      console.log('Toast message:', options.title || options.description);
-      return { id: 'fallback', dismiss: () => {} };
-    },
-    dismiss: () => {}
+    toasts: globalToasts,
+    toast: createSafeToast(),
+    dismiss: (toastId?: string) => {
+      if (toastId) {
+        const index = globalToasts.findIndex(item => item.id === toastId);
+        if (index > -1) {
+          globalToasts.splice(index, 1);
+          notifyListeners();
+        }
+      } else {
+        globalToasts.length = 0;
+        notifyListeners();
+      }
+    }
   };
 }
