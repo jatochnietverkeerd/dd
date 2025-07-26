@@ -1,7 +1,7 @@
 import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { Toaster } from "@/components/ui/toaster";
+// import { Toaster } from "@/components/ui/toaster"; // Temporarily disabled
 import WhatsAppFloating from "@/components/WhatsAppFloating";
 
 import Home from "@/pages/Home";
@@ -29,7 +29,7 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <Toaster />
+      {/* <Toaster /> Temporarily disabled to ensure preview works */}
       <Router />
       <WhatsAppFloating />
     </QueryClientProvider>

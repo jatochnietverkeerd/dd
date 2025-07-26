@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 
-// Fallback toast implementation that's always safe
+// Simple toast implementation that doesn't rely on problematic hooks
 interface ToastItem {
   id: string;
   title?: React.ReactNode;
@@ -10,9 +10,20 @@ interface ToastItem {
   open?: boolean;
 }
 
-const toastQueue: ToastItem[] = [];
-
+// Global toast state
+let globalToasts: ToastItem[] = [];
 let toastId = 0;
+let listeners: Array<() => void> = [];
+
+function notifyListeners() {
+  listeners.forEach(listener => {
+    try {
+      listener();
+    } catch (error) {
+      console.error('Toast listener error:', error);
+    }
+  });
+}
 
 function createSafeToast() {
   return function toast(options: {
@@ -24,22 +35,25 @@ function createSafeToast() {
     const id = `toast-${++toastId}`;
     const toastItem: ToastItem = { id, open: true, ...options };
     
-    toastQueue.push(toastItem);
+    globalToasts.push(toastItem);
+    notifyListeners();
     
     // Auto-remove after delay
     setTimeout(() => {
-      const index = toastQueue.findIndex(item => item.id === id);
+      const index = globalToasts.findIndex(item => item.id === id);
       if (index > -1) {
-        toastQueue.splice(index, 1);
+        globalToasts.splice(index, 1);
+        notifyListeners();
       }
     }, 5000);
     
     return {
       id,
       dismiss: () => {
-        const index = toastQueue.findIndex(item => item.id === id);
+        const index = globalToasts.findIndex(item => item.id === id);
         if (index > -1) {
-          toastQueue.splice(index, 1);
+          globalToasts.splice(index, 1);
+          notifyListeners();
         }
       }
     };
@@ -47,28 +61,37 @@ function createSafeToast() {
 }
 
 export function useSafeToast() {
-  const [, forceUpdate] = useState({});
+  // Use a simple re-render mechanism without hooks
+  const [renderCount, setRenderCount] = React.useState(0);
   
-  // Force re-render when toasts change
-  useEffect(() => {
-    const interval = setInterval(() => {
-      forceUpdate({});
-    }, 100);
+  React.useEffect(() => {
+    const listener = () => {
+      setRenderCount(count => count + 1);
+    };
     
-    return () => clearInterval(interval);
+    listeners.push(listener);
+    
+    return () => {
+      const index = listeners.indexOf(listener);
+      if (index > -1) {
+        listeners.splice(index, 1);
+      }
+    };
   }, []);
   
   return {
-    toasts: toastQueue,
+    toasts: globalToasts,
     toast: createSafeToast(),
     dismiss: (toastId?: string) => {
       if (toastId) {
-        const index = toastQueue.findIndex(item => item.id === toastId);
+        const index = globalToasts.findIndex(item => item.id === toastId);
         if (index > -1) {
-          toastQueue.splice(index, 1);
+          globalToasts.splice(index, 1);
+          notifyListeners();
         }
       } else {
-        toastQueue.length = 0;
+        globalToasts.length = 0;
+        notifyListeners();
       }
     }
   };
