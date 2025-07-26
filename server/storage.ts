@@ -104,18 +104,7 @@ export class DatabaseStorage implements IStorage {
         console.log("Secondary admin user created");
       }
 
-      // Development/testing admin user - only for Replit environment
-      if (process.env.NODE_ENV === 'development' || process.env.REPLIT_DB_URL) {
-        const devAdminExists = await db.select().from(users).where(eq(users.username, "admin")).limit(1);
-        if (devAdminExists.length === 0) {
-          await db.insert(users).values({
-            username: "admin",
-            password: "admin",
-            role: "admin"
-          });
-          console.log("Development admin user (admin/admin) created for testing");
-        }
-      }
+
 
       // Check if vehicles exist - no longer creating sample vehicles with placeholder images
       const vehicleCount = await db.select({ count: sql`count(*)` }).from(vehicles);
