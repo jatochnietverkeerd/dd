@@ -208,10 +208,12 @@ export default function VehicleDetail() {
               <h1 className="text-4xl font-light mb-2">
                 {vehicle.brand} <span className="text-luxury-gold font-bold">{vehicle.model}</span>
               </h1>
-              <p className="text-gray-400 mb-6 whitespace-pre-wrap">{vehicle.description}</p>
+              <div className="text-gray-400 mb-6 whitespace-pre-line leading-relaxed">
+                {vehicle.description}
+              </div>
               
               <div className="text-3xl font-bold text-luxury-gold mb-6">
-                {formatPrice(vehicle.price)}
+                {formatPrice(parseFloat(vehicle.price))}
               </div>
 
               {/* Quick specs */}
@@ -491,7 +493,7 @@ export default function VehicleDetail() {
                 vehicleId={vehicle.id}
                 vehicleBrand={vehicle.brand}
                 vehicleModel={vehicle.model}
-                vehiclePrice={vehicle.price}
+                vehiclePrice={parseFloat(vehicle.price)}
                 onSuccess={() => setShowReservationForm(false)}
               />
             </div>
