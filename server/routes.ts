@@ -1267,7 +1267,7 @@ Sitemap: ${baseUrl}/sitemap.xml`;
       // Truth validation for extracted data
       const validationWarnings = validateMarktplaatsData(carData);
       
-      // Log enhanced extraction data for debugging
+      // Debug logging
       console.log('Enhanced Marktplaats extraction result:', {
         brand: carData.brand,
         model: carData.model,
@@ -1278,15 +1278,31 @@ Sitemap: ${baseUrl}/sitemap.xml`;
         transmission: carData.transmission,
         color: carData.color,
         imageCount: carData.images.length,
-        validationWarnings: validationWarnings
+        validationWarnings: validationWarnings,
+        descriptionLength: carData.description ? carData.description.length : 0
       });
-      console.log('Final mileage extracted:', carData.mileage);
-      console.log('Final color extracted:', carData.color);
+      console.log('Generated description preview:', carData.description ? carData.description.substring(0, 100) + '...' : 'NO DESCRIPTION');
 
-      res.json({
-        ...carData,
+      const responseData = {
+        brand: carData.brand,
+        model: carData.model,
+        year: carData.year,
+        price: carData.price,
+        mileage: carData.mileage,
+        fuel: carData.fuel,
+        transmission: carData.transmission,
+        color: carData.color,
+        description: carData.description,
+        images: carData.images || [],
         validationWarnings: validationWarnings
+      };
+
+      console.log('Final API response data:', {
+        ...responseData,
+        description: responseData.description ? `${responseData.description.length} chars` : 'NULL'
       });
+
+      res.json(responseData);
     } catch (error) {
       console.error('Marktplaats import error:', error);
       
