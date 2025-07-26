@@ -136,7 +136,7 @@ export default function Footer() {
               </li>
               <li className="flex items-center">
                 <Phone size={16} className="mr-2" />
-                06 15 40 41 04
+                +31 6 15 40 41 04
               </li>
               <li className="flex items-center">
                 <Mail size={16} className="mr-2" />

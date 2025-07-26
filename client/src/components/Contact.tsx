@@ -102,7 +102,7 @@ export default function Contact() {
               </div>
               <div>
                 <h3 className="text-xl font-semibold mb-2" style={{color: '#D9C89E'}}>Telefoon</h3>
-                <p style={{color: '#D9C89E'}}>06 15 40 41 04</p>
+                <p style={{color: '#D9C89E'}}>+31 6 15 40 41 04</p>
               </div>
             </div>
             
