@@ -1808,6 +1808,69 @@ Keep the tone professional yet accessible, emphasize quality and reliability, an
     return description;
   }
 
+  // DDCars Sync Routes
+  app.post("/api/admin/sync/vehicles", authenticateAdmin, async (req, res) => {
+    try {
+      const { DDCarsSyncService } = await import('./syncService');
+      const syncService = new DDCarsSyncService(storage);
+      
+      const result = await syncService.syncVehiclesFromDDCars();
+      
+      res.json({
+        message: "Vehicle sync completed",
+        ...result
+      });
+    } catch (error) {
+      console.error('Sync error:', error);
+      res.status(500).json({ 
+        message: "Sync failed", 
+        error: error.message 
+      });
+    }
+  });
+
+  app.post("/api/admin/sync/full", authenticateAdmin, async (req, res) => {
+    try {
+      const { DDCarsSyncService } = await import('./syncService');
+      const syncService = new DDCarsSyncService(storage);
+      
+      const result = await syncService.performFullSync();
+      
+      res.json({
+        message: "Full sync completed",
+        ...result
+      });
+    } catch (error) {
+      console.error('Full sync error:', error);
+      res.status(500).json({ 
+        message: "Full sync failed", 
+        error: error.message 
+      });
+    }
+  });
+
+  // Auto-sync endpoint that can be called by ddcars.nl via webhook
+  app.post("/api/sync/webhook", async (req, res) => {
+    try {
+      // Verify webhook authenticity (you might want to add a secret token)
+      const { DDCarsSyncService } = await import('./syncService');
+      const syncService = new DDCarsSyncService(storage);
+      
+      const result = await syncService.syncVehiclesFromDDCars();
+      
+      res.json({
+        message: "Webhook sync completed",
+        ...result
+      });
+    } catch (error) {
+      console.error('Webhook sync error:', error);
+      res.status(500).json({ 
+        message: "Webhook sync failed", 
+        error: error.message 
+      });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

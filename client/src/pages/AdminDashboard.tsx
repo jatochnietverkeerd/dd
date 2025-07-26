@@ -13,13 +13,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
-import { LogOut, Car, Users, Plus, Edit, Trash2, Eye, CreditCard, Clock, CheckCircle, XCircle, Calculator, Download, FileText, TrendingUp, Mail, Home, ShoppingCart, Receipt } from "lucide-react";
+import { LogOut, Car, Users, Plus, Edit, Trash2, Eye, CreditCard, Clock, CheckCircle, XCircle, Calculator, Download, FileText, TrendingUp, Mail, Home, ShoppingCart, Receipt, Database } from "lucide-react";
 import * as XLSX from 'xlsx';
 import type { Vehicle, Contact, Reservation, Purchase, Sale } from "@shared/schema";
 import VehicleForm from "@/components/VehicleForm";
 import PurchaseForm from "@/components/PurchaseForm";
 import SimpleSaleForm from "@/components/SimpleSaleForm";
 import InvoiceModal from "@/components/InvoiceModal";
+import SyncPanel from "@/components/SyncPanel";
 
 export default function AdminDashboard() {
   const [, setLocation] = useLocation();
@@ -394,7 +395,7 @@ export default function AdminDashboard() {
 
       <div className="container mx-auto px-4 py-8">
         <Tabs defaultValue="vehicles" className="w-full">
-          <TabsList className="grid w-full grid-cols-4 bg-gray-900">
+          <TabsList className="grid w-full grid-cols-5 bg-gray-900">
             <TabsTrigger value="vehicles" className="data-[state=active]:bg-gray-800">
               <Car className="w-4 h-4 mr-2" />
               Voertuigen
@@ -406,6 +407,10 @@ export default function AdminDashboard() {
             <TabsTrigger value="reservations" className="data-[state=active]:bg-gray-800">
               <CreditCard className="w-4 h-4 mr-2" />
               Reserveringen
+            </TabsTrigger>
+            <TabsTrigger value="sync" className="data-[state=active]:bg-gray-800">
+              <Database className="w-4 h-4 mr-2" />
+              Sync
             </TabsTrigger>
             <TabsTrigger value="accounting" className="data-[state=active]:bg-gray-800">
               <Calculator className="w-4 h-4 mr-2" />
@@ -698,6 +703,10 @@ export default function AdminDashboard() {
                 )}
               </div>
             )}
+          </TabsContent>
+
+          <TabsContent value="sync" className="space-y-4">
+            <SyncPanel />
           </TabsContent>
 
           <TabsContent value="accounting" className="space-y-4">
