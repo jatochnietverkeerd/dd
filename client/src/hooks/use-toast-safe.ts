@@ -61,38 +61,13 @@ function createSafeToast() {
 }
 
 export function useSafeToast() {
-  // Use a simple re-render mechanism without hooks
-  const [renderCount, setRenderCount] = React.useState(0);
-  
-  React.useEffect(() => {
-    const listener = () => {
-      setRenderCount(count => count + 1);
-    };
-    
-    listeners.push(listener);
-    
-    return () => {
-      const index = listeners.indexOf(listener);
-      if (index > -1) {
-        listeners.splice(index, 1);
-      }
-    };
-  }, []);
-  
+  // Complete fallback without any React hooks
   return {
-    toasts: globalToasts,
-    toast: createSafeToast(),
-    dismiss: (toastId?: string) => {
-      if (toastId) {
-        const index = globalToasts.findIndex(item => item.id === toastId);
-        if (index > -1) {
-          globalToasts.splice(index, 1);
-          notifyListeners();
-        }
-      } else {
-        globalToasts.length = 0;
-        notifyListeners();
-      }
-    }
+    toasts: [],
+    toast: (options: any) => {
+      console.log('Toast message:', options.title || options.description);
+      return { id: 'fallback', dismiss: () => {} };
+    },
+    dismiss: () => {}
   };
 }
