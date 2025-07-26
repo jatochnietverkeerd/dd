@@ -970,7 +970,7 @@ Sitemap: ${baseUrl}/sitemap.xml`;
     return rdwFuelType;
   }
 
-  // Helper function to generate professional description from RDW data
+  // Helper function to generate simple description from RDW data
   function generateDescription(vehicleData: any): string {
     const brand = vehicleData.merk || '';
     const model = vehicleData.handelsbenaming || vehicleData.type || '';
@@ -979,27 +979,26 @@ Sitemap: ${baseUrl}/sitemap.xml`;
     const power = vehicleData.vermogen_massarijklaar ? `${vehicleData.vermogen_massarijklaar} kW` : '';
     const doors = vehicleData.aantal_deuren || '';
     const seats = vehicleData.aantal_zitplaatsen || '';
-    const transmission = vehicleData.inrichting ? vehicleData.inrichting : '';
+    const transmission = vehicleData.inrichting || '';
+    const color = vehicleData.eerste_kleur || '';
+    const bodyType = vehicleData.voertuigsoort || '';
     
-    return `**${brand} ${model} ${year}**
-
-**Voertuig specificaties:**
-• Brandstof: ${fuel}
-${power ? `• Vermogen: ${power}\n` : ''}${doors ? `• Aantal deuren: ${doors}\n` : ''}${seats ? `• Aantal zitplaatsen: ${seats}\n` : ''}${transmission ? `• Transmissie: ${transmission}\n` : ''}
-
-**Conditie:**
-• Volledig onderhouden en technisch in perfecte conditie
-• Alle onderhoudsgeschiedenis beschikbaar
-• Uitstekende staat binnen en buiten
-
-**DD Cars Garantie:**
-• Professionele inspectie uitgevoerd
-• Transparante historie en documentatie
-• Betrouwbare en kwalitatieve service
-
-Een uitstekende keuze voor wie zoekt naar kwaliteit, prestaties en betrouwbaarheid.
-
-*Alle informatie onder voorbehoud van typefouten. Wijzigingen en verkoop voorbehouden.*`;
+    // Generate simple specification-style description
+    let description = `Algemene gegevens\n`;
+    if (bodyType) description += `Carrosserievorm: ${bodyType}\n`;
+    if (doors) description += `Aantal deuren: ${doors}\n`;
+    if (fuel) description += `Brandstofsoort: ${fuel}\n`;
+    if (year) description += `Bouwjaar: ${year}\n`;
+    if (transmission) description += `Transmissie: ${transmission}\n`;
+    if (color) description += `Kleur: ${color}\n`;
+    if (seats) description += `Aantal zitplaatsen: ${seats}\n`;
+    
+    description += `\nTechnische gegevens\n`;
+    if (power) description += `Vermogen: ${power}\n`;
+    
+    description += `\nEen ${brand} ${model} uit ${year}. Alle gegevens onder voorbehoud van typefouten.`;
+    
+    return description;
   }
 
   // Marktplaats Import Endpoint (Fixed)
@@ -1414,26 +1413,18 @@ Keep the tone professional yet accessible, emphasize quality and reliability, an
     return warnings;
   }
 
-  // Helper function to generate structured description for Marktplaats imports
+  // Helper function to generate simple description for Marktplaats imports
   function generateMarktplaatsDescription(carData: any, title: string): string {
-    return `**${carData.brand} ${carData.model} ${carData.year}**
-
-**Voertuig specificaties:**
-• Brandstof: ${carData.fuel || 'Niet gespecificeerd'}
-${carData.mileage ? `• Kilometerstand: ${carData.mileage.toLocaleString('nl-NL')} km\n` : ''}${carData.transmission ? `• Transmissie: ${carData.transmission}\n` : ''}${carData.color ? `• Kleur: ${carData.color}\n` : ''}
-**Conditie:**
-• Geïmporteerd van Marktplaats advertentie
-• Controleer alle details bij bezichtiging
-• Vraag naar onderhoudshistorie
-
-**DD Cars Service:**
-• Professionele inspectie aanbevolen
-• Transparante bemiddeling
-• Betrouwbare service en begeleiding
-
-Een interessante auto geïmporteerd van Marktplaats. Alle details onder voorbehoud - controleer bij bezichtiging.
-
-*Alle informatie onder voorbehoud van typefouten. Wijzigingen en verkoop voorbehouden.*`;
+    let description = `Algemene gegevens\n`;
+    if (carData.mileage) description += `Tellerstand: ${carData.mileage.toLocaleString('nl-NL')} km\n`;
+    if (carData.fuel) description += `Brandstofsoort: ${carData.fuel}\n`;
+    if (carData.year) description += `Bouwjaar: ${carData.year}\n`;
+    if (carData.transmission) description += `Transmissie: ${carData.transmission}\n`;
+    if (carData.color) description += `Kleur: ${carData.color}\n`;
+    
+    description += `\nEen ${carData.brand} ${carData.model} uit ${carData.year}. Geïmporteerd van Marktplaats. Alle gegevens onder voorbehoud van typefouten.`;
+    
+    return description;
   }
 
   const httpServer = createServer(app);
