@@ -53,10 +53,6 @@ export default function Footer() {
               <a href="https://www.marktplaats.nl/u/dd-cars/27830238/" target="_blank" rel="noopener noreferrer" className="transition-colors duration-300 hover:opacity-80 text-sm font-medium" style={{color: '#D9C89E'}}>
                 Marktplaats
               </a>
-              {/* AutoScout24 */}
-              <a href="#" className="transition-colors duration-300 hover:opacity-80 text-sm font-medium" style={{color: '#D9C89E'}}>
-                AutoScout24
-              </a>
             </div>
           </div>
           
