@@ -1,4 +1,4 @@
-import * as React from "react"
+import React, { useState, useEffect } from "react"
 
 import type {
   ToastActionElement,
@@ -169,9 +169,19 @@ function toast({ ...props }: Toast) {
 }
 
 function useToast() {
-  const [state, setState] = React.useState<State>(memoryState)
+  // Add safety check for React hooks
+  if (!React || typeof useState !== 'function') {
+    console.warn('React hooks not available, returning fallback toast state');
+    return {
+      toasts: [],
+      toast,
+      dismiss: () => {},
+    };
+  }
 
-  React.useEffect(() => {
+  const [state, setState] = useState<State>(memoryState)
+
+  useEffect(() => {
     listeners.push(setState)
     return () => {
       const index = listeners.indexOf(setState)
