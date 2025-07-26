@@ -1413,10 +1413,46 @@ Keep the tone professional yet accessible, emphasize quality and reliability, an
     return warnings;
   }
 
-  // Helper function to generate RAW description for Marktplaats imports (no formatting)
+  // Helper function to generate structured description for Marktplaats imports
   function generateMarktplaatsDescription(carData: any, title: string): string {
-    // Return the raw title as description - minimal processing
-    return title || `${carData.brand} ${carData.model} ${carData.year}`;
+    let description = `Beschrijving\n\n`;
+    
+    description += `Algemene informatie\n`;
+    if (carData.year) description += `Bouwjaar: ${carData.year}\n`;
+    if (carData.color) description += `Kleur: ${carData.color}\n`;
+    if (carData.fuel) description += `Brandstof: ${carData.fuel}\n`;
+    if (carData.transmission) description += `Transmissie: ${carData.transmission}\n`;
+    if (carData.mileage) description += `Kilometerstand: ${carData.mileage.toLocaleString('nl-NL')} km\n`;
+    
+    description += `\nTechnische gegevens\n`;
+    description += `Merk: ${carData.brand}\n`;
+    description += `Model: ${carData.model}\n`;
+    
+    description += `\nStaat\n`;
+    description += `Optische staat: goed\n`;
+    description += `Staat interieur: goed\n`;
+    
+    description += `\nFinanciële informatie\n`;
+    if (carData.price) description += `Vraagprijs: €${parseInt(carData.price).toLocaleString('nl-NL')}\n`;
+    description += `BTW/marge: BTW niet verrekenbaar voor ondernemers (margeregeling)\n`;
+    
+    description += `\nBeschrijving\n`;
+    description += `${carData.brand} ${carData.model} uit ${carData.year}. Geïmporteerd van Marktplaats advertentie.\n\n`;
+    
+    description += `Wij werken op afspraak graag even bellen voor vertrek.\n\n`;
+    description += `Onze vraagprijzen zijn meeneemprijzen\n`;
+    description += `Wanneer u uw auto wilt inruilen ontvangen wij graag de informatie van uw huidige auto om zo indicatief een voorstel te kunnen maken.\n`;
+    description += `Ook heeft DD Cars verschillende financiering mogelijkheden en we doen u graag een voorstel.\n`;
+    description += `Alle moeite is genomen om de informatie op deze internetsite zo accuraat en actueel mogelijk weer te geven.\n`;
+    description += `Fouten zijn echter nooit uit te sluiten. Vertrouw daarom niet alleen op deze informatie, maar controleer bij aankoop de zaken die uw beslissing kunnen beïnvloeden.\n\n`;
+    
+    description += `DD Cars\n\n`;
+    description += `Koekoekslaan 1A\n`;
+    description += `1171PG Badhoevedorp\n`;
+    description += `E-Mail: DD.Cars@hotmail.nl\n`;
+    description += `Tel: 06 15 40 41 04\n`;
+    
+    return description;
   }
 
   const httpServer = createServer(app);
