@@ -43,7 +43,7 @@ export default function Footer() {
                 </svg>
               </a>
               {/* Marktplaats */}
-              <a href="#" className="transition-colors duration-300 hover:opacity-80 text-sm font-medium" style={{color: '#D9C89E'}}>
+              <a href="https://www.marktplaats.nl/u/dd-cars/27830238/" target="_blank" rel="noopener noreferrer" className="transition-colors duration-300 hover:opacity-80 text-sm font-medium" style={{color: '#D9C89E'}}>
                 Marktplaats
               </a>
               {/* AutoScout24 */}
@@ -119,15 +119,15 @@ export default function Footer() {
             <ul className="space-y-2" style={{color: '#D9C89E'}}>
               <li className="flex items-center">
                 <MapPin size={16} className="mr-2" />
-                Hoofdstraat 123, Amsterdam
+                Koekoekslaan 1A, 1171PG Badhoevedorp
               </li>
               <li className="flex items-center">
                 <Phone size={16} className="mr-2" />
-                +31 20 123 4567
+                06 15 40 41 04
               </li>
               <li className="flex items-center">
                 <Mail size={16} className="mr-2" />
-                info@ddcars.nl
+                DD.Cars@hotmail.nl
               </li>
             </ul>
           </div>

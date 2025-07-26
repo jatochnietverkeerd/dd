@@ -513,7 +513,7 @@ When deployed to production (NODE_ENV=production):
 6. ✅ **Client-side HTTPS redirect** - JavaScript fallback for immediate redirect
 7. **Deploy to production** - Replit provides automatic HTTPS
 
-### Contact Information Update (July 26, 2025)
+### Contact & Business Integration Update (July 26, 2025)
 
 ### Business Contact Details Updated
 - **New Address**: Koekoekslaan 1A, 1171PG Badhoevedorp
@@ -521,10 +521,17 @@ When deployed to production (NODE_ENV=production):
 - **New Phone**: 06 15 40 41 04
 - **Comprehensive Update**: All components, PDFs, and structured data updated
 
+### Marktplaats Integration
+- **Profile Link**: Connected Marktplaats button to actual profile: https://www.marktplaats.nl/u/dd-cars/27830238/
+- **Security Features**: Added proper external link attributes (target="_blank", rel="noopener noreferrer")
+- **User Experience**: Opens in new tab for seamless browsing experience
+- **Business Integration**: Direct connection to listings platform for customer acquisition
+
 ### Updated Locations
 - **Contact Component**: Main contact section with address, phone, email
 - **PDF Invoice System**: Company information in all generated invoices
 - **Vehicle Detail Pages**: Contact CTA buttons with correct phone number
+- **Footer Section**: Complete contact info and Marktplaats link integration
 - **Structured Data**: Schema.org markup for search engine optimization
 - **SEO Integration**: Search engines will index correct business information
 
