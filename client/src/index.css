@@ -2,6 +2,28 @@
 @tailwind components;
 @tailwind utilities;
 
+/* WhatsApp Float Button Override - Force visibility */
+.whatsapp-float {
+  position: fixed !important;
+  bottom: 24px !important;
+  right: 24px !important;
+  width: 64px !important;
+  height: 64px !important;
+  background-color: #D9C89E !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3) !important;
+  z-index: 99999 !important;
+  cursor: pointer !important;
+  transition: transform 0.3s ease !important;
+}
+
+.whatsapp-float:hover {
+  transform: scale(1.1) !important;
+}
+
 /* Smooth scroll behavior */
 html {
   scroll-behavior: smooth;

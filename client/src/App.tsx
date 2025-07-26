@@ -2,7 +2,6 @@ import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
-import WhatsAppFloat from "@/components/WhatsAppFloat";
 
 import Home from "@/pages/Home";
 import Aanbod from "@/pages/Aanbod";
@@ -31,7 +30,6 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <Toaster />
       <Router />
-      <WhatsAppFloat />
     </QueryClientProvider>
   );
 }
