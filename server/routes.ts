@@ -11,8 +11,9 @@ import fs from "fs";
 import { generateInvoicePDF, createInvoiceData } from "./pdfService_new";
 import { sendInvoiceEmail, sendContactFormEmail, sendContactAutoReply } from "./emailService";
 import * as cheerio from 'cheerio';
-import { upload as cloudinaryUpload, uploadToCloudinary, deleteFromCloudinary, getCloudinaryImages } from "./cloudinaryService";
-import { migrateExistingImagesToCloudinary } from "./migrateImagesToCloudinary";
+// Temporarily disabled Cloudinary to fix startup issue
+// import { upload as cloudinaryUpload, uploadToCloudinary, deleteFromCloudinary, getCloudinaryImages } from "./cloudinaryService";
+// import { migrateExistingImagesToCloudinary } from "./migrateImagesToCloudinary";
 
 // Ensure uploads directory exists
 const uploadsDir = path.join(process.cwd(), 'uploads');
@@ -153,6 +154,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Temporarily disabled Cloudinary routes to fix startup issue
+  /*
   // Cloudinary upload endpoint
   app.post('/api/admin/upload-cloudinary', authenticateAdmin, cloudinaryUpload.single('image'), async (req, res) => {
     try {
@@ -218,6 +221,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     }
   });
+  */
 
   // Vehicle routes
   app.get("/api/vehicles", async (req, res) => {
