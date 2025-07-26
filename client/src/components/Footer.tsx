@@ -117,9 +117,12 @@ export default function Footer() {
           <div>
             <h4 className="text-lg font-semibold mb-4" style={{color: '#D9C89E'}}>Contact Info</h4>
             <ul className="space-y-2" style={{color: '#D9C89E'}}>
-              <li className="flex items-center">
-                <MapPin size={16} className="mr-2" />
-                Koekoekslaan 1A, 1171PG Badhoevedorp
+              <li className="flex items-start">
+                <MapPin size={16} className="mr-2 mt-0.5" />
+                <div>
+                  Koekoekslaan 1A<br />
+                  1171PG Badhoevedorp
+                </div>
               </li>
               <li className="flex items-center">
                 <Phone size={16} className="mr-2" />
