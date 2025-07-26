@@ -979,12 +979,27 @@ Sitemap: ${baseUrl}/sitemap.xml`;
     const power = vehicleData.vermogen_massarijklaar ? `${vehicleData.vermogen_massarijklaar} kW` : '';
     const doors = vehicleData.aantal_deuren || '';
     const seats = vehicleData.aantal_zitplaatsen || '';
+    const transmission = vehicleData.inrichting ? vehicleData.inrichting : '';
     
-    return `${brand} ${model} ${year} in uitstekende staat. ` +
-           `Deze ${fuel.toLowerCase()} auto ${power ? `met ${power} vermogen ` : ''}biedt betrouwbaarheid en comfort. ` +
-           `${doors ? `${doors} deuren, ` : ''}${seats ? `${seats} zitplaatsen. ` : ''}` +
-           `Volledig onderhouden en technisch in perfecte conditie. ` +
-           `Een uitstekende keuze voor wie kwaliteit en prestaties zoekt.`;
+    return `**${brand} ${model} ${year}**
+
+**Voertuig specificaties:**
+• Brandstof: ${fuel}
+${power ? `• Vermogen: ${power}\n` : ''}${doors ? `• Aantal deuren: ${doors}\n` : ''}${seats ? `• Aantal zitplaatsen: ${seats}\n` : ''}${transmission ? `• Transmissie: ${transmission}\n` : ''}
+
+**Conditie:**
+• Volledig onderhouden en technisch in perfecte conditie
+• Alle onderhoudsgeschiedenis beschikbaar
+• Uitstekende staat binnen en buiten
+
+**DD Cars Garantie:**
+• Professionele inspectie uitgevoerd
+• Transparante historie en documentatie
+• Betrouwbare en kwalitatieve service
+
+Een uitstekende keuze voor wie zoekt naar kwaliteit, prestaties en betrouwbaarheid.
+
+*Alle informatie onder voorbehoud van typefouten. Wijzigingen en verkoop voorbehouden.*`;
   }
 
   // Marktplaats Import Endpoint (Fixed)

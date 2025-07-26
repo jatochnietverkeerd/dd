@@ -373,9 +373,18 @@ export default function VehicleDetail() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-gray-300 leading-relaxed">
-                      {vehicle.story || "Het verhaal van deze auto is nog niet beschikbaar."}
-                    </p>
+                    <div className="prose prose-invert max-w-none">
+                      <div 
+                        className="text-gray-300 leading-relaxed"
+                        dangerouslySetInnerHTML={{ 
+                          __html: (vehicle.description || "Geen beschrijving beschikbaar.")
+                            .replace(/\*\*(.*?)\*\*/g, '<h3 class="text-luxury-gold font-semibold text-lg mb-3 mt-6">$1</h3>')
+                            .replace(/^• (.+)$/gm, '<div class="flex items-start mb-2"><span class="text-luxury-gold mr-2 mt-1">•</span><span>$1</span></div>')
+                            .replace(/\n\n/g, '<div class="mb-4"></div>')
+                            .replace(/\n/g, '<br>')
+                        }}
+                      />
+                    </div>
                   </CardContent>
                 </Card>
               </TabsContent>
