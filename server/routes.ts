@@ -11,6 +11,7 @@ import fs from "fs";
 import { generateInvoicePDF, createInvoiceData } from "./pdfService_new";
 import { sendInvoiceEmail, sendContactFormEmail, sendContactAutoReply } from "./emailService";
 import * as cheerio from 'cheerio';
+import { upload as cloudinaryUpload, uploadToCloudinary, deleteFromCloudinary, getCloudinaryImages } from "./cloudinaryService";
 
 // Ensure uploads directory exists
 const uploadsDir = path.join(process.cwd(), 'uploads');
@@ -148,6 +149,51 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ url: imageUrl });
     } catch (error) {
       res.status(500).json({ message: 'Upload failed' });
+    }
+  });
+
+  // Cloudinary upload endpoint
+  app.post('/api/admin/upload-cloudinary', authenticateAdmin, cloudinaryUpload.single('image'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: 'No file uploaded' });
+      }
+
+      const folder = req.body.folder || 'ddcars';
+      const result = await uploadToCloudinary(req.file.buffer, folder);
+      
+      console.log('Cloudinary upload successful:', result.secure_url);
+      res.json(result);
+    } catch (error) {
+      console.error('Cloudinary upload error:', error);
+      res.status(500).json({ 
+        message: 'Failed to upload to Cloudinary',
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  // Get Cloudinary images
+  app.get('/api/admin/cloudinary-images', authenticateAdmin, async (req, res) => {
+    try {
+      const folder = req.query.folder as string || 'ddcars';
+      const images = await getCloudinaryImages(folder);
+      res.json(images);
+    } catch (error) {
+      console.error('Failed to fetch Cloudinary images:', error);
+      res.status(500).json({ message: 'Failed to fetch images' });
+    }
+  });
+
+  // Delete Cloudinary image
+  app.delete('/api/admin/cloudinary-images/:publicId', authenticateAdmin, async (req, res) => {
+    try {
+      const publicId = req.params.publicId;
+      await deleteFromCloudinary(publicId);
+      res.json({ message: 'Image deleted successfully' });
+    } catch (error) {
+      console.error('Failed to delete Cloudinary image:', error);
+      res.status(500).json({ message: 'Failed to delete image' });
     }
   });
 

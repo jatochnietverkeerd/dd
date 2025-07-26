@@ -1,25 +1,81 @@
-// Completely hook-free toast implementation
-interface ToastItem {
-  id: string;
-  title?: string;
+import { useState, useCallback } from 'react';
+
+interface Toast {
+  title: string;
   description?: string;
-  variant?: string;
+  variant?: 'default' | 'destructive';
 }
 
-// Console-based toast notifications (no UI components)
-export function useSafeToast() {
-  return {
-    toasts: [], // Always empty for UI
-    toast: (options: { title?: string; description?: string; variant?: string }) => {
-      // Log to console instead of showing UI toast
-      const message = options.title || options.description || 'Notification';
-      console.log(`🔔 Toast: ${message}`);
-      
-      return {
-        id: Date.now().toString(),
-        dismiss: () => console.log('Toast dismissed')
-      };
-    },
-    dismiss: () => console.log('All toasts dismissed')
+interface ToastState {
+  toasts: Array<Toast & { id: string; timestamp: number }>;
+}
+
+// Global toast state management
+let globalToastState: ToastState = { toasts: [] };
+let toastListeners: Set<(state: ToastState) => void> = new Set();
+
+function notifyListeners() {
+  toastListeners.forEach(listener => listener(globalToastState));
+}
+
+function addToast(toast: Toast) {
+  const newToast = {
+    ...toast,
+    id: Math.random().toString(36).substr(2, 9),
+    timestamp: Date.now()
   };
+  
+  globalToastState = {
+    toasts: [...globalToastState.toasts, newToast]
+  };
+  
+  notifyListeners();
+  
+  // Auto-remove toast after 5 seconds
+  setTimeout(() => {
+    removeToast(newToast.id);
+  }, 5000);
+}
+
+function removeToast(id: string) {
+  globalToastState = {
+    toasts: globalToastState.toasts.filter(toast => toast.id !== id)
+  };
+  notifyListeners();
+}
+
+export function useSafeToast() {
+  const [, forceUpdate] = useState({});
+  
+  const refresh = useCallback(() => {
+    forceUpdate({});
+  }, []);
+  
+  // Subscribe to toast state changes
+  useState(() => {
+    toastListeners.add(refresh);
+    return () => {
+      toastListeners.delete(refresh);
+    };
+  });
+  
+  const toast = useCallback((toastData: Toast) => {
+    try {
+      addToast(toastData);
+      console.log('Toast added safely:', toastData.title);
+    } catch (error) {
+      console.error('Toast error (fallback to console):', toastData.title, error);
+    }
+  }, []);
+  
+  return {
+    toast,
+    toasts: globalToastState.toasts,
+    removeToast
+  };
+}
+
+// Export a simple toast function for components that don't need reactive state
+export function showToast(toast: Toast) {
+  addToast(toast);
 }

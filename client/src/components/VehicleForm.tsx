@@ -15,7 +15,7 @@ import { useToast } from "@/hooks/use-toast";
 import { insertVehicleSchema } from "@shared/schema";
 import type { Vehicle } from "@shared/schema";
 import { z } from "zod";
-import ImageUploader from "./ImageUploader";
+import CloudinaryImageUploader from "./CloudinaryImageUploader";
 
 const vehicleFormSchema = z.object({
   brand: z.string().min(1, "Merk is verplicht"),
@@ -766,11 +766,11 @@ export default function VehicleForm({ vehicle, isOpen, onClose, token }: Vehicle
           </div>
 
           <div>
-            <ImageUploader
-              initialImages={images}
+            <CloudinaryImageUploader
               onImagesChange={setImages}
-              maxImages={20}
-              token={token}
+              currentImages={images}
+              maxImages={10}
+              folder="ddcars"
             />
           </div>
 
