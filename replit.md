@@ -690,11 +690,11 @@ When deployed to production (NODE_ENV=production):
 
 ## Domain Status & Sync Update (July 26, 2025)
 
-### Production Site Status Update (July 27, 2025)
+### SSL Certificate Fix for www.ddcars.nl (July 27, 2025)
 - **Replit URL**: ✅ https://dd-cars-henkvdweele.replit.app (fully functional)
-- **Custom Domain**: 🔄 https://ddcars.nl (DNS propagation in progress)
-- **Deployment Status**: ✅ Active and running (deployed 15 minutes ago)
-- **Issue**: DNS propagation delay for custom domain
+- **Custom Domain**: ❌ www.ddcars.nl (SSL certificate issue)
+- **Required Action**: Fresh SSL certificate provisioning needed
+- **DNS Target**: Must point to 34.111.179.208 (A record only, no AAAA)
 
 ### Chrome Loading Issue (Known & Fixed)
 - **Root Cause**: Chrome's aggressive caching after deployment changes
@@ -710,9 +710,9 @@ When deployed to production (NODE_ENV=production):
 
 ### Infrastructure Status
 - **Production Deployment**: ✅ Live on Replit (dd-cars-henkvdweele.replit.app)
-- **Custom Domain**: 🔄 DNS propagation in progress for ddcars.nl
+- **SSL Issue**: www.ddcars.nl requires fresh Let's Encrypt certificate
 - **All Features**: ✅ Vehicle management, admin dashboard, Cloudinary integration working
-- **Current Status**: Production ready, waiting for DNS propagation
+- **Current Priority**: SSL certificate renewal for custom domain
 
 ### Mobile Accessibility Fix (July 26, 2025)
 - **Issue**: Mobile viewport restricted user scaling (maximum-scale=1)

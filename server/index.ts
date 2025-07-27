@@ -7,6 +7,42 @@ import { setupVite, serveStatic, log } from "./vite";
 
 const app = express();
 
+// Force HTTPS in production
+app.use((req, res, next) => {
+  // Only enforce HTTPS in production
+  if (process.env.NODE_ENV === 'production') {
+    // Check if request is not already HTTPS
+    if (req.header('x-forwarded-proto') !== 'https') {
+      // Redirect to HTTPS version
+      return res.redirect(301, `https://${req.get('host')}${req.url}`);
+    }
+  }
+  next();
+});
+
+// Security headers for SSL/HTTPS
+app.use((req, res, next) => {
+  // Force HTTPS for 1 year
+  if (process.env.NODE_ENV === 'production') {
+    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
+  }
+  
+  // Security headers
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  res.setHeader('Content-Security-Policy', 
+    "default-src 'self' 'unsafe-inline' 'unsafe-eval'; " +
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://replit.com; " +
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
+    "font-src 'self' https://fonts.gstatic.com; " +
+    "img-src 'self' data: https: blob:; " +
+    "connect-src 'self' http: https: ws: wss:; " +
+    "media-src 'self' https:;"
+  );
+  next();
+});
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
