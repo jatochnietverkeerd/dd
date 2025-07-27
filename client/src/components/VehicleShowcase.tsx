@@ -26,7 +26,7 @@ export default function VehicleShowcase() {
       <section id="aanbod" className="py-20 bg-dark-primary">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-light mb-4">Ons <span className="font-bold" style={{color: '#D9C89E'}}>Aanbod</span></h2>
+            <h2 className="text-4xl font-light mb-4"><span style={{color: '#D9C89E'}}>Ons</span> <span className="font-bold" style={{color: '#D9C89E'}}>Aanbod</span></h2>
             <p className="max-w-2xl mx-auto" style={{color: '#D9C89E'}}>Ontdek onze zorgvuldig geselecteerde collectie van premium occasions.</p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -57,7 +57,7 @@ export default function VehicleShowcase() {
           ref={titleRef}
           className={`text-center mb-16 transition-all duration-700 ${titleFadeClass}`}
         >
-          <h2 className="text-4xl font-light mb-4">Ons <span className="font-bold" style={{color: '#D9C89E'}}>Aanbod</span></h2>
+          <h2 className="text-4xl font-light mb-4"><span style={{color: '#D9C89E'}}>Ons</span> <span className="font-bold" style={{color: '#D9C89E'}}>Aanbod</span></h2>
           <p className="max-w-2xl mx-auto" style={{color: '#D9C89E'}}>Ontdek onze zorgvuldig geselecteerde collectie van premium occasions. Elk voertuig vertelt zijn eigen verhaal van luxe en prestaties.</p>
         </div>
         

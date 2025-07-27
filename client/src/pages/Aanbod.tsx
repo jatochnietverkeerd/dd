@@ -72,7 +72,7 @@ export default function Aanbod() {
         <div className="pt-20 pb-16">
           <div className="container mx-auto px-4">
             <div className="text-center mb-12">
-              <h1 className="text-4xl font-light mb-4">Ons <span className="text-luxury-gold font-bold">Aanbod</span></h1>
+              <h1 className="text-4xl font-light mb-4"><span style={{color: '#D9C89E'}}>Ons</span> <span className="text-luxury-gold font-bold">Aanbod</span></h1>
               <p className="text-gray-400 max-w-2xl mx-auto">Ontdek onze volledige collectie van premium occasions</p>
             </div>
             
@@ -103,7 +103,7 @@ export default function Aanbod() {
         <div className="container mx-auto px-4">
           {/* Header */}
           <div className="text-center mb-12">
-            <h1 className="text-4xl font-light mb-4">Ons <span className="text-luxury-gold font-bold">Aanbod</span></h1>
+            <h1 className="text-4xl font-light mb-4"><span style={{color: '#D9C89E'}}>Ons</span> <span className="text-luxury-gold font-bold">Aanbod</span></h1>
             <p className="text-gray-400 max-w-2xl mx-auto">Ontdek onze volledige collectie van premium occasions. Elk voertuig is zorgvuldig geselecteerd en gecontroleerd.</p>
           </div>
 
