@@ -1,4 +1,4 @@
-import React from "react";
+// React is automatically imported by Vite JSX transformer
 import { Star, Award, Shield, CheckCircle, Users, Heart } from "lucide-react";
 
 export default function OverOns() {

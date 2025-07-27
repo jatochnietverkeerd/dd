@@ -1,4 +1,4 @@
-import React from 'react';
+// React is automatically imported by Vite JSX transformer
 
 interface LogoProps {
   className?: string;

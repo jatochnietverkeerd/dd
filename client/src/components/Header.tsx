@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { Menu, X, Car } from "lucide-react";
 import { Logo } from "./Logo";

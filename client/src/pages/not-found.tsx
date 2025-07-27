@@ -1,4 +1,4 @@
-import React from "react";
+// React is automatically imported by Vite JSX transformer
 import { Card, CardContent } from "@/components/ui/card";
 import { AlertCircle } from "lucide-react";
 
