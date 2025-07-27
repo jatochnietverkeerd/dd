@@ -101,7 +101,13 @@ export default function VehicleShowcase() {
                 e.currentTarget.style.color = '#D9C89E';
               }}
             >
-              Bekijk al onze auto's (9)
+              {(() => {
+                const availableVehicles = allVehicles?.filter(v => 
+                  (v.available !== false && v.status !== 'gearchiveerd' && v.status !== 'verkocht') || 
+                  (!v.status || v.status === 'beschikbaar')
+                ) || [];
+                return `Bekijk alle voertuigen (${availableVehicles.length})`;
+              })()}
             </Button>
           </Link>
         </div>
