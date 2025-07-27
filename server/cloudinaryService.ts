@@ -1,16 +1,30 @@
-// Set the correct CLOUDINARY_URL before importing the library
-process.env.CLOUDINARY_URL = 'cloudinary://361681299372585:yHBKkU3hZOHSvTVtGAoMHa7hYsk@dpqb9lz1i';
-
-import { v2 as cloudinary } from 'cloudinary';
 import multer from 'multer';
 
-// Additional configuration to ensure settings are correct
-cloudinary.config({
-  cloud_name: 'dpqb9lz1i',
-  api_key: '361681299372585',
-  api_secret: 'yHBKkU3hZOHSvTVtGAoMHa7hYsk',
-  secure: true,
-});
+// Lazy-loaded Cloudinary instance
+let cloudinary: any = null;
+
+async function getCloudinary() {
+  if (!cloudinary) {
+    // Clear any malformed environment variable
+    delete process.env.CLOUDINARY_URL;
+    
+    // Set correct environment variable
+    process.env.CLOUDINARY_URL = 'cloudinary://361681299372585:yHBKkU3hZOHSvTVtGAoMHa7hYsk@dpqb9lz1i';
+    
+    // Import and configure Cloudinary
+    const { v2 } = await import('cloudinary');
+    
+    v2.config({
+      cloud_name: 'dpqb9lz1i',
+      api_key: '361681299372585',
+      api_secret: 'yHBKkU3hZOHSvTVtGAoMHa7hYsk',
+      secure: true,
+    });
+    
+    cloudinary = v2;
+  }
+  return cloudinary;
+}
 
 // Configure Multer for memory storage
 const storage = multer.memoryStorage();
@@ -42,16 +56,9 @@ export async function uploadToCloudinary(
   publicId?: string
 ): Promise<CloudinaryUploadResult> {
   try {
-    // Validate Cloudinary configuration
-    if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
-      throw new Error('Missing Cloudinary configuration. Please check environment variables.');
-    }
-
-    console.log('Cloudinary config check:', {
-      cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-      api_key: process.env.CLOUDINARY_API_KEY?.substring(0, 5) + '...',
-      api_secret_length: process.env.CLOUDINARY_API_SECRET?.length
-    });
+    const cloudinary = await getCloudinary();
+    
+    console.log('Cloudinary upload starting for folder:', folder);
 
     const result = await new Promise<CloudinaryUploadResult>((resolve, reject) => {
       const uploadOptions: any = {
@@ -67,7 +74,7 @@ export async function uploadToCloudinary(
 
       cloudinary.uploader.upload_stream(
         uploadOptions,
-        (error, result) => {
+        (error: any, result: any) => {
           if (error) {
             reject(error);
           } else if (result) {
@@ -94,6 +101,7 @@ export async function uploadToCloudinary(
 
 export async function deleteFromCloudinary(publicId: string): Promise<void> {
   try {
+    const cloudinary = await getCloudinary();
     await cloudinary.uploader.destroy(publicId);
   } catch (error) {
     console.error('Cloudinary delete error:', error);
@@ -103,6 +111,7 @@ export async function deleteFromCloudinary(publicId: string): Promise<void> {
 
 export async function getCloudinaryImages(folder: string = 'ddcars'): Promise<any[]> {
   try {
+    const cloudinary = await getCloudinary();
     const result = await cloudinary.search
       .expression(`folder:${folder}`)
       .sort_by('created_at', 'desc')
@@ -116,7 +125,7 @@ export async function getCloudinaryImages(folder: string = 'ddcars'): Promise<an
   }
 }
 
-export function generateCloudinaryUrl(
+export async function generateCloudinaryUrl(
   publicId: string,
   options: {
     width?: number;
@@ -124,7 +133,8 @@ export function generateCloudinaryUrl(
     crop?: string;
     quality?: string;
   } = {}
-): string {
+): Promise<string> {
+  const cloudinary = await getCloudinary();
   return cloudinary.url(publicId, {
     secure: true,
     quality: options.quality || 'auto',
