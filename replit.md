@@ -696,10 +696,17 @@ When deployed to production (NODE_ENV=production):
 - **Deployment Status**: ✅ Active and running (deployed 15 minutes ago)
 - **Issue**: DNS propagation delay for custom domain
 
-### Browser Compatibility Issue
-- **Safari**: ✅ Working perfectly
-- **Chrome**: ❌ Loading issues (DNS cache/security settings)
-- **Recommended Fix**: Clear Chrome DNS cache, disable extensions, try incognito mode
+### Chrome Loading Issue (Known & Fixed)
+- **Root Cause**: Chrome's aggressive caching after deployment changes
+- **Incognito Mode**: ✅ Always works (bypasses cache)
+- **Safari/Firefox**: ✅ Work fine (less aggressive caching)
+- **Solution**: Chrome DNS/cache clearing (see fix below)
+
+#### Chrome Fix Steps (Choose Any):
+1. **Fastest**: Use incognito mode for now
+2. **DNS Flush**: chrome://net-internals/#dns → Clear Host Cache
+3. **Full Reset**: Settings → Privacy → Clear browsing data (Last hour)
+4. **Hard Refresh**: Ctrl+Shift+R (Windows) / Cmd+Shift+R (Mac)
 
 ### Infrastructure Status
 - **Production Deployment**: ✅ Live on Replit (dd-cars-henkvdweele.replit.app)
