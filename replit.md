@@ -692,10 +692,10 @@ When deployed to production (NODE_ENV=production):
 
 ### SSL Certificate Fix for www.ddcars.nl (July 27, 2025)
 - **Replit URL**: ✅ https://dd-cars-henkvdweele.replit.app (fully functional)
-- **Custom Domain**: 🔄 ddcars.nl (SSL certificate being issued)
+- **www.ddcars.nl**: ✅ Connected and verified (working)
+- **ddcars.nl**: ❌ Need to add base domain (without www) to deployment
 - **DNS Configuration**: ✅ Completed - A records point to 34.111.179.208
-- **Domain Verification**: ✅ Replit verification TXT record active
-- **Status**: SSL certificate issuance in progress (15-20 minutes)
+- **Required Action**: Add ddcars.nl (base domain) to deployment domains
 
 ### Chrome Loading Issue (Known & Fixed)
 - **Root Cause**: Chrome's aggressive caching after deployment changes
