@@ -1,3 +1,4 @@
+import React from "react";
 import { Shield, Handshake, Star } from "lucide-react";
 import { useFadeInOnScroll } from "@/hooks/useScrollAnimation";
 
