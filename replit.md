@@ -721,6 +721,36 @@ When deployed to production (NODE_ENV=production):
 3. **Full Reset**: Settings → Privacy → Clear browsing data (Last hour)
 4. **Hard Refresh**: Ctrl+Shift+R (Windows) / Cmd+Shift+R (Mac)
 
+### Known Replit Git Limitations (July 28, 2025)
+- **Lock File Issue**: Replit continuously recreates `.git/config.lock` files
+- **Impact**: Prevents `git remote add origin` commands, causing "UNKNOWN" errors
+- **Workaround**: Use fresh Git initialization for any repository setup
+- **Recommended Solution**: 
+  ```bash
+  # Remove existing problematic Git config
+  mv .git .git_backup
+  
+  # Fresh initialization
+  git init
+  git remote add origin [repository-url]
+  git add .
+  git commit -m "Initial commit"
+  git branch -M main
+  git push -u origin main
+  ```
+
+### Chrome Loading Issue (Known & Fixed)
+- **Root Cause**: Chrome's aggressive caching after deployment changes
+- **Incognito Mode**: ✅ Always works (bypasses cache)
+- **Safari/Firefox**: ✅ Work fine (less aggressive caching)
+- **Solution**: Chrome DNS/cache clearing (see fix below)
+
+#### Chrome Fix Steps (Choose Any):
+1. **Fastest**: Use incognito mode for now
+2. **DNS Flush**: chrome://net-internals/#dns → Clear Host Cache
+3. **Full Reset**: Settings → Privacy → Clear browsing data (Last hour)
+4. **Hard Refresh**: Ctrl+Shift+R (Windows) / Cmd+Shift+R (Mac)
+
 ### Infrastructure Status
 - **Production Deployment**: ✅ Live on Replit (dd-cars-henkvdweele.replit.app)
 - **SSL Issue**: www.ddcars.nl requires fresh Let's Encrypt certificate
