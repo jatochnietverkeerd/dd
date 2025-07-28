@@ -722,22 +722,13 @@ When deployed to production (NODE_ENV=production):
 4. **Hard Refresh**: Ctrl+Shift+R (Windows) / Cmd+Shift+R (Mac)
 
 ### Known Replit Git Limitations (July 28, 2025)
-- **Lock File Issue**: Replit continuously recreates `.git/config.lock` files
-- **Impact**: Prevents `git remote add origin` commands, causing "UNKNOWN" errors
-- **Workaround**: Use fresh Git initialization for any repository setup
-- **Recommended Solution**: 
-  ```bash
-  # Remove existing problematic Git config
-  mv .git .git_backup
-  
-  # Fresh initialization
-  git init
-  git remote add origin [repository-url]
-  git add .
-  git commit -m "Initial commit"
-  git branch -M main
-  git push -u origin main
-  ```
+- **Lock File Issue**: Replit continuously recreates `.git/config.lock` and `.git/index.lock` files
+- **Impact**: Prevents all Git remote operations, causing persistent "UNKNOWN" errors
+- **Fresh Init Result**: Even fresh `git init` encounters the same lock file restrictions
+- **Push Failure**: Local commits exist but cannot push to external repositories due to Replit protection
+- **Confirmed Limitation**: Replit environment prevents external Git repository synchronization
+- **Alternative**: Manual file export for external backup if needed, focus on Replit's built-in version control
+- **Production Impact**: ✅ None - live deployment at ddcars.nl remains fully functional
 
 ### Chrome Loading Issue (Known & Fixed)
 - **Root Cause**: Chrome's aggressive caching after deployment changes
